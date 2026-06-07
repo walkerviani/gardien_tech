@@ -1,10 +1,9 @@
-class Problema {
+class Equipamento {
   // Atributos
   final int _id;
-  String descricao;
 
   // Construtor
-  Problema(this._id, this.descricao);
+  Equipamento(this._id);
 
   // Get
   int get id => _id;
