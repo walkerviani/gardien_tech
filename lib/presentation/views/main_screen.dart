@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gardien_tech/presentation/views/funcoes_screen.dart';
 
 class MainScreen extends StatefulWidget{
   const MainScreen({super.key});
@@ -13,7 +14,7 @@ class _MainScreenState extends State<MainScreen>{
   final List<Widget> _telas = [
     const Center(child: Text('Página Inicial')),
     const Center(child: Text('Adicionar')),
-    const Center(child: Text('Funções')),
+    const FuncoesScreen(),
   ];
   
   @override
