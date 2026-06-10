@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gardien_tech/presentation/views/usuarios_screen.dart';
 
 class FuncoesScreen extends StatelessWidget{
   const FuncoesScreen({super.key});
@@ -11,18 +12,24 @@ class FuncoesScreen extends StatelessWidget{
       child: Column(
         children: [
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => UsuariosScreen()));
+            },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.lightBlue,
+              backgroundColor: Colors.blue,
               foregroundColor: Colors.white,
               minimumSize: const Size(double.infinity, 70),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(4),
               ),
             ),
-
-            child: const Text('Botão 1'),
-
+            child: Row(
+              children: [
+                Icon(Icons.person, size: 30),
+                SizedBox(width: 20),
+                Text('Gerenciar Usuários', style: TextStyle(fontSize: 18))
+              ],
+            )
             ),
           const SizedBox(height: 10),
           ElevatedButton(
