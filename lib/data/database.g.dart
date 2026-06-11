@@ -3,7 +3,7 @@
 part of 'database.dart';
 
 // ignore_for_file: type=lint
-class $CargosTable extends Cargos with TableInfo<$CargosTable, Cargo> {
+class $CargosTable extends Cargos with TableInfo<$CargosTable, CargoData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -41,7 +41,7 @@ class $CargosTable extends Cargos with TableInfo<$CargosTable, Cargo> {
   static const String $name = 'cargos';
   @override
   VerificationContext validateIntegrity(
-    Insertable<Cargo> instance, {
+    Insertable<CargoData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -63,9 +63,9 @@ class $CargosTable extends Cargos with TableInfo<$CargosTable, Cargo> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Cargo map(Map<String, dynamic> data, {String? tablePrefix}) {
+  CargoData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Cargo(
+    return CargoData(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -83,10 +83,10 @@ class $CargosTable extends Cargos with TableInfo<$CargosTable, Cargo> {
   }
 }
 
-class Cargo extends DataClass implements Insertable<Cargo> {
+class CargoData extends DataClass implements Insertable<CargoData> {
   final int id;
   final String nomeCargo;
-  const Cargo({required this.id, required this.nomeCargo});
+  const CargoData({required this.id, required this.nomeCargo});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -99,12 +99,12 @@ class Cargo extends DataClass implements Insertable<Cargo> {
     return CargosCompanion(id: Value(id), nomeCargo: Value(nomeCargo));
   }
 
-  factory Cargo.fromJson(
+  factory CargoData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Cargo(
+    return CargoData(
       id: serializer.fromJson<int>(json['id']),
       nomeCargo: serializer.fromJson<String>(json['nomeCargo']),
     );
@@ -118,10 +118,10 @@ class Cargo extends DataClass implements Insertable<Cargo> {
     };
   }
 
-  Cargo copyWith({int? id, String? nomeCargo}) =>
-      Cargo(id: id ?? this.id, nomeCargo: nomeCargo ?? this.nomeCargo);
-  Cargo copyWithCompanion(CargosCompanion data) {
-    return Cargo(
+  CargoData copyWith({int? id, String? nomeCargo}) =>
+      CargoData(id: id ?? this.id, nomeCargo: nomeCargo ?? this.nomeCargo);
+  CargoData copyWithCompanion(CargosCompanion data) {
+    return CargoData(
       id: data.id.present ? data.id.value : this.id,
       nomeCargo: data.nomeCargo.present ? data.nomeCargo.value : this.nomeCargo,
     );
@@ -129,7 +129,7 @@ class Cargo extends DataClass implements Insertable<Cargo> {
 
   @override
   String toString() {
-    return (StringBuffer('Cargo(')
+    return (StringBuffer('CargoData(')
           ..write('id: $id, ')
           ..write('nomeCargo: $nomeCargo')
           ..write(')'))
@@ -141,12 +141,12 @@ class Cargo extends DataClass implements Insertable<Cargo> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Cargo &&
+      (other is CargoData &&
           other.id == this.id &&
           other.nomeCargo == this.nomeCargo);
 }
 
-class CargosCompanion extends UpdateCompanion<Cargo> {
+class CargosCompanion extends UpdateCompanion<CargoData> {
   final Value<int> id;
   final Value<String> nomeCargo;
   const CargosCompanion({
@@ -157,7 +157,7 @@ class CargosCompanion extends UpdateCompanion<Cargo> {
     this.id = const Value.absent(),
     required String nomeCargo,
   }) : nomeCargo = Value(nomeCargo);
-  static Insertable<Cargo> custom({
+  static Insertable<CargoData> custom({
     Expression<int>? id,
     Expression<String>? nomeCargo,
   }) {
@@ -197,7 +197,7 @@ class CargosCompanion extends UpdateCompanion<Cargo> {
 }
 
 class $TiposDispositivoTable extends TiposDispositivo
-    with TableInfo<$TiposDispositivoTable, TiposDispositivoData> {
+    with TableInfo<$TiposDispositivoTable, TipoDispositivoData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -235,7 +235,7 @@ class $TiposDispositivoTable extends TiposDispositivo
   static const String $name = 'tipos_dispositivo';
   @override
   VerificationContext validateIntegrity(
-    Insertable<TiposDispositivoData> instance, {
+    Insertable<TipoDispositivoData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -257,9 +257,9 @@ class $TiposDispositivoTable extends TiposDispositivo
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  TiposDispositivoData map(Map<String, dynamic> data, {String? tablePrefix}) {
+  TipoDispositivoData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return TiposDispositivoData(
+    return TipoDispositivoData(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -277,11 +277,11 @@ class $TiposDispositivoTable extends TiposDispositivo
   }
 }
 
-class TiposDispositivoData extends DataClass
-    implements Insertable<TiposDispositivoData> {
+class TipoDispositivoData extends DataClass
+    implements Insertable<TipoDispositivoData> {
   final int id;
   final String nomeTipo;
-  const TiposDispositivoData({required this.id, required this.nomeTipo});
+  const TipoDispositivoData({required this.id, required this.nomeTipo});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -294,12 +294,12 @@ class TiposDispositivoData extends DataClass
     return TiposDispositivoCompanion(id: Value(id), nomeTipo: Value(nomeTipo));
   }
 
-  factory TiposDispositivoData.fromJson(
+  factory TipoDispositivoData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return TiposDispositivoData(
+    return TipoDispositivoData(
       id: serializer.fromJson<int>(json['id']),
       nomeTipo: serializer.fromJson<String>(json['nomeTipo']),
     );
@@ -313,13 +313,13 @@ class TiposDispositivoData extends DataClass
     };
   }
 
-  TiposDispositivoData copyWith({int? id, String? nomeTipo}) =>
-      TiposDispositivoData(
+  TipoDispositivoData copyWith({int? id, String? nomeTipo}) =>
+      TipoDispositivoData(
         id: id ?? this.id,
         nomeTipo: nomeTipo ?? this.nomeTipo,
       );
-  TiposDispositivoData copyWithCompanion(TiposDispositivoCompanion data) {
-    return TiposDispositivoData(
+  TipoDispositivoData copyWithCompanion(TiposDispositivoCompanion data) {
+    return TipoDispositivoData(
       id: data.id.present ? data.id.value : this.id,
       nomeTipo: data.nomeTipo.present ? data.nomeTipo.value : this.nomeTipo,
     );
@@ -327,7 +327,7 @@ class TiposDispositivoData extends DataClass
 
   @override
   String toString() {
-    return (StringBuffer('TiposDispositivoData(')
+    return (StringBuffer('TipoDispositivoData(')
           ..write('id: $id, ')
           ..write('nomeTipo: $nomeTipo')
           ..write(')'))
@@ -339,12 +339,12 @@ class TiposDispositivoData extends DataClass
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is TiposDispositivoData &&
+      (other is TipoDispositivoData &&
           other.id == this.id &&
           other.nomeTipo == this.nomeTipo);
 }
 
-class TiposDispositivoCompanion extends UpdateCompanion<TiposDispositivoData> {
+class TiposDispositivoCompanion extends UpdateCompanion<TipoDispositivoData> {
   final Value<int> id;
   final Value<String> nomeTipo;
   const TiposDispositivoCompanion({
@@ -355,7 +355,7 @@ class TiposDispositivoCompanion extends UpdateCompanion<TiposDispositivoData> {
     this.id = const Value.absent(),
     required String nomeTipo,
   }) : nomeTipo = Value(nomeTipo);
-  static Insertable<TiposDispositivoData> custom({
+  static Insertable<TipoDispositivoData> custom({
     Expression<int>? id,
     Expression<String>? nomeTipo,
   }) {
@@ -604,7 +604,7 @@ class EmprestimoStatusCompanion extends UpdateCompanion<EmprestimoStatusData> {
 }
 
 class $DispositivosTable extends Dispositivos
-    with TableInfo<$DispositivosTable, Dispositivo> {
+    with TableInfo<$DispositivosTable, DispositivoData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -711,7 +711,7 @@ class $DispositivosTable extends Dispositivos
   static const String $name = 'dispositivos';
   @override
   VerificationContext validateIntegrity(
-    Insertable<Dispositivo> instance, {
+    Insertable<DispositivoData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -782,9 +782,9 @@ class $DispositivosTable extends Dispositivos
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Dispositivo map(Map<String, dynamic> data, {String? tablePrefix}) {
+  DispositivoData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Dispositivo(
+    return DispositivoData(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -822,7 +822,7 @@ class $DispositivosTable extends Dispositivos
   }
 }
 
-class Dispositivo extends DataClass implements Insertable<Dispositivo> {
+class DispositivoData extends DataClass implements Insertable<DispositivoData> {
   final int id;
   final int numSerie;
   final int numPatrimonio;
@@ -830,7 +830,7 @@ class Dispositivo extends DataClass implements Insertable<Dispositivo> {
   final int idStatus;
   final int qtdTotal;
   final int qtdDisponivel;
-  const Dispositivo({
+  const DispositivoData({
     required this.id,
     required this.numSerie,
     required this.numPatrimonio,
@@ -864,12 +864,12 @@ class Dispositivo extends DataClass implements Insertable<Dispositivo> {
     );
   }
 
-  factory Dispositivo.fromJson(
+  factory DispositivoData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Dispositivo(
+    return DispositivoData(
       id: serializer.fromJson<int>(json['id']),
       numSerie: serializer.fromJson<int>(json['numSerie']),
       numPatrimonio: serializer.fromJson<int>(json['numPatrimonio']),
@@ -893,7 +893,7 @@ class Dispositivo extends DataClass implements Insertable<Dispositivo> {
     };
   }
 
-  Dispositivo copyWith({
+  DispositivoData copyWith({
     int? id,
     int? numSerie,
     int? numPatrimonio,
@@ -901,7 +901,7 @@ class Dispositivo extends DataClass implements Insertable<Dispositivo> {
     int? idStatus,
     int? qtdTotal,
     int? qtdDisponivel,
-  }) => Dispositivo(
+  }) => DispositivoData(
     id: id ?? this.id,
     numSerie: numSerie ?? this.numSerie,
     numPatrimonio: numPatrimonio ?? this.numPatrimonio,
@@ -910,8 +910,8 @@ class Dispositivo extends DataClass implements Insertable<Dispositivo> {
     qtdTotal: qtdTotal ?? this.qtdTotal,
     qtdDisponivel: qtdDisponivel ?? this.qtdDisponivel,
   );
-  Dispositivo copyWithCompanion(DispositivosCompanion data) {
-    return Dispositivo(
+  DispositivoData copyWithCompanion(DispositivosCompanion data) {
+    return DispositivoData(
       id: data.id.present ? data.id.value : this.id,
       numSerie: data.numSerie.present ? data.numSerie.value : this.numSerie,
       numPatrimonio: data.numPatrimonio.present
@@ -930,7 +930,7 @@ class Dispositivo extends DataClass implements Insertable<Dispositivo> {
 
   @override
   String toString() {
-    return (StringBuffer('Dispositivo(')
+    return (StringBuffer('DispositivoData(')
           ..write('id: $id, ')
           ..write('numSerie: $numSerie, ')
           ..write('numPatrimonio: $numPatrimonio, ')
@@ -955,7 +955,7 @@ class Dispositivo extends DataClass implements Insertable<Dispositivo> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Dispositivo &&
+      (other is DispositivoData &&
           other.id == this.id &&
           other.numSerie == this.numSerie &&
           other.numPatrimonio == this.numPatrimonio &&
@@ -965,7 +965,7 @@ class Dispositivo extends DataClass implements Insertable<Dispositivo> {
           other.qtdDisponivel == this.qtdDisponivel);
 }
 
-class DispositivosCompanion extends UpdateCompanion<Dispositivo> {
+class DispositivosCompanion extends UpdateCompanion<DispositivoData> {
   final Value<int> id;
   final Value<int> numSerie;
   final Value<int> numPatrimonio;
@@ -996,7 +996,7 @@ class DispositivosCompanion extends UpdateCompanion<Dispositivo> {
        idStatus = Value(idStatus),
        qtdTotal = Value(qtdTotal),
        qtdDisponivel = Value(qtdDisponivel);
-  static Insertable<Dispositivo> custom({
+  static Insertable<DispositivoData> custom({
     Expression<int>? id,
     Expression<int>? numSerie,
     Expression<int>? numPatrimonio,
@@ -1078,7 +1078,8 @@ class DispositivosCompanion extends UpdateCompanion<Dispositivo> {
   }
 }
 
-class $UsuariosTable extends Usuarios with TableInfo<$UsuariosTable, Usuario> {
+class $UsuariosTable extends Usuarios
+    with TableInfo<$UsuariosTable, UsuarioData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -1128,7 +1129,7 @@ class $UsuariosTable extends Usuarios with TableInfo<$UsuariosTable, Usuario> {
   static const String $name = 'usuarios';
   @override
   VerificationContext validateIntegrity(
-    Insertable<Usuario> instance, {
+    Insertable<UsuarioData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -1158,9 +1159,9 @@ class $UsuariosTable extends Usuarios with TableInfo<$UsuariosTable, Usuario> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Usuario map(Map<String, dynamic> data, {String? tablePrefix}) {
+  UsuarioData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Usuario(
+    return UsuarioData(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -1182,11 +1183,15 @@ class $UsuariosTable extends Usuarios with TableInfo<$UsuariosTable, Usuario> {
   }
 }
 
-class Usuario extends DataClass implements Insertable<Usuario> {
+class UsuarioData extends DataClass implements Insertable<UsuarioData> {
   final int id;
   final String nome;
   final int idCargo;
-  const Usuario({required this.id, required this.nome, required this.idCargo});
+  const UsuarioData({
+    required this.id,
+    required this.nome,
+    required this.idCargo,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1204,12 +1209,12 @@ class Usuario extends DataClass implements Insertable<Usuario> {
     );
   }
 
-  factory Usuario.fromJson(
+  factory UsuarioData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Usuario(
+    return UsuarioData(
       id: serializer.fromJson<int>(json['id']),
       nome: serializer.fromJson<String>(json['nome']),
       idCargo: serializer.fromJson<int>(json['idCargo']),
@@ -1225,13 +1230,13 @@ class Usuario extends DataClass implements Insertable<Usuario> {
     };
   }
 
-  Usuario copyWith({int? id, String? nome, int? idCargo}) => Usuario(
+  UsuarioData copyWith({int? id, String? nome, int? idCargo}) => UsuarioData(
     id: id ?? this.id,
     nome: nome ?? this.nome,
     idCargo: idCargo ?? this.idCargo,
   );
-  Usuario copyWithCompanion(UsuariosCompanion data) {
-    return Usuario(
+  UsuarioData copyWithCompanion(UsuariosCompanion data) {
+    return UsuarioData(
       id: data.id.present ? data.id.value : this.id,
       nome: data.nome.present ? data.nome.value : this.nome,
       idCargo: data.idCargo.present ? data.idCargo.value : this.idCargo,
@@ -1240,7 +1245,7 @@ class Usuario extends DataClass implements Insertable<Usuario> {
 
   @override
   String toString() {
-    return (StringBuffer('Usuario(')
+    return (StringBuffer('UsuarioData(')
           ..write('id: $id, ')
           ..write('nome: $nome, ')
           ..write('idCargo: $idCargo')
@@ -1253,13 +1258,13 @@ class Usuario extends DataClass implements Insertable<Usuario> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Usuario &&
+      (other is UsuarioData &&
           other.id == this.id &&
           other.nome == this.nome &&
           other.idCargo == this.idCargo);
 }
 
-class UsuariosCompanion extends UpdateCompanion<Usuario> {
+class UsuariosCompanion extends UpdateCompanion<UsuarioData> {
   final Value<int> id;
   final Value<String> nome;
   final Value<int> idCargo;
@@ -1274,7 +1279,7 @@ class UsuariosCompanion extends UpdateCompanion<Usuario> {
     required int idCargo,
   }) : nome = Value(nome),
        idCargo = Value(idCargo);
-  static Insertable<Usuario> custom({
+  static Insertable<UsuarioData> custom({
     Expression<int>? id,
     Expression<String>? nome,
     Expression<int>? idCargo,
@@ -1325,7 +1330,7 @@ class UsuariosCompanion extends UpdateCompanion<Usuario> {
 }
 
 class $EmprestimosTable extends Emprestimos
-    with TableInfo<$EmprestimosTable, Emprestimo> {
+    with TableInfo<$EmprestimosTable, EmprestimoData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -1410,7 +1415,7 @@ class $EmprestimosTable extends Emprestimos
   static const String $name = 'emprestimos';
   @override
   VerificationContext validateIntegrity(
-    Insertable<Emprestimo> instance, {
+    Insertable<EmprestimoData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -1463,9 +1468,9 @@ class $EmprestimosTable extends Emprestimos
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Emprestimo map(Map<String, dynamic> data, {String? tablePrefix}) {
+  EmprestimoData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Emprestimo(
+    return EmprestimoData(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -1495,13 +1500,13 @@ class $EmprestimosTable extends Emprestimos
   }
 }
 
-class Emprestimo extends DataClass implements Insertable<Emprestimo> {
+class EmprestimoData extends DataClass implements Insertable<EmprestimoData> {
   final int id;
   final DateTime dataHoraEfetuado;
   final DateTime? dataHoraConcluido;
   final int idResponsavel;
   final int idStatus;
-  const Emprestimo({
+  const EmprestimoData({
     required this.id,
     required this.dataHoraEfetuado,
     this.dataHoraConcluido,
@@ -1533,12 +1538,12 @@ class Emprestimo extends DataClass implements Insertable<Emprestimo> {
     );
   }
 
-  factory Emprestimo.fromJson(
+  factory EmprestimoData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Emprestimo(
+    return EmprestimoData(
       id: serializer.fromJson<int>(json['id']),
       dataHoraEfetuado: serializer.fromJson<DateTime>(json['dataHoraEfetuado']),
       dataHoraConcluido: serializer.fromJson<DateTime?>(
@@ -1560,13 +1565,13 @@ class Emprestimo extends DataClass implements Insertable<Emprestimo> {
     };
   }
 
-  Emprestimo copyWith({
+  EmprestimoData copyWith({
     int? id,
     DateTime? dataHoraEfetuado,
     Value<DateTime?> dataHoraConcluido = const Value.absent(),
     int? idResponsavel,
     int? idStatus,
-  }) => Emprestimo(
+  }) => EmprestimoData(
     id: id ?? this.id,
     dataHoraEfetuado: dataHoraEfetuado ?? this.dataHoraEfetuado,
     dataHoraConcluido: dataHoraConcluido.present
@@ -1575,8 +1580,8 @@ class Emprestimo extends DataClass implements Insertable<Emprestimo> {
     idResponsavel: idResponsavel ?? this.idResponsavel,
     idStatus: idStatus ?? this.idStatus,
   );
-  Emprestimo copyWithCompanion(EmprestimosCompanion data) {
-    return Emprestimo(
+  EmprestimoData copyWithCompanion(EmprestimosCompanion data) {
+    return EmprestimoData(
       id: data.id.present ? data.id.value : this.id,
       dataHoraEfetuado: data.dataHoraEfetuado.present
           ? data.dataHoraEfetuado.value
@@ -1593,7 +1598,7 @@ class Emprestimo extends DataClass implements Insertable<Emprestimo> {
 
   @override
   String toString() {
-    return (StringBuffer('Emprestimo(')
+    return (StringBuffer('EmprestimoData(')
           ..write('id: $id, ')
           ..write('dataHoraEfetuado: $dataHoraEfetuado, ')
           ..write('dataHoraConcluido: $dataHoraConcluido, ')
@@ -1614,7 +1619,7 @@ class Emprestimo extends DataClass implements Insertable<Emprestimo> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Emprestimo &&
+      (other is EmprestimoData &&
           other.id == this.id &&
           other.dataHoraEfetuado == this.dataHoraEfetuado &&
           other.dataHoraConcluido == this.dataHoraConcluido &&
@@ -1622,7 +1627,7 @@ class Emprestimo extends DataClass implements Insertable<Emprestimo> {
           other.idStatus == this.idStatus);
 }
 
-class EmprestimosCompanion extends UpdateCompanion<Emprestimo> {
+class EmprestimosCompanion extends UpdateCompanion<EmprestimoData> {
   final Value<int> id;
   final Value<DateTime> dataHoraEfetuado;
   final Value<DateTime?> dataHoraConcluido;
@@ -1644,7 +1649,7 @@ class EmprestimosCompanion extends UpdateCompanion<Emprestimo> {
   }) : dataHoraEfetuado = Value(dataHoraEfetuado),
        idResponsavel = Value(idResponsavel),
        idStatus = Value(idStatus);
-  static Insertable<Emprestimo> custom({
+  static Insertable<EmprestimoData> custom({
     Expression<int>? id,
     Expression<DateTime>? dataHoraEfetuado,
     Expression<DateTime>? dataHoraConcluido,
@@ -1711,7 +1716,7 @@ class EmprestimosCompanion extends UpdateCompanion<Emprestimo> {
 }
 
 class $EmprestimoItensTable extends EmprestimoItens
-    with TableInfo<$EmprestimoItensTable, EmprestimoIten> {
+    with TableInfo<$EmprestimoItensTable, EmprestimoItemData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -1809,7 +1814,7 @@ class $EmprestimoItensTable extends EmprestimoItens
   static const String $name = 'emprestimo_itens';
   @override
   VerificationContext validateIntegrity(
-    Insertable<EmprestimoIten> instance, {
+    Insertable<EmprestimoItemData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -1878,9 +1883,9 @@ class $EmprestimoItensTable extends EmprestimoItens
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  EmprestimoIten map(Map<String, dynamic> data, {String? tablePrefix}) {
+  EmprestimoItemData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return EmprestimoIten(
+    return EmprestimoItemData(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -1914,14 +1919,15 @@ class $EmprestimoItensTable extends EmprestimoItens
   }
 }
 
-class EmprestimoIten extends DataClass implements Insertable<EmprestimoIten> {
+class EmprestimoItemData extends DataClass
+    implements Insertable<EmprestimoItemData> {
   final int id;
   final int idEmprestimo;
   final int idTipoDispositivo;
   final int qtdSolicitada;
   final int qtdDevolvida;
   final bool estaResolvido;
-  const EmprestimoIten({
+  const EmprestimoItemData({
     required this.id,
     required this.idEmprestimo,
     required this.idTipoDispositivo,
@@ -1952,12 +1958,12 @@ class EmprestimoIten extends DataClass implements Insertable<EmprestimoIten> {
     );
   }
 
-  factory EmprestimoIten.fromJson(
+  factory EmprestimoItemData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return EmprestimoIten(
+    return EmprestimoItemData(
       id: serializer.fromJson<int>(json['id']),
       idEmprestimo: serializer.fromJson<int>(json['idEmprestimo']),
       idTipoDispositivo: serializer.fromJson<int>(json['idTipoDispositivo']),
@@ -1979,14 +1985,14 @@ class EmprestimoIten extends DataClass implements Insertable<EmprestimoIten> {
     };
   }
 
-  EmprestimoIten copyWith({
+  EmprestimoItemData copyWith({
     int? id,
     int? idEmprestimo,
     int? idTipoDispositivo,
     int? qtdSolicitada,
     int? qtdDevolvida,
     bool? estaResolvido,
-  }) => EmprestimoIten(
+  }) => EmprestimoItemData(
     id: id ?? this.id,
     idEmprestimo: idEmprestimo ?? this.idEmprestimo,
     idTipoDispositivo: idTipoDispositivo ?? this.idTipoDispositivo,
@@ -1994,8 +2000,8 @@ class EmprestimoIten extends DataClass implements Insertable<EmprestimoIten> {
     qtdDevolvida: qtdDevolvida ?? this.qtdDevolvida,
     estaResolvido: estaResolvido ?? this.estaResolvido,
   );
-  EmprestimoIten copyWithCompanion(EmprestimoItensCompanion data) {
-    return EmprestimoIten(
+  EmprestimoItemData copyWithCompanion(EmprestimoItensCompanion data) {
+    return EmprestimoItemData(
       id: data.id.present ? data.id.value : this.id,
       idEmprestimo: data.idEmprestimo.present
           ? data.idEmprestimo.value
@@ -2017,7 +2023,7 @@ class EmprestimoIten extends DataClass implements Insertable<EmprestimoIten> {
 
   @override
   String toString() {
-    return (StringBuffer('EmprestimoIten(')
+    return (StringBuffer('EmprestimoItemData(')
           ..write('id: $id, ')
           ..write('idEmprestimo: $idEmprestimo, ')
           ..write('idTipoDispositivo: $idTipoDispositivo, ')
@@ -2040,7 +2046,7 @@ class EmprestimoIten extends DataClass implements Insertable<EmprestimoIten> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is EmprestimoIten &&
+      (other is EmprestimoItemData &&
           other.id == this.id &&
           other.idEmprestimo == this.idEmprestimo &&
           other.idTipoDispositivo == this.idTipoDispositivo &&
@@ -2049,7 +2055,7 @@ class EmprestimoIten extends DataClass implements Insertable<EmprestimoIten> {
           other.estaResolvido == this.estaResolvido);
 }
 
-class EmprestimoItensCompanion extends UpdateCompanion<EmprestimoIten> {
+class EmprestimoItensCompanion extends UpdateCompanion<EmprestimoItemData> {
   final Value<int> id;
   final Value<int> idEmprestimo;
   final Value<int> idTipoDispositivo;
@@ -2076,7 +2082,7 @@ class EmprestimoItensCompanion extends UpdateCompanion<EmprestimoIten> {
        qtdSolicitada = Value(qtdSolicitada),
        qtdDevolvida = Value(qtdDevolvida),
        estaResolvido = Value(estaResolvido);
-  static Insertable<EmprestimoIten> custom({
+  static Insertable<EmprestimoItemData> custom({
     Expression<int>? id,
     Expression<int>? idEmprestimo,
     Expression<int>? idTipoDispositivo,
@@ -2151,7 +2157,7 @@ class EmprestimoItensCompanion extends UpdateCompanion<EmprestimoIten> {
 }
 
 class $EmprestimoDispositivosTable extends EmprestimoDispositivos
-    with TableInfo<$EmprestimoDispositivosTable, EmprestimoDispositivo> {
+    with TableInfo<$EmprestimoDispositivosTable, EmprestimoDispositivoData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -2206,7 +2212,7 @@ class $EmprestimoDispositivosTable extends EmprestimoDispositivos
   static const String $name = 'emprestimo_dispositivos';
   @override
   VerificationContext validateIntegrity(
-    Insertable<EmprestimoDispositivo> instance, {
+    Insertable<EmprestimoDispositivoData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -2240,9 +2246,12 @@ class $EmprestimoDispositivosTable extends EmprestimoDispositivos
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  EmprestimoDispositivo map(Map<String, dynamic> data, {String? tablePrefix}) {
+  EmprestimoDispositivoData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return EmprestimoDispositivo(
+    return EmprestimoDispositivoData(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -2264,12 +2273,12 @@ class $EmprestimoDispositivosTable extends EmprestimoDispositivos
   }
 }
 
-class EmprestimoDispositivo extends DataClass
-    implements Insertable<EmprestimoDispositivo> {
+class EmprestimoDispositivoData extends DataClass
+    implements Insertable<EmprestimoDispositivoData> {
   final int id;
   final int idEmprestimoItem;
   final int? idDispositivo;
-  const EmprestimoDispositivo({
+  const EmprestimoDispositivoData({
     required this.id,
     required this.idEmprestimoItem,
     this.idDispositivo,
@@ -2295,12 +2304,12 @@ class EmprestimoDispositivo extends DataClass
     );
   }
 
-  factory EmprestimoDispositivo.fromJson(
+  factory EmprestimoDispositivoData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return EmprestimoDispositivo(
+    return EmprestimoDispositivoData(
       id: serializer.fromJson<int>(json['id']),
       idEmprestimoItem: serializer.fromJson<int>(json['idEmprestimoItem']),
       idDispositivo: serializer.fromJson<int?>(json['idDispositivo']),
@@ -2316,21 +2325,21 @@ class EmprestimoDispositivo extends DataClass
     };
   }
 
-  EmprestimoDispositivo copyWith({
+  EmprestimoDispositivoData copyWith({
     int? id,
     int? idEmprestimoItem,
     Value<int?> idDispositivo = const Value.absent(),
-  }) => EmprestimoDispositivo(
+  }) => EmprestimoDispositivoData(
     id: id ?? this.id,
     idEmprestimoItem: idEmprestimoItem ?? this.idEmprestimoItem,
     idDispositivo: idDispositivo.present
         ? idDispositivo.value
         : this.idDispositivo,
   );
-  EmprestimoDispositivo copyWithCompanion(
+  EmprestimoDispositivoData copyWithCompanion(
     EmprestimoDispositivosCompanion data,
   ) {
-    return EmprestimoDispositivo(
+    return EmprestimoDispositivoData(
       id: data.id.present ? data.id.value : this.id,
       idEmprestimoItem: data.idEmprestimoItem.present
           ? data.idEmprestimoItem.value
@@ -2343,7 +2352,7 @@ class EmprestimoDispositivo extends DataClass
 
   @override
   String toString() {
-    return (StringBuffer('EmprestimoDispositivo(')
+    return (StringBuffer('EmprestimoDispositivoData(')
           ..write('id: $id, ')
           ..write('idEmprestimoItem: $idEmprestimoItem, ')
           ..write('idDispositivo: $idDispositivo')
@@ -2356,14 +2365,14 @@ class EmprestimoDispositivo extends DataClass
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is EmprestimoDispositivo &&
+      (other is EmprestimoDispositivoData &&
           other.id == this.id &&
           other.idEmprestimoItem == this.idEmprestimoItem &&
           other.idDispositivo == this.idDispositivo);
 }
 
 class EmprestimoDispositivosCompanion
-    extends UpdateCompanion<EmprestimoDispositivo> {
+    extends UpdateCompanion<EmprestimoDispositivoData> {
   final Value<int> id;
   final Value<int> idEmprestimoItem;
   final Value<int?> idDispositivo;
@@ -2377,7 +2386,7 @@ class EmprestimoDispositivosCompanion
     required int idEmprestimoItem,
     this.idDispositivo = const Value.absent(),
   }) : idEmprestimoItem = Value(idEmprestimoItem);
-  static Insertable<EmprestimoDispositivo> custom({
+  static Insertable<EmprestimoDispositivoData> custom({
     Expression<int>? id,
     Expression<int>? idEmprestimoItem,
     Expression<int>? idDispositivo,
@@ -2428,7 +2437,7 @@ class EmprestimoDispositivosCompanion
 }
 
 class $ProblemasTable extends Problemas
-    with TableInfo<$ProblemasTable, Problema> {
+    with TableInfo<$ProblemasTable, ProblemaData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -2480,7 +2489,7 @@ class $ProblemasTable extends Problemas
   static const String $name = 'problemas';
   @override
   VerificationContext validateIntegrity(
-    Insertable<Problema> instance, {
+    Insertable<ProblemaData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -2513,9 +2522,9 @@ class $ProblemasTable extends Problemas
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Problema map(Map<String, dynamic> data, {String? tablePrefix}) {
+  ProblemaData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Problema(
+    return ProblemaData(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -2537,11 +2546,11 @@ class $ProblemasTable extends Problemas
   }
 }
 
-class Problema extends DataClass implements Insertable<Problema> {
+class ProblemaData extends DataClass implements Insertable<ProblemaData> {
   final int id;
   final int idDispositivo;
   final String descricao;
-  const Problema({
+  const ProblemaData({
     required this.id,
     required this.idDispositivo,
     required this.descricao,
@@ -2563,12 +2572,12 @@ class Problema extends DataClass implements Insertable<Problema> {
     );
   }
 
-  factory Problema.fromJson(
+  factory ProblemaData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Problema(
+    return ProblemaData(
       id: serializer.fromJson<int>(json['id']),
       idDispositivo: serializer.fromJson<int>(json['idDispositivo']),
       descricao: serializer.fromJson<String>(json['descricao']),
@@ -2584,14 +2593,14 @@ class Problema extends DataClass implements Insertable<Problema> {
     };
   }
 
-  Problema copyWith({int? id, int? idDispositivo, String? descricao}) =>
-      Problema(
+  ProblemaData copyWith({int? id, int? idDispositivo, String? descricao}) =>
+      ProblemaData(
         id: id ?? this.id,
         idDispositivo: idDispositivo ?? this.idDispositivo,
         descricao: descricao ?? this.descricao,
       );
-  Problema copyWithCompanion(ProblemasCompanion data) {
-    return Problema(
+  ProblemaData copyWithCompanion(ProblemasCompanion data) {
+    return ProblemaData(
       id: data.id.present ? data.id.value : this.id,
       idDispositivo: data.idDispositivo.present
           ? data.idDispositivo.value
@@ -2602,7 +2611,7 @@ class Problema extends DataClass implements Insertable<Problema> {
 
   @override
   String toString() {
-    return (StringBuffer('Problema(')
+    return (StringBuffer('ProblemaData(')
           ..write('id: $id, ')
           ..write('idDispositivo: $idDispositivo, ')
           ..write('descricao: $descricao')
@@ -2615,13 +2624,13 @@ class Problema extends DataClass implements Insertable<Problema> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Problema &&
+      (other is ProblemaData &&
           other.id == this.id &&
           other.idDispositivo == this.idDispositivo &&
           other.descricao == this.descricao);
 }
 
-class ProblemasCompanion extends UpdateCompanion<Problema> {
+class ProblemasCompanion extends UpdateCompanion<ProblemaData> {
   final Value<int> id;
   final Value<int> idDispositivo;
   final Value<String> descricao;
@@ -2636,7 +2645,7 @@ class ProblemasCompanion extends UpdateCompanion<Problema> {
     required String descricao,
   }) : idDispositivo = Value(idDispositivo),
        descricao = Value(descricao);
-  static Insertable<Problema> custom({
+  static Insertable<ProblemaData> custom({
     Expression<int>? id,
     Expression<int>? idDispositivo,
     Expression<String>? descricao,
@@ -2728,12 +2737,11 @@ typedef $$CargosTableUpdateCompanionBuilder =
     CargosCompanion Function({Value<int> id, Value<String> nomeCargo});
 
 final class $$CargosTableReferences
-    extends BaseReferences<_$AppDatabase, $CargosTable, Cargo> {
+    extends BaseReferences<_$AppDatabase, $CargosTable, CargoData> {
   $$CargosTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static MultiTypedResultKey<$UsuariosTable, List<Usuario>> _usuariosRefsTable(
-    _$AppDatabase db,
-  ) => MultiTypedResultKey.fromTable(
+  static MultiTypedResultKey<$UsuariosTable, List<UsuarioData>>
+  _usuariosRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.usuarios,
     aliasName: $_aliasNameGenerator(db.cargos.id, db.usuarios.idCargo),
   );
@@ -2862,14 +2870,14 @@ class $$CargosTableTableManager
         RootTableManager<
           _$AppDatabase,
           $CargosTable,
-          Cargo,
+          CargoData,
           $$CargosTableFilterComposer,
           $$CargosTableOrderingComposer,
           $$CargosTableAnnotationComposer,
           $$CargosTableCreateCompanionBuilder,
           $$CargosTableUpdateCompanionBuilder,
-          (Cargo, $$CargosTableReferences),
-          Cargo,
+          (CargoData, $$CargosTableReferences),
+          CargoData,
           PrefetchHooks Function({bool usuariosRefs})
         > {
   $$CargosTableTableManager(_$AppDatabase db, $CargosTable table)
@@ -2907,7 +2915,11 @@ class $$CargosTableTableManager
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (usuariosRefs)
-                    await $_getPrefetchedData<Cargo, $CargosTable, Usuario>(
+                    await $_getPrefetchedData<
+                      CargoData,
+                      $CargosTable,
+                      UsuarioData
+                    >(
                       currentTable: table,
                       referencedTable: $$CargosTableReferences
                           ._usuariosRefsTable(db),
@@ -2929,14 +2941,14 @@ typedef $$CargosTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $CargosTable,
-      Cargo,
+      CargoData,
       $$CargosTableFilterComposer,
       $$CargosTableOrderingComposer,
       $$CargosTableAnnotationComposer,
       $$CargosTableCreateCompanionBuilder,
       $$CargosTableUpdateCompanionBuilder,
-      (Cargo, $$CargosTableReferences),
-      Cargo,
+      (CargoData, $$CargosTableReferences),
+      CargoData,
       PrefetchHooks Function({bool usuariosRefs})
     >;
 typedef $$TiposDispositivoTableCreateCompanionBuilder =
@@ -2952,7 +2964,7 @@ final class $$TiposDispositivoTableReferences
         BaseReferences<
           _$AppDatabase,
           $TiposDispositivoTable,
-          TiposDispositivoData
+          TipoDispositivoData
         > {
   $$TiposDispositivoTableReferences(
     super.$_db,
@@ -2960,7 +2972,7 @@ final class $$TiposDispositivoTableReferences
     super.$_typedResult,
   );
 
-  static MultiTypedResultKey<$DispositivosTable, List<Dispositivo>>
+  static MultiTypedResultKey<$DispositivosTable, List<DispositivoData>>
   _dispositivosRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.dispositivos,
     aliasName: $_aliasNameGenerator(
@@ -2981,7 +2993,7 @@ final class $$TiposDispositivoTableReferences
     );
   }
 
-  static MultiTypedResultKey<$EmprestimoItensTable, List<EmprestimoIten>>
+  static MultiTypedResultKey<$EmprestimoItensTable, List<EmprestimoItemData>>
   _emprestimoItensRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.emprestimoItens,
     aliasName: $_aliasNameGenerator(
@@ -3166,14 +3178,14 @@ class $$TiposDispositivoTableTableManager
         RootTableManager<
           _$AppDatabase,
           $TiposDispositivoTable,
-          TiposDispositivoData,
+          TipoDispositivoData,
           $$TiposDispositivoTableFilterComposer,
           $$TiposDispositivoTableOrderingComposer,
           $$TiposDispositivoTableAnnotationComposer,
           $$TiposDispositivoTableCreateCompanionBuilder,
           $$TiposDispositivoTableUpdateCompanionBuilder,
-          (TiposDispositivoData, $$TiposDispositivoTableReferences),
-          TiposDispositivoData,
+          (TipoDispositivoData, $$TiposDispositivoTableReferences),
+          TipoDispositivoData,
           PrefetchHooks Function({
             bool dispositivosRefs,
             bool emprestimoItensRefs,
@@ -3224,9 +3236,9 @@ class $$TiposDispositivoTableTableManager
                     return [
                       if (dispositivosRefs)
                         await $_getPrefetchedData<
-                          TiposDispositivoData,
+                          TipoDispositivoData,
                           $TiposDispositivoTable,
-                          Dispositivo
+                          DispositivoData
                         >(
                           currentTable: table,
                           referencedTable: $$TiposDispositivoTableReferences
@@ -3245,9 +3257,9 @@ class $$TiposDispositivoTableTableManager
                         ),
                       if (emprestimoItensRefs)
                         await $_getPrefetchedData<
-                          TiposDispositivoData,
+                          TipoDispositivoData,
                           $TiposDispositivoTable,
-                          EmprestimoIten
+                          EmprestimoItemData
                         >(
                           currentTable: table,
                           referencedTable: $$TiposDispositivoTableReferences
@@ -3276,14 +3288,14 @@ typedef $$TiposDispositivoTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $TiposDispositivoTable,
-      TiposDispositivoData,
+      TipoDispositivoData,
       $$TiposDispositivoTableFilterComposer,
       $$TiposDispositivoTableOrderingComposer,
       $$TiposDispositivoTableAnnotationComposer,
       $$TiposDispositivoTableCreateCompanionBuilder,
       $$TiposDispositivoTableUpdateCompanionBuilder,
-      (TiposDispositivoData, $$TiposDispositivoTableReferences),
-      TiposDispositivoData,
+      (TipoDispositivoData, $$TiposDispositivoTableReferences),
+      TipoDispositivoData,
       PrefetchHooks Function({bool dispositivosRefs, bool emprestimoItensRefs})
     >;
 typedef $$EmprestimoStatusTableCreateCompanionBuilder =
@@ -3310,7 +3322,7 @@ final class $$EmprestimoStatusTableReferences
     super.$_typedResult,
   );
 
-  static MultiTypedResultKey<$DispositivosTable, List<Dispositivo>>
+  static MultiTypedResultKey<$DispositivosTable, List<DispositivoData>>
   _dispositivosRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.dispositivos,
     aliasName: $_aliasNameGenerator(
@@ -3331,7 +3343,7 @@ final class $$EmprestimoStatusTableReferences
     );
   }
 
-  static MultiTypedResultKey<$EmprestimosTable, List<Emprestimo>>
+  static MultiTypedResultKey<$EmprestimosTable, List<EmprestimoData>>
   _emprestimosRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.emprestimos,
     aliasName: $_aliasNameGenerator(
@@ -3575,7 +3587,7 @@ class $$EmprestimoStatusTableTableManager
                         await $_getPrefetchedData<
                           EmprestimoStatusData,
                           $EmprestimoStatusTable,
-                          Dispositivo
+                          DispositivoData
                         >(
                           currentTable: table,
                           referencedTable: $$EmprestimoStatusTableReferences
@@ -3596,7 +3608,7 @@ class $$EmprestimoStatusTableTableManager
                         await $_getPrefetchedData<
                           EmprestimoStatusData,
                           $EmprestimoStatusTable,
-                          Emprestimo
+                          EmprestimoData
                         >(
                           currentTable: table,
                           referencedTable: $$EmprestimoStatusTableReferences
@@ -3657,7 +3669,7 @@ typedef $$DispositivosTableUpdateCompanionBuilder =
     });
 
 final class $$DispositivosTableReferences
-    extends BaseReferences<_$AppDatabase, $DispositivosTable, Dispositivo> {
+    extends BaseReferences<_$AppDatabase, $DispositivosTable, DispositivoData> {
   $$DispositivosTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
   static $TiposDispositivoTable _idTipoDispositivoTable(_$AppDatabase db) =>
@@ -3703,7 +3715,7 @@ final class $$DispositivosTableReferences
 
   static MultiTypedResultKey<
     $EmprestimoDispositivosTable,
-    List<EmprestimoDispositivo>
+    List<EmprestimoDispositivoData>
   >
   _emprestimoDispositivosRefsTable(_$AppDatabase db) =>
       MultiTypedResultKey.fromTable(
@@ -3729,7 +3741,7 @@ final class $$DispositivosTableReferences
     );
   }
 
-  static MultiTypedResultKey<$ProblemasTable, List<Problema>>
+  static MultiTypedResultKey<$ProblemasTable, List<ProblemaData>>
   _problemasRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.problemas,
     aliasName: $_aliasNameGenerator(
@@ -4095,14 +4107,14 @@ class $$DispositivosTableTableManager
         RootTableManager<
           _$AppDatabase,
           $DispositivosTable,
-          Dispositivo,
+          DispositivoData,
           $$DispositivosTableFilterComposer,
           $$DispositivosTableOrderingComposer,
           $$DispositivosTableAnnotationComposer,
           $$DispositivosTableCreateCompanionBuilder,
           $$DispositivosTableUpdateCompanionBuilder,
-          (Dispositivo, $$DispositivosTableReferences),
-          Dispositivo,
+          (DispositivoData, $$DispositivosTableReferences),
+          DispositivoData,
           PrefetchHooks Function({
             bool idTipoDispositivo,
             bool idStatus,
@@ -4231,9 +4243,9 @@ class $$DispositivosTableTableManager
                     return [
                       if (emprestimoDispositivosRefs)
                         await $_getPrefetchedData<
-                          Dispositivo,
+                          DispositivoData,
                           $DispositivosTable,
-                          EmprestimoDispositivo
+                          EmprestimoDispositivoData
                         >(
                           currentTable: table,
                           referencedTable: $$DispositivosTableReferences
@@ -4252,9 +4264,9 @@ class $$DispositivosTableTableManager
                         ),
                       if (problemasRefs)
                         await $_getPrefetchedData<
-                          Dispositivo,
+                          DispositivoData,
                           $DispositivosTable,
-                          Problema
+                          ProblemaData
                         >(
                           currentTable: table,
                           referencedTable: $$DispositivosTableReferences
@@ -4283,14 +4295,14 @@ typedef $$DispositivosTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $DispositivosTable,
-      Dispositivo,
+      DispositivoData,
       $$DispositivosTableFilterComposer,
       $$DispositivosTableOrderingComposer,
       $$DispositivosTableAnnotationComposer,
       $$DispositivosTableCreateCompanionBuilder,
       $$DispositivosTableUpdateCompanionBuilder,
-      (Dispositivo, $$DispositivosTableReferences),
-      Dispositivo,
+      (DispositivoData, $$DispositivosTableReferences),
+      DispositivoData,
       PrefetchHooks Function({
         bool idTipoDispositivo,
         bool idStatus,
@@ -4312,7 +4324,7 @@ typedef $$UsuariosTableUpdateCompanionBuilder =
     });
 
 final class $$UsuariosTableReferences
-    extends BaseReferences<_$AppDatabase, $UsuariosTable, Usuario> {
+    extends BaseReferences<_$AppDatabase, $UsuariosTable, UsuarioData> {
   $$UsuariosTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
   static $CargosTable _idCargoTable(_$AppDatabase db) => db.cargos.createAlias(
@@ -4333,7 +4345,7 @@ final class $$UsuariosTableReferences
     );
   }
 
-  static MultiTypedResultKey<$EmprestimosTable, List<Emprestimo>>
+  static MultiTypedResultKey<$EmprestimosTable, List<EmprestimoData>>
   _emprestimosRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.emprestimos,
     aliasName: $_aliasNameGenerator(
@@ -4535,14 +4547,14 @@ class $$UsuariosTableTableManager
         RootTableManager<
           _$AppDatabase,
           $UsuariosTable,
-          Usuario,
+          UsuarioData,
           $$UsuariosTableFilterComposer,
           $$UsuariosTableOrderingComposer,
           $$UsuariosTableAnnotationComposer,
           $$UsuariosTableCreateCompanionBuilder,
           $$UsuariosTableUpdateCompanionBuilder,
-          (Usuario, $$UsuariosTableReferences),
-          Usuario,
+          (UsuarioData, $$UsuariosTableReferences),
+          UsuarioData,
           PrefetchHooks Function({bool idCargo, bool emprestimosRefs})
         > {
   $$UsuariosTableTableManager(_$AppDatabase db, $UsuariosTable table)
@@ -4620,9 +4632,9 @@ class $$UsuariosTableTableManager
                 return [
                   if (emprestimosRefs)
                     await $_getPrefetchedData<
-                      Usuario,
+                      UsuarioData,
                       $UsuariosTable,
-                      Emprestimo
+                      EmprestimoData
                     >(
                       currentTable: table,
                       referencedTable: $$UsuariosTableReferences
@@ -4650,14 +4662,14 @@ typedef $$UsuariosTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $UsuariosTable,
-      Usuario,
+      UsuarioData,
       $$UsuariosTableFilterComposer,
       $$UsuariosTableOrderingComposer,
       $$UsuariosTableAnnotationComposer,
       $$UsuariosTableCreateCompanionBuilder,
       $$UsuariosTableUpdateCompanionBuilder,
-      (Usuario, $$UsuariosTableReferences),
-      Usuario,
+      (UsuarioData, $$UsuariosTableReferences),
+      UsuarioData,
       PrefetchHooks Function({bool idCargo, bool emprestimosRefs})
     >;
 typedef $$EmprestimosTableCreateCompanionBuilder =
@@ -4678,7 +4690,7 @@ typedef $$EmprestimosTableUpdateCompanionBuilder =
     });
 
 final class $$EmprestimosTableReferences
-    extends BaseReferences<_$AppDatabase, $EmprestimosTable, Emprestimo> {
+    extends BaseReferences<_$AppDatabase, $EmprestimosTable, EmprestimoData> {
   $$EmprestimosTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
   static $UsuariosTable _idResponsavelTable(_$AppDatabase db) =>
@@ -4719,7 +4731,7 @@ final class $$EmprestimosTableReferences
     );
   }
 
-  static MultiTypedResultKey<$EmprestimoItensTable, List<EmprestimoIten>>
+  static MultiTypedResultKey<$EmprestimoItensTable, List<EmprestimoItemData>>
   _emprestimoItensRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.emprestimoItens,
     aliasName: $_aliasNameGenerator(
@@ -5009,14 +5021,14 @@ class $$EmprestimosTableTableManager
         RootTableManager<
           _$AppDatabase,
           $EmprestimosTable,
-          Emprestimo,
+          EmprestimoData,
           $$EmprestimosTableFilterComposer,
           $$EmprestimosTableOrderingComposer,
           $$EmprestimosTableAnnotationComposer,
           $$EmprestimosTableCreateCompanionBuilder,
           $$EmprestimosTableUpdateCompanionBuilder,
-          (Emprestimo, $$EmprestimosTableReferences),
-          Emprestimo,
+          (EmprestimoData, $$EmprestimosTableReferences),
+          EmprestimoData,
           PrefetchHooks Function({
             bool idResponsavel,
             bool idStatus,
@@ -5134,9 +5146,9 @@ class $$EmprestimosTableTableManager
                     return [
                       if (emprestimoItensRefs)
                         await $_getPrefetchedData<
-                          Emprestimo,
+                          EmprestimoData,
                           $EmprestimosTable,
-                          EmprestimoIten
+                          EmprestimoItemData
                         >(
                           currentTable: table,
                           referencedTable: $$EmprestimosTableReferences
@@ -5165,14 +5177,14 @@ typedef $$EmprestimosTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $EmprestimosTable,
-      Emprestimo,
+      EmprestimoData,
       $$EmprestimosTableFilterComposer,
       $$EmprestimosTableOrderingComposer,
       $$EmprestimosTableAnnotationComposer,
       $$EmprestimosTableCreateCompanionBuilder,
       $$EmprestimosTableUpdateCompanionBuilder,
-      (Emprestimo, $$EmprestimosTableReferences),
-      Emprestimo,
+      (EmprestimoData, $$EmprestimosTableReferences),
+      EmprestimoData,
       PrefetchHooks Function({
         bool idResponsavel,
         bool idStatus,
@@ -5200,7 +5212,11 @@ typedef $$EmprestimoItensTableUpdateCompanionBuilder =
 
 final class $$EmprestimoItensTableReferences
     extends
-        BaseReferences<_$AppDatabase, $EmprestimoItensTable, EmprestimoIten> {
+        BaseReferences<
+          _$AppDatabase,
+          $EmprestimoItensTable,
+          EmprestimoItemData
+        > {
   $$EmprestimoItensTableReferences(
     super.$_db,
     super.$_table,
@@ -5253,7 +5269,7 @@ final class $$EmprestimoItensTableReferences
 
   static MultiTypedResultKey<
     $EmprestimoDispositivosTable,
-    List<EmprestimoDispositivo>
+    List<EmprestimoDispositivoData>
   >
   _emprestimoDispositivosRefsTable(_$AppDatabase db) =>
       MultiTypedResultKey.fromTable(
@@ -5563,14 +5579,14 @@ class $$EmprestimoItensTableTableManager
         RootTableManager<
           _$AppDatabase,
           $EmprestimoItensTable,
-          EmprestimoIten,
+          EmprestimoItemData,
           $$EmprestimoItensTableFilterComposer,
           $$EmprestimoItensTableOrderingComposer,
           $$EmprestimoItensTableAnnotationComposer,
           $$EmprestimoItensTableCreateCompanionBuilder,
           $$EmprestimoItensTableUpdateCompanionBuilder,
-          (EmprestimoIten, $$EmprestimoItensTableReferences),
-          EmprestimoIten,
+          (EmprestimoItemData, $$EmprestimoItensTableReferences),
+          EmprestimoItemData,
           PrefetchHooks Function({
             bool idEmprestimo,
             bool idTipoDispositivo,
@@ -5694,9 +5710,9 @@ class $$EmprestimoItensTableTableManager
                     return [
                       if (emprestimoDispositivosRefs)
                         await $_getPrefetchedData<
-                          EmprestimoIten,
+                          EmprestimoItemData,
                           $EmprestimoItensTable,
-                          EmprestimoDispositivo
+                          EmprestimoDispositivoData
                         >(
                           currentTable: table,
                           referencedTable: $$EmprestimoItensTableReferences
@@ -5725,14 +5741,14 @@ typedef $$EmprestimoItensTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $EmprestimoItensTable,
-      EmprestimoIten,
+      EmprestimoItemData,
       $$EmprestimoItensTableFilterComposer,
       $$EmprestimoItensTableOrderingComposer,
       $$EmprestimoItensTableAnnotationComposer,
       $$EmprestimoItensTableCreateCompanionBuilder,
       $$EmprestimoItensTableUpdateCompanionBuilder,
-      (EmprestimoIten, $$EmprestimoItensTableReferences),
-      EmprestimoIten,
+      (EmprestimoItemData, $$EmprestimoItensTableReferences),
+      EmprestimoItemData,
       PrefetchHooks Function({
         bool idEmprestimo,
         bool idTipoDispositivo,
@@ -5757,7 +5773,7 @@ final class $$EmprestimoDispositivosTableReferences
         BaseReferences<
           _$AppDatabase,
           $EmprestimoDispositivosTable,
-          EmprestimoDispositivo
+          EmprestimoDispositivoData
         > {
   $$EmprestimoDispositivosTableReferences(
     super.$_db,
@@ -5996,14 +6012,14 @@ class $$EmprestimoDispositivosTableTableManager
         RootTableManager<
           _$AppDatabase,
           $EmprestimoDispositivosTable,
-          EmprestimoDispositivo,
+          EmprestimoDispositivoData,
           $$EmprestimoDispositivosTableFilterComposer,
           $$EmprestimoDispositivosTableOrderingComposer,
           $$EmprestimoDispositivosTableAnnotationComposer,
           $$EmprestimoDispositivosTableCreateCompanionBuilder,
           $$EmprestimoDispositivosTableUpdateCompanionBuilder,
-          (EmprestimoDispositivo, $$EmprestimoDispositivosTableReferences),
-          EmprestimoDispositivo,
+          (EmprestimoDispositivoData, $$EmprestimoDispositivosTableReferences),
+          EmprestimoDispositivoData,
           PrefetchHooks Function({bool idEmprestimoItem, bool idDispositivo})
         > {
   $$EmprestimoDispositivosTableTableManager(
@@ -6123,14 +6139,14 @@ typedef $$EmprestimoDispositivosTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $EmprestimoDispositivosTable,
-      EmprestimoDispositivo,
+      EmprestimoDispositivoData,
       $$EmprestimoDispositivosTableFilterComposer,
       $$EmprestimoDispositivosTableOrderingComposer,
       $$EmprestimoDispositivosTableAnnotationComposer,
       $$EmprestimoDispositivosTableCreateCompanionBuilder,
       $$EmprestimoDispositivosTableUpdateCompanionBuilder,
-      (EmprestimoDispositivo, $$EmprestimoDispositivosTableReferences),
-      EmprestimoDispositivo,
+      (EmprestimoDispositivoData, $$EmprestimoDispositivosTableReferences),
+      EmprestimoDispositivoData,
       PrefetchHooks Function({bool idEmprestimoItem, bool idDispositivo})
     >;
 typedef $$ProblemasTableCreateCompanionBuilder =
@@ -6147,7 +6163,7 @@ typedef $$ProblemasTableUpdateCompanionBuilder =
     });
 
 final class $$ProblemasTableReferences
-    extends BaseReferences<_$AppDatabase, $ProblemasTable, Problema> {
+    extends BaseReferences<_$AppDatabase, $ProblemasTable, ProblemaData> {
   $$ProblemasTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
   static $DispositivosTable _idDispositivoTable(_$AppDatabase db) =>
@@ -6300,14 +6316,14 @@ class $$ProblemasTableTableManager
         RootTableManager<
           _$AppDatabase,
           $ProblemasTable,
-          Problema,
+          ProblemaData,
           $$ProblemasTableFilterComposer,
           $$ProblemasTableOrderingComposer,
           $$ProblemasTableAnnotationComposer,
           $$ProblemasTableCreateCompanionBuilder,
           $$ProblemasTableUpdateCompanionBuilder,
-          (Problema, $$ProblemasTableReferences),
-          Problema,
+          (ProblemaData, $$ProblemasTableReferences),
+          ProblemaData,
           PrefetchHooks Function({bool idDispositivo})
         > {
   $$ProblemasTableTableManager(_$AppDatabase db, $ProblemasTable table)
@@ -6398,14 +6414,14 @@ typedef $$ProblemasTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $ProblemasTable,
-      Problema,
+      ProblemaData,
       $$ProblemasTableFilterComposer,
       $$ProblemasTableOrderingComposer,
       $$ProblemasTableAnnotationComposer,
       $$ProblemasTableCreateCompanionBuilder,
       $$ProblemasTableUpdateCompanionBuilder,
-      (Problema, $$ProblemasTableReferences),
-      Problema,
+      (ProblemaData, $$ProblemasTableReferences),
+      ProblemaData,
       PrefetchHooks Function({bool idDispositivo})
     >;
 

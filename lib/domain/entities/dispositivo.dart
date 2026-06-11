@@ -1,13 +1,25 @@
-import 'package:gardien_tech/domain/entities/problema.dart';
-
 class Dispositivo {
   // Atributos
   final int _id;
-  List<Problema> problemas;
+  final int _idTipoDispositivo; // Não irá mudar o tipo do dispositivo
+  int numSerie;
+  int numPatrimonio;  
+  int idStatus;
+  int qtdTotal; 
+  int qtdDisponivel;
 
   // Construtor
-  Dispositivo(this._id, this.problemas);
+  Dispositivo(
+    this._id,
+    this._idTipoDispositivo,
+    this.numSerie,
+    this.numPatrimonio,
+    this.qtdTotal,
+    this.qtdDisponivel,
+    {this.idStatus = 1
+  });
 
-  // Get
+  // Getters
   int get id => _id;
+  int get idTipoDispositivo => _idTipoDispositivo;
 }

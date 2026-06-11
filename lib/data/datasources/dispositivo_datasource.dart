@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:gardien_tech/data/datasources/emprestimo_status_datasource.dart';
 import 'package:gardien_tech/data/datasources/tipos_dispositivo_datasource.dart';
 
+@DataClassName('DispositivoData') // Evita conflitos de nome entre classe Dispositivo no database.g.dart e entidade de domínio Dispositivo
 class Dispositivos extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get numSerie => integer()();
