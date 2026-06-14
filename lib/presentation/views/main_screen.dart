@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gardien_tech/presentation/views/emprestimo_form_screen.dart';
 import 'package:gardien_tech/presentation/views/funcoes_screen.dart';
+
+enum Aba { home, adicionar, funcoes}
 
 class MainScreen extends StatefulWidget{
   const MainScreen({super.key});
@@ -9,37 +12,50 @@ class MainScreen extends StatefulWidget{
 }
 
 class _MainScreenState extends State<MainScreen>{
-  int _indice = 0;
+  Aba _abaAtual = Aba.home;
 
-  final List<Widget> _telas = [
-    const Center(child: Text('Página Inicial')),
-    const Center(child: Text('Adicionar')),
-    const FuncoesScreen(),
-  ];
+  final Map<Aba, Widget> _telas = {
+    Aba.home: Center(child: Text('Página Inicial')),
+    Aba.funcoes: const FuncoesScreen(),
+  };
   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gardien Tech'),
+        title: const Text(
+          'Gardien Tech',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         backgroundColor: const Color(0xFF2196F3), 
-        foregroundColor: Colors.white,
       ),
-      body: _telas[_indice],
+      body: _telas[_abaAtual]!,
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _indice,
+        currentIndex: Aba.values.indexOf(_abaAtual),
         onTap: (index){
-          setState(() {
-            _indice = index;
-          });
+          final aba = Aba.values[index];
+
+          if(aba == Aba.adicionar) {
+            Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => EmprestimoFormScreen()),
+            );
+            return;
+          }
+          setState(() => _abaAtual = aba);
         },
         items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Página Inicial'),
         BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Adicionar'),
         BottomNavigationBarItem(icon: Icon(Icons.apps), label: 'Funções')
       ], 
-      selectedItemColor: const Color(0xFF2196F3),
-      unselectedItemColor: Colors.black,
+      selectedItemColor: Colors.white,
+      backgroundColor: const Color(0xFF2196F3),
+      unselectedItemColor: Colors.white,
       ),
     );
   }
