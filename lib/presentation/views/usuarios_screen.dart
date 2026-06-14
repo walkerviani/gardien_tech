@@ -12,7 +12,7 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gardien Tech'),
+        title: const Text('Gerenciar Usuários'),
         backgroundColor: const Color(0xFF2196F3),
         foregroundColor: Colors.white,
       ),
