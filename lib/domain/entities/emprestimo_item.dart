@@ -3,8 +3,8 @@ class EmprestimoItem {
   final int _id;
   final int _idEmprestimo;
   final int _idTipoDispositivo;
-  int qntSolicitada;
-  int qntDevolvida;
+  int qtdSolicitada;
+  int qtdDevolvida;
   bool estaResolvido;
 
   // Construtor
@@ -12,8 +12,8 @@ class EmprestimoItem {
     this._id,
     this._idEmprestimo,
     this._idTipoDispositivo,
-    this.qntSolicitada,
-    {this.qntDevolvida = 0,
+    this.qtdSolicitada,
+    {this.qtdDevolvida = 0,
     this.estaResolvido = false
   });
 

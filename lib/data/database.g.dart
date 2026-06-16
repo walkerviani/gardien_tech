@@ -196,413 +196,6 @@ class CargosCompanion extends UpdateCompanion<CargoData> {
   }
 }
 
-class $TiposDispositivoTable extends TiposDispositivo
-    with TableInfo<$TiposDispositivoTable, TipoDispositivoData> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $TiposDispositivoTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-    'id',
-    aliasedName,
-    false,
-    hasAutoIncrement: true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'PRIMARY KEY AUTOINCREMENT',
-    ),
-  );
-  static const VerificationMeta _nomeTipoMeta = const VerificationMeta(
-    'nomeTipo',
-  );
-  @override
-  late final GeneratedColumn<String> nomeTipo = GeneratedColumn<String>(
-    'nome_tipo',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  @override
-  List<GeneratedColumn> get $columns => [id, nomeTipo];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'tipos_dispositivo';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<TipoDispositivoData> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('nome_tipo')) {
-      context.handle(
-        _nomeTipoMeta,
-        nomeTipo.isAcceptableOrUnknown(data['nome_tipo']!, _nomeTipoMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_nomeTipoMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  TipoDispositivoData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return TipoDispositivoData(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}id'],
-      )!,
-      nomeTipo: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}nome_tipo'],
-      )!,
-    );
-  }
-
-  @override
-  $TiposDispositivoTable createAlias(String alias) {
-    return $TiposDispositivoTable(attachedDatabase, alias);
-  }
-}
-
-class TipoDispositivoData extends DataClass
-    implements Insertable<TipoDispositivoData> {
-  final int id;
-  final String nomeTipo;
-  const TipoDispositivoData({required this.id, required this.nomeTipo});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['nome_tipo'] = Variable<String>(nomeTipo);
-    return map;
-  }
-
-  TiposDispositivoCompanion toCompanion(bool nullToAbsent) {
-    return TiposDispositivoCompanion(id: Value(id), nomeTipo: Value(nomeTipo));
-  }
-
-  factory TipoDispositivoData.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return TipoDispositivoData(
-      id: serializer.fromJson<int>(json['id']),
-      nomeTipo: serializer.fromJson<String>(json['nomeTipo']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'nomeTipo': serializer.toJson<String>(nomeTipo),
-    };
-  }
-
-  TipoDispositivoData copyWith({int? id, String? nomeTipo}) =>
-      TipoDispositivoData(
-        id: id ?? this.id,
-        nomeTipo: nomeTipo ?? this.nomeTipo,
-      );
-  TipoDispositivoData copyWithCompanion(TiposDispositivoCompanion data) {
-    return TipoDispositivoData(
-      id: data.id.present ? data.id.value : this.id,
-      nomeTipo: data.nomeTipo.present ? data.nomeTipo.value : this.nomeTipo,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('TipoDispositivoData(')
-          ..write('id: $id, ')
-          ..write('nomeTipo: $nomeTipo')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, nomeTipo);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is TipoDispositivoData &&
-          other.id == this.id &&
-          other.nomeTipo == this.nomeTipo);
-}
-
-class TiposDispositivoCompanion extends UpdateCompanion<TipoDispositivoData> {
-  final Value<int> id;
-  final Value<String> nomeTipo;
-  const TiposDispositivoCompanion({
-    this.id = const Value.absent(),
-    this.nomeTipo = const Value.absent(),
-  });
-  TiposDispositivoCompanion.insert({
-    this.id = const Value.absent(),
-    required String nomeTipo,
-  }) : nomeTipo = Value(nomeTipo);
-  static Insertable<TipoDispositivoData> custom({
-    Expression<int>? id,
-    Expression<String>? nomeTipo,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (nomeTipo != null) 'nome_tipo': nomeTipo,
-    });
-  }
-
-  TiposDispositivoCompanion copyWith({
-    Value<int>? id,
-    Value<String>? nomeTipo,
-  }) {
-    return TiposDispositivoCompanion(
-      id: id ?? this.id,
-      nomeTipo: nomeTipo ?? this.nomeTipo,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (nomeTipo.present) {
-      map['nome_tipo'] = Variable<String>(nomeTipo.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('TiposDispositivoCompanion(')
-          ..write('id: $id, ')
-          ..write('nomeTipo: $nomeTipo')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class $EmprestimoStatusTable extends EmprestimoStatus
-    with TableInfo<$EmprestimoStatusTable, EmprestimoStatusData> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $EmprestimoStatusTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-    'id',
-    aliasedName,
-    false,
-    hasAutoIncrement: true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'PRIMARY KEY AUTOINCREMENT',
-    ),
-  );
-  static const VerificationMeta _nomeStatusMeta = const VerificationMeta(
-    'nomeStatus',
-  );
-  @override
-  late final GeneratedColumn<String> nomeStatus = GeneratedColumn<String>(
-    'nome_status',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  @override
-  List<GeneratedColumn> get $columns => [id, nomeStatus];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'emprestimo_status';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<EmprestimoStatusData> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('nome_status')) {
-      context.handle(
-        _nomeStatusMeta,
-        nomeStatus.isAcceptableOrUnknown(data['nome_status']!, _nomeStatusMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_nomeStatusMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  EmprestimoStatusData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return EmprestimoStatusData(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}id'],
-      )!,
-      nomeStatus: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}nome_status'],
-      )!,
-    );
-  }
-
-  @override
-  $EmprestimoStatusTable createAlias(String alias) {
-    return $EmprestimoStatusTable(attachedDatabase, alias);
-  }
-}
-
-class EmprestimoStatusData extends DataClass
-    implements Insertable<EmprestimoStatusData> {
-  final int id;
-  final String nomeStatus;
-  const EmprestimoStatusData({required this.id, required this.nomeStatus});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['nome_status'] = Variable<String>(nomeStatus);
-    return map;
-  }
-
-  EmprestimoStatusCompanion toCompanion(bool nullToAbsent) {
-    return EmprestimoStatusCompanion(
-      id: Value(id),
-      nomeStatus: Value(nomeStatus),
-    );
-  }
-
-  factory EmprestimoStatusData.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return EmprestimoStatusData(
-      id: serializer.fromJson<int>(json['id']),
-      nomeStatus: serializer.fromJson<String>(json['nomeStatus']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'nomeStatus': serializer.toJson<String>(nomeStatus),
-    };
-  }
-
-  EmprestimoStatusData copyWith({int? id, String? nomeStatus}) =>
-      EmprestimoStatusData(
-        id: id ?? this.id,
-        nomeStatus: nomeStatus ?? this.nomeStatus,
-      );
-  EmprestimoStatusData copyWithCompanion(EmprestimoStatusCompanion data) {
-    return EmprestimoStatusData(
-      id: data.id.present ? data.id.value : this.id,
-      nomeStatus: data.nomeStatus.present
-          ? data.nomeStatus.value
-          : this.nomeStatus,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('EmprestimoStatusData(')
-          ..write('id: $id, ')
-          ..write('nomeStatus: $nomeStatus')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, nomeStatus);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is EmprestimoStatusData &&
-          other.id == this.id &&
-          other.nomeStatus == this.nomeStatus);
-}
-
-class EmprestimoStatusCompanion extends UpdateCompanion<EmprestimoStatusData> {
-  final Value<int> id;
-  final Value<String> nomeStatus;
-  const EmprestimoStatusCompanion({
-    this.id = const Value.absent(),
-    this.nomeStatus = const Value.absent(),
-  });
-  EmprestimoStatusCompanion.insert({
-    this.id = const Value.absent(),
-    required String nomeStatus,
-  }) : nomeStatus = Value(nomeStatus);
-  static Insertable<EmprestimoStatusData> custom({
-    Expression<int>? id,
-    Expression<String>? nomeStatus,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (nomeStatus != null) 'nome_status': nomeStatus,
-    });
-  }
-
-  EmprestimoStatusCompanion copyWith({
-    Value<int>? id,
-    Value<String>? nomeStatus,
-  }) {
-    return EmprestimoStatusCompanion(
-      id: id ?? this.id,
-      nomeStatus: nomeStatus ?? this.nomeStatus,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (nomeStatus.present) {
-      map['nome_status'] = Variable<String>(nomeStatus.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('EmprestimoStatusCompanion(')
-          ..write('id: $id, ')
-          ..write('nomeStatus: $nomeStatus')
-          ..write(')'))
-        .toString();
-  }
-}
-
 class $DispositivosTable extends Dispositivos
     with TableInfo<$DispositivosTable, DispositivoData> {
   @override
@@ -621,6 +214,17 @@ class $DispositivosTable extends Dispositivos
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'PRIMARY KEY AUTOINCREMENT',
     ),
+  );
+  static const VerificationMeta _idTipoDispositivoMeta = const VerificationMeta(
+    'idTipoDispositivo',
+  );
+  @override
+  late final GeneratedColumn<int> idTipoDispositivo = GeneratedColumn<int>(
+    'id_tipo_dispositivo',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
   );
   static const VerificationMeta _numSerieMeta = const VerificationMeta(
     'numSerie',
@@ -644,20 +248,6 @@ class $DispositivosTable extends Dispositivos
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _idTipoDispositivoMeta = const VerificationMeta(
-    'idTipoDispositivo',
-  );
-  @override
-  late final GeneratedColumn<int> idTipoDispositivo = GeneratedColumn<int>(
-    'id_tipo_dispositivo',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES tipos_dispositivo (id)',
-    ),
-  );
   static const VerificationMeta _idStatusMeta = const VerificationMeta(
     'idStatus',
   );
@@ -668,41 +258,14 @@ class $DispositivosTable extends Dispositivos
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES emprestimo_status (id)',
-    ),
-  );
-  static const VerificationMeta _qtdTotalMeta = const VerificationMeta(
-    'qtdTotal',
-  );
-  @override
-  late final GeneratedColumn<int> qtdTotal = GeneratedColumn<int>(
-    'qtd_total',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _qtdDisponivelMeta = const VerificationMeta(
-    'qtdDisponivel',
-  );
-  @override
-  late final GeneratedColumn<int> qtdDisponivel = GeneratedColumn<int>(
-    'qtd_disponivel',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
   );
   @override
   List<GeneratedColumn> get $columns => [
     id,
+    idTipoDispositivo,
     numSerie,
     numPatrimonio,
-    idTipoDispositivo,
     idStatus,
-    qtdTotal,
-    qtdDisponivel,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -718,6 +281,17 @@ class $DispositivosTable extends Dispositivos
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('id_tipo_dispositivo')) {
+      context.handle(
+        _idTipoDispositivoMeta,
+        idTipoDispositivo.isAcceptableOrUnknown(
+          data['id_tipo_dispositivo']!,
+          _idTipoDispositivoMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_idTipoDispositivoMeta);
     }
     if (data.containsKey('num_serie')) {
       context.handle(
@@ -738,17 +312,6 @@ class $DispositivosTable extends Dispositivos
     } else if (isInserting) {
       context.missing(_numPatrimonioMeta);
     }
-    if (data.containsKey('id_tipo_dispositivo')) {
-      context.handle(
-        _idTipoDispositivoMeta,
-        idTipoDispositivo.isAcceptableOrUnknown(
-          data['id_tipo_dispositivo']!,
-          _idTipoDispositivoMeta,
-        ),
-      );
-    } else if (isInserting) {
-      context.missing(_idTipoDispositivoMeta);
-    }
     if (data.containsKey('id_status')) {
       context.handle(
         _idStatusMeta,
@@ -756,25 +319,6 @@ class $DispositivosTable extends Dispositivos
       );
     } else if (isInserting) {
       context.missing(_idStatusMeta);
-    }
-    if (data.containsKey('qtd_total')) {
-      context.handle(
-        _qtdTotalMeta,
-        qtdTotal.isAcceptableOrUnknown(data['qtd_total']!, _qtdTotalMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_qtdTotalMeta);
-    }
-    if (data.containsKey('qtd_disponivel')) {
-      context.handle(
-        _qtdDisponivelMeta,
-        qtdDisponivel.isAcceptableOrUnknown(
-          data['qtd_disponivel']!,
-          _qtdDisponivelMeta,
-        ),
-      );
-    } else if (isInserting) {
-      context.missing(_qtdDisponivelMeta);
     }
     return context;
   }
@@ -789,6 +333,10 @@ class $DispositivosTable extends Dispositivos
         DriftSqlType.int,
         data['${effectivePrefix}id'],
       )!,
+      idTipoDispositivo: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id_tipo_dispositivo'],
+      )!,
       numSerie: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}num_serie'],
@@ -797,21 +345,9 @@ class $DispositivosTable extends Dispositivos
         DriftSqlType.int,
         data['${effectivePrefix}num_patrimonio'],
       )!,
-      idTipoDispositivo: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}id_tipo_dispositivo'],
-      )!,
       idStatus: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id_status'],
-      )!,
-      qtdTotal: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}qtd_total'],
-      )!,
-      qtdDisponivel: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}qtd_disponivel'],
       )!,
     );
   }
@@ -824,43 +360,35 @@ class $DispositivosTable extends Dispositivos
 
 class DispositivoData extends DataClass implements Insertable<DispositivoData> {
   final int id;
+  final int idTipoDispositivo;
   final int numSerie;
   final int numPatrimonio;
-  final int idTipoDispositivo;
   final int idStatus;
-  final int qtdTotal;
-  final int qtdDisponivel;
   const DispositivoData({
     required this.id,
+    required this.idTipoDispositivo,
     required this.numSerie,
     required this.numPatrimonio,
-    required this.idTipoDispositivo,
     required this.idStatus,
-    required this.qtdTotal,
-    required this.qtdDisponivel,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
+    map['id_tipo_dispositivo'] = Variable<int>(idTipoDispositivo);
     map['num_serie'] = Variable<int>(numSerie);
     map['num_patrimonio'] = Variable<int>(numPatrimonio);
-    map['id_tipo_dispositivo'] = Variable<int>(idTipoDispositivo);
     map['id_status'] = Variable<int>(idStatus);
-    map['qtd_total'] = Variable<int>(qtdTotal);
-    map['qtd_disponivel'] = Variable<int>(qtdDisponivel);
     return map;
   }
 
   DispositivosCompanion toCompanion(bool nullToAbsent) {
     return DispositivosCompanion(
       id: Value(id),
+      idTipoDispositivo: Value(idTipoDispositivo),
       numSerie: Value(numSerie),
       numPatrimonio: Value(numPatrimonio),
-      idTipoDispositivo: Value(idTipoDispositivo),
       idStatus: Value(idStatus),
-      qtdTotal: Value(qtdTotal),
-      qtdDisponivel: Value(qtdDisponivel),
     );
   }
 
@@ -871,12 +399,10 @@ class DispositivoData extends DataClass implements Insertable<DispositivoData> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return DispositivoData(
       id: serializer.fromJson<int>(json['id']),
+      idTipoDispositivo: serializer.fromJson<int>(json['idTipoDispositivo']),
       numSerie: serializer.fromJson<int>(json['numSerie']),
       numPatrimonio: serializer.fromJson<int>(json['numPatrimonio']),
-      idTipoDispositivo: serializer.fromJson<int>(json['idTipoDispositivo']),
       idStatus: serializer.fromJson<int>(json['idStatus']),
-      qtdTotal: serializer.fromJson<int>(json['qtdTotal']),
-      qtdDisponivel: serializer.fromJson<int>(json['qtdDisponivel']),
     );
   }
   @override
@@ -884,47 +410,37 @@ class DispositivoData extends DataClass implements Insertable<DispositivoData> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
+      'idTipoDispositivo': serializer.toJson<int>(idTipoDispositivo),
       'numSerie': serializer.toJson<int>(numSerie),
       'numPatrimonio': serializer.toJson<int>(numPatrimonio),
-      'idTipoDispositivo': serializer.toJson<int>(idTipoDispositivo),
       'idStatus': serializer.toJson<int>(idStatus),
-      'qtdTotal': serializer.toJson<int>(qtdTotal),
-      'qtdDisponivel': serializer.toJson<int>(qtdDisponivel),
     };
   }
 
   DispositivoData copyWith({
     int? id,
+    int? idTipoDispositivo,
     int? numSerie,
     int? numPatrimonio,
-    int? idTipoDispositivo,
     int? idStatus,
-    int? qtdTotal,
-    int? qtdDisponivel,
   }) => DispositivoData(
     id: id ?? this.id,
+    idTipoDispositivo: idTipoDispositivo ?? this.idTipoDispositivo,
     numSerie: numSerie ?? this.numSerie,
     numPatrimonio: numPatrimonio ?? this.numPatrimonio,
-    idTipoDispositivo: idTipoDispositivo ?? this.idTipoDispositivo,
     idStatus: idStatus ?? this.idStatus,
-    qtdTotal: qtdTotal ?? this.qtdTotal,
-    qtdDisponivel: qtdDisponivel ?? this.qtdDisponivel,
   );
   DispositivoData copyWithCompanion(DispositivosCompanion data) {
     return DispositivoData(
       id: data.id.present ? data.id.value : this.id,
+      idTipoDispositivo: data.idTipoDispositivo.present
+          ? data.idTipoDispositivo.value
+          : this.idTipoDispositivo,
       numSerie: data.numSerie.present ? data.numSerie.value : this.numSerie,
       numPatrimonio: data.numPatrimonio.present
           ? data.numPatrimonio.value
           : this.numPatrimonio,
-      idTipoDispositivo: data.idTipoDispositivo.present
-          ? data.idTipoDispositivo.value
-          : this.idTipoDispositivo,
       idStatus: data.idStatus.present ? data.idStatus.value : this.idStatus,
-      qtdTotal: data.qtdTotal.present ? data.qtdTotal.value : this.qtdTotal,
-      qtdDisponivel: data.qtdDisponivel.present
-          ? data.qtdDisponivel.value
-          : this.qtdDisponivel,
     );
   }
 
@@ -932,107 +448,80 @@ class DispositivoData extends DataClass implements Insertable<DispositivoData> {
   String toString() {
     return (StringBuffer('DispositivoData(')
           ..write('id: $id, ')
+          ..write('idTipoDispositivo: $idTipoDispositivo, ')
           ..write('numSerie: $numSerie, ')
           ..write('numPatrimonio: $numPatrimonio, ')
-          ..write('idTipoDispositivo: $idTipoDispositivo, ')
-          ..write('idStatus: $idStatus, ')
-          ..write('qtdTotal: $qtdTotal, ')
-          ..write('qtdDisponivel: $qtdDisponivel')
+          ..write('idStatus: $idStatus')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
-    id,
-    numSerie,
-    numPatrimonio,
-    idTipoDispositivo,
-    idStatus,
-    qtdTotal,
-    qtdDisponivel,
-  );
+  int get hashCode =>
+      Object.hash(id, idTipoDispositivo, numSerie, numPatrimonio, idStatus);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is DispositivoData &&
           other.id == this.id &&
+          other.idTipoDispositivo == this.idTipoDispositivo &&
           other.numSerie == this.numSerie &&
           other.numPatrimonio == this.numPatrimonio &&
-          other.idTipoDispositivo == this.idTipoDispositivo &&
-          other.idStatus == this.idStatus &&
-          other.qtdTotal == this.qtdTotal &&
-          other.qtdDisponivel == this.qtdDisponivel);
+          other.idStatus == this.idStatus);
 }
 
 class DispositivosCompanion extends UpdateCompanion<DispositivoData> {
   final Value<int> id;
+  final Value<int> idTipoDispositivo;
   final Value<int> numSerie;
   final Value<int> numPatrimonio;
-  final Value<int> idTipoDispositivo;
   final Value<int> idStatus;
-  final Value<int> qtdTotal;
-  final Value<int> qtdDisponivel;
   const DispositivosCompanion({
     this.id = const Value.absent(),
+    this.idTipoDispositivo = const Value.absent(),
     this.numSerie = const Value.absent(),
     this.numPatrimonio = const Value.absent(),
-    this.idTipoDispositivo = const Value.absent(),
     this.idStatus = const Value.absent(),
-    this.qtdTotal = const Value.absent(),
-    this.qtdDisponivel = const Value.absent(),
   });
   DispositivosCompanion.insert({
     this.id = const Value.absent(),
+    required int idTipoDispositivo,
     required int numSerie,
     required int numPatrimonio,
-    required int idTipoDispositivo,
     required int idStatus,
-    required int qtdTotal,
-    required int qtdDisponivel,
-  }) : numSerie = Value(numSerie),
+  }) : idTipoDispositivo = Value(idTipoDispositivo),
+       numSerie = Value(numSerie),
        numPatrimonio = Value(numPatrimonio),
-       idTipoDispositivo = Value(idTipoDispositivo),
-       idStatus = Value(idStatus),
-       qtdTotal = Value(qtdTotal),
-       qtdDisponivel = Value(qtdDisponivel);
+       idStatus = Value(idStatus);
   static Insertable<DispositivoData> custom({
     Expression<int>? id,
+    Expression<int>? idTipoDispositivo,
     Expression<int>? numSerie,
     Expression<int>? numPatrimonio,
-    Expression<int>? idTipoDispositivo,
     Expression<int>? idStatus,
-    Expression<int>? qtdTotal,
-    Expression<int>? qtdDisponivel,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (idTipoDispositivo != null) 'id_tipo_dispositivo': idTipoDispositivo,
       if (numSerie != null) 'num_serie': numSerie,
       if (numPatrimonio != null) 'num_patrimonio': numPatrimonio,
-      if (idTipoDispositivo != null) 'id_tipo_dispositivo': idTipoDispositivo,
       if (idStatus != null) 'id_status': idStatus,
-      if (qtdTotal != null) 'qtd_total': qtdTotal,
-      if (qtdDisponivel != null) 'qtd_disponivel': qtdDisponivel,
     });
   }
 
   DispositivosCompanion copyWith({
     Value<int>? id,
+    Value<int>? idTipoDispositivo,
     Value<int>? numSerie,
     Value<int>? numPatrimonio,
-    Value<int>? idTipoDispositivo,
     Value<int>? idStatus,
-    Value<int>? qtdTotal,
-    Value<int>? qtdDisponivel,
   }) {
     return DispositivosCompanion(
       id: id ?? this.id,
+      idTipoDispositivo: idTipoDispositivo ?? this.idTipoDispositivo,
       numSerie: numSerie ?? this.numSerie,
       numPatrimonio: numPatrimonio ?? this.numPatrimonio,
-      idTipoDispositivo: idTipoDispositivo ?? this.idTipoDispositivo,
       idStatus: idStatus ?? this.idStatus,
-      qtdTotal: qtdTotal ?? this.qtdTotal,
-      qtdDisponivel: qtdDisponivel ?? this.qtdDisponivel,
     );
   }
 
@@ -1042,23 +531,17 @@ class DispositivosCompanion extends UpdateCompanion<DispositivoData> {
     if (id.present) {
       map['id'] = Variable<int>(id.value);
     }
+    if (idTipoDispositivo.present) {
+      map['id_tipo_dispositivo'] = Variable<int>(idTipoDispositivo.value);
+    }
     if (numSerie.present) {
       map['num_serie'] = Variable<int>(numSerie.value);
     }
     if (numPatrimonio.present) {
       map['num_patrimonio'] = Variable<int>(numPatrimonio.value);
     }
-    if (idTipoDispositivo.present) {
-      map['id_tipo_dispositivo'] = Variable<int>(idTipoDispositivo.value);
-    }
     if (idStatus.present) {
       map['id_status'] = Variable<int>(idStatus.value);
-    }
-    if (qtdTotal.present) {
-      map['qtd_total'] = Variable<int>(qtdTotal.value);
-    }
-    if (qtdDisponivel.present) {
-      map['qtd_disponivel'] = Variable<int>(qtdDisponivel.value);
     }
     return map;
   }
@@ -1067,12 +550,10 @@ class DispositivosCompanion extends UpdateCompanion<DispositivoData> {
   String toString() {
     return (StringBuffer('DispositivosCompanion(')
           ..write('id: $id, ')
+          ..write('idTipoDispositivo: $idTipoDispositivo, ')
           ..write('numSerie: $numSerie, ')
           ..write('numPatrimonio: $numPatrimonio, ')
-          ..write('idTipoDispositivo: $idTipoDispositivo, ')
-          ..write('idStatus: $idStatus, ')
-          ..write('qtdTotal: $qtdTotal, ')
-          ..write('qtdDisponivel: $qtdDisponivel')
+          ..write('idStatus: $idStatus')
           ..write(')'))
         .toString();
   }
@@ -1396,9 +877,6 @@ class $EmprestimosTable extends Emprestimos
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES emprestimo_status (id)',
-    ),
   );
   @override
   List<GeneratedColumn> get $columns => [
@@ -1758,9 +1236,6 @@ class $EmprestimoItensTable extends EmprestimoItens
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES tipos_dispositivo (id)',
-    ),
   );
   static const VerificationMeta _qtdSolicitadaMeta = const VerificationMeta(
     'qtdSolicitada',
@@ -2699,12 +2174,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $CargosTable cargos = $CargosTable(this);
-  late final $TiposDispositivoTable tiposDispositivo = $TiposDispositivoTable(
-    this,
-  );
-  late final $EmprestimoStatusTable emprestimoStatus = $EmprestimoStatusTable(
-    this,
-  );
   late final $DispositivosTable dispositivos = $DispositivosTable(this);
   late final $UsuariosTable usuarios = $UsuariosTable(this);
   late final $EmprestimosTable emprestimos = $EmprestimosTable(this);
@@ -2720,8 +2189,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     cargos,
-    tiposDispositivo,
-    emprestimoStatus,
     dispositivos,
     usuarios,
     emprestimos,
@@ -2951,767 +2418,26 @@ typedef $$CargosTableProcessedTableManager =
       CargoData,
       PrefetchHooks Function({bool usuariosRefs})
     >;
-typedef $$TiposDispositivoTableCreateCompanionBuilder =
-    TiposDispositivoCompanion Function({
-      Value<int> id,
-      required String nomeTipo,
-    });
-typedef $$TiposDispositivoTableUpdateCompanionBuilder =
-    TiposDispositivoCompanion Function({Value<int> id, Value<String> nomeTipo});
-
-final class $$TiposDispositivoTableReferences
-    extends
-        BaseReferences<
-          _$AppDatabase,
-          $TiposDispositivoTable,
-          TipoDispositivoData
-        > {
-  $$TiposDispositivoTableReferences(
-    super.$_db,
-    super.$_table,
-    super.$_typedResult,
-  );
-
-  static MultiTypedResultKey<$DispositivosTable, List<DispositivoData>>
-  _dispositivosRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-    db.dispositivos,
-    aliasName: $_aliasNameGenerator(
-      db.tiposDispositivo.id,
-      db.dispositivos.idTipoDispositivo,
-    ),
-  );
-
-  $$DispositivosTableProcessedTableManager get dispositivosRefs {
-    final manager = $$DispositivosTableTableManager(
-      $_db,
-      $_db.dispositivos,
-    ).filter((f) => f.idTipoDispositivo.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_dispositivosRefsTable($_db));
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-
-  static MultiTypedResultKey<$EmprestimoItensTable, List<EmprestimoItemData>>
-  _emprestimoItensRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-    db.emprestimoItens,
-    aliasName: $_aliasNameGenerator(
-      db.tiposDispositivo.id,
-      db.emprestimoItens.idTipoDispositivo,
-    ),
-  );
-
-  $$EmprestimoItensTableProcessedTableManager get emprestimoItensRefs {
-    final manager = $$EmprestimoItensTableTableManager(
-      $_db,
-      $_db.emprestimoItens,
-    ).filter((f) => f.idTipoDispositivo.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(
-      _emprestimoItensRefsTable($_db),
-    );
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-}
-
-class $$TiposDispositivoTableFilterComposer
-    extends Composer<_$AppDatabase, $TiposDispositivoTable> {
-  $$TiposDispositivoTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get nomeTipo => $composableBuilder(
-    column: $table.nomeTipo,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  Expression<bool> dispositivosRefs(
-    Expression<bool> Function($$DispositivosTableFilterComposer f) f,
-  ) {
-    final $$DispositivosTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.dispositivos,
-      getReferencedColumn: (t) => t.idTipoDispositivo,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$DispositivosTableFilterComposer(
-            $db: $db,
-            $table: $db.dispositivos,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-
-  Expression<bool> emprestimoItensRefs(
-    Expression<bool> Function($$EmprestimoItensTableFilterComposer f) f,
-  ) {
-    final $$EmprestimoItensTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.emprestimoItens,
-      getReferencedColumn: (t) => t.idTipoDispositivo,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$EmprestimoItensTableFilterComposer(
-            $db: $db,
-            $table: $db.emprestimoItens,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-}
-
-class $$TiposDispositivoTableOrderingComposer
-    extends Composer<_$AppDatabase, $TiposDispositivoTable> {
-  $$TiposDispositivoTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get nomeTipo => $composableBuilder(
-    column: $table.nomeTipo,
-    builder: (column) => ColumnOrderings(column),
-  );
-}
-
-class $$TiposDispositivoTableAnnotationComposer
-    extends Composer<_$AppDatabase, $TiposDispositivoTable> {
-  $$TiposDispositivoTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get nomeTipo =>
-      $composableBuilder(column: $table.nomeTipo, builder: (column) => column);
-
-  Expression<T> dispositivosRefs<T extends Object>(
-    Expression<T> Function($$DispositivosTableAnnotationComposer a) f,
-  ) {
-    final $$DispositivosTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.dispositivos,
-      getReferencedColumn: (t) => t.idTipoDispositivo,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$DispositivosTableAnnotationComposer(
-            $db: $db,
-            $table: $db.dispositivos,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-
-  Expression<T> emprestimoItensRefs<T extends Object>(
-    Expression<T> Function($$EmprestimoItensTableAnnotationComposer a) f,
-  ) {
-    final $$EmprestimoItensTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.emprestimoItens,
-      getReferencedColumn: (t) => t.idTipoDispositivo,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$EmprestimoItensTableAnnotationComposer(
-            $db: $db,
-            $table: $db.emprestimoItens,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-}
-
-class $$TiposDispositivoTableTableManager
-    extends
-        RootTableManager<
-          _$AppDatabase,
-          $TiposDispositivoTable,
-          TipoDispositivoData,
-          $$TiposDispositivoTableFilterComposer,
-          $$TiposDispositivoTableOrderingComposer,
-          $$TiposDispositivoTableAnnotationComposer,
-          $$TiposDispositivoTableCreateCompanionBuilder,
-          $$TiposDispositivoTableUpdateCompanionBuilder,
-          (TipoDispositivoData, $$TiposDispositivoTableReferences),
-          TipoDispositivoData,
-          PrefetchHooks Function({
-            bool dispositivosRefs,
-            bool emprestimoItensRefs,
-          })
-        > {
-  $$TiposDispositivoTableTableManager(
-    _$AppDatabase db,
-    $TiposDispositivoTable table,
-  ) : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$TiposDispositivoTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$TiposDispositivoTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$TiposDispositivoTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                Value<String> nomeTipo = const Value.absent(),
-              }) => TiposDispositivoCompanion(id: id, nomeTipo: nomeTipo),
-          createCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                required String nomeTipo,
-              }) =>
-                  TiposDispositivoCompanion.insert(id: id, nomeTipo: nomeTipo),
-          withReferenceMapper: (p0) => p0
-              .map(
-                (e) => (
-                  e.readTable(table),
-                  $$TiposDispositivoTableReferences(db, table, e),
-                ),
-              )
-              .toList(),
-          prefetchHooksCallback:
-              ({dispositivosRefs = false, emprestimoItensRefs = false}) {
-                return PrefetchHooks(
-                  db: db,
-                  explicitlyWatchedTables: [
-                    if (dispositivosRefs) db.dispositivos,
-                    if (emprestimoItensRefs) db.emprestimoItens,
-                  ],
-                  addJoins: null,
-                  getPrefetchedDataCallback: (items) async {
-                    return [
-                      if (dispositivosRefs)
-                        await $_getPrefetchedData<
-                          TipoDispositivoData,
-                          $TiposDispositivoTable,
-                          DispositivoData
-                        >(
-                          currentTable: table,
-                          referencedTable: $$TiposDispositivoTableReferences
-                              ._dispositivosRefsTable(db),
-                          managerFromTypedResult: (p0) =>
-                              $$TiposDispositivoTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).dispositivosRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.idTipoDispositivo == item.id,
-                              ),
-                          typedResults: items,
-                        ),
-                      if (emprestimoItensRefs)
-                        await $_getPrefetchedData<
-                          TipoDispositivoData,
-                          $TiposDispositivoTable,
-                          EmprestimoItemData
-                        >(
-                          currentTable: table,
-                          referencedTable: $$TiposDispositivoTableReferences
-                              ._emprestimoItensRefsTable(db),
-                          managerFromTypedResult: (p0) =>
-                              $$TiposDispositivoTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).emprestimoItensRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.idTipoDispositivo == item.id,
-                              ),
-                          typedResults: items,
-                        ),
-                    ];
-                  },
-                );
-              },
-        ),
-      );
-}
-
-typedef $$TiposDispositivoTableProcessedTableManager =
-    ProcessedTableManager<
-      _$AppDatabase,
-      $TiposDispositivoTable,
-      TipoDispositivoData,
-      $$TiposDispositivoTableFilterComposer,
-      $$TiposDispositivoTableOrderingComposer,
-      $$TiposDispositivoTableAnnotationComposer,
-      $$TiposDispositivoTableCreateCompanionBuilder,
-      $$TiposDispositivoTableUpdateCompanionBuilder,
-      (TipoDispositivoData, $$TiposDispositivoTableReferences),
-      TipoDispositivoData,
-      PrefetchHooks Function({bool dispositivosRefs, bool emprestimoItensRefs})
-    >;
-typedef $$EmprestimoStatusTableCreateCompanionBuilder =
-    EmprestimoStatusCompanion Function({
-      Value<int> id,
-      required String nomeStatus,
-    });
-typedef $$EmprestimoStatusTableUpdateCompanionBuilder =
-    EmprestimoStatusCompanion Function({
-      Value<int> id,
-      Value<String> nomeStatus,
-    });
-
-final class $$EmprestimoStatusTableReferences
-    extends
-        BaseReferences<
-          _$AppDatabase,
-          $EmprestimoStatusTable,
-          EmprestimoStatusData
-        > {
-  $$EmprestimoStatusTableReferences(
-    super.$_db,
-    super.$_table,
-    super.$_typedResult,
-  );
-
-  static MultiTypedResultKey<$DispositivosTable, List<DispositivoData>>
-  _dispositivosRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-    db.dispositivos,
-    aliasName: $_aliasNameGenerator(
-      db.emprestimoStatus.id,
-      db.dispositivos.idStatus,
-    ),
-  );
-
-  $$DispositivosTableProcessedTableManager get dispositivosRefs {
-    final manager = $$DispositivosTableTableManager(
-      $_db,
-      $_db.dispositivos,
-    ).filter((f) => f.idStatus.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_dispositivosRefsTable($_db));
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-
-  static MultiTypedResultKey<$EmprestimosTable, List<EmprestimoData>>
-  _emprestimosRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-    db.emprestimos,
-    aliasName: $_aliasNameGenerator(
-      db.emprestimoStatus.id,
-      db.emprestimos.idStatus,
-    ),
-  );
-
-  $$EmprestimosTableProcessedTableManager get emprestimosRefs {
-    final manager = $$EmprestimosTableTableManager(
-      $_db,
-      $_db.emprestimos,
-    ).filter((f) => f.idStatus.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_emprestimosRefsTable($_db));
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-}
-
-class $$EmprestimoStatusTableFilterComposer
-    extends Composer<_$AppDatabase, $EmprestimoStatusTable> {
-  $$EmprestimoStatusTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get nomeStatus => $composableBuilder(
-    column: $table.nomeStatus,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  Expression<bool> dispositivosRefs(
-    Expression<bool> Function($$DispositivosTableFilterComposer f) f,
-  ) {
-    final $$DispositivosTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.dispositivos,
-      getReferencedColumn: (t) => t.idStatus,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$DispositivosTableFilterComposer(
-            $db: $db,
-            $table: $db.dispositivos,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-
-  Expression<bool> emprestimosRefs(
-    Expression<bool> Function($$EmprestimosTableFilterComposer f) f,
-  ) {
-    final $$EmprestimosTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.emprestimos,
-      getReferencedColumn: (t) => t.idStatus,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$EmprestimosTableFilterComposer(
-            $db: $db,
-            $table: $db.emprestimos,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-}
-
-class $$EmprestimoStatusTableOrderingComposer
-    extends Composer<_$AppDatabase, $EmprestimoStatusTable> {
-  $$EmprestimoStatusTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get nomeStatus => $composableBuilder(
-    column: $table.nomeStatus,
-    builder: (column) => ColumnOrderings(column),
-  );
-}
-
-class $$EmprestimoStatusTableAnnotationComposer
-    extends Composer<_$AppDatabase, $EmprestimoStatusTable> {
-  $$EmprestimoStatusTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get nomeStatus => $composableBuilder(
-    column: $table.nomeStatus,
-    builder: (column) => column,
-  );
-
-  Expression<T> dispositivosRefs<T extends Object>(
-    Expression<T> Function($$DispositivosTableAnnotationComposer a) f,
-  ) {
-    final $$DispositivosTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.dispositivos,
-      getReferencedColumn: (t) => t.idStatus,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$DispositivosTableAnnotationComposer(
-            $db: $db,
-            $table: $db.dispositivos,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-
-  Expression<T> emprestimosRefs<T extends Object>(
-    Expression<T> Function($$EmprestimosTableAnnotationComposer a) f,
-  ) {
-    final $$EmprestimosTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.emprestimos,
-      getReferencedColumn: (t) => t.idStatus,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$EmprestimosTableAnnotationComposer(
-            $db: $db,
-            $table: $db.emprestimos,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-}
-
-class $$EmprestimoStatusTableTableManager
-    extends
-        RootTableManager<
-          _$AppDatabase,
-          $EmprestimoStatusTable,
-          EmprestimoStatusData,
-          $$EmprestimoStatusTableFilterComposer,
-          $$EmprestimoStatusTableOrderingComposer,
-          $$EmprestimoStatusTableAnnotationComposer,
-          $$EmprestimoStatusTableCreateCompanionBuilder,
-          $$EmprestimoStatusTableUpdateCompanionBuilder,
-          (EmprestimoStatusData, $$EmprestimoStatusTableReferences),
-          EmprestimoStatusData,
-          PrefetchHooks Function({bool dispositivosRefs, bool emprestimosRefs})
-        > {
-  $$EmprestimoStatusTableTableManager(
-    _$AppDatabase db,
-    $EmprestimoStatusTable table,
-  ) : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$EmprestimoStatusTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$EmprestimoStatusTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$EmprestimoStatusTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                Value<String> nomeStatus = const Value.absent(),
-              }) => EmprestimoStatusCompanion(id: id, nomeStatus: nomeStatus),
-          createCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                required String nomeStatus,
-              }) => EmprestimoStatusCompanion.insert(
-                id: id,
-                nomeStatus: nomeStatus,
-              ),
-          withReferenceMapper: (p0) => p0
-              .map(
-                (e) => (
-                  e.readTable(table),
-                  $$EmprestimoStatusTableReferences(db, table, e),
-                ),
-              )
-              .toList(),
-          prefetchHooksCallback:
-              ({dispositivosRefs = false, emprestimosRefs = false}) {
-                return PrefetchHooks(
-                  db: db,
-                  explicitlyWatchedTables: [
-                    if (dispositivosRefs) db.dispositivos,
-                    if (emprestimosRefs) db.emprestimos,
-                  ],
-                  addJoins: null,
-                  getPrefetchedDataCallback: (items) async {
-                    return [
-                      if (dispositivosRefs)
-                        await $_getPrefetchedData<
-                          EmprestimoStatusData,
-                          $EmprestimoStatusTable,
-                          DispositivoData
-                        >(
-                          currentTable: table,
-                          referencedTable: $$EmprestimoStatusTableReferences
-                              ._dispositivosRefsTable(db),
-                          managerFromTypedResult: (p0) =>
-                              $$EmprestimoStatusTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).dispositivosRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.idStatus == item.id,
-                              ),
-                          typedResults: items,
-                        ),
-                      if (emprestimosRefs)
-                        await $_getPrefetchedData<
-                          EmprestimoStatusData,
-                          $EmprestimoStatusTable,
-                          EmprestimoData
-                        >(
-                          currentTable: table,
-                          referencedTable: $$EmprestimoStatusTableReferences
-                              ._emprestimosRefsTable(db),
-                          managerFromTypedResult: (p0) =>
-                              $$EmprestimoStatusTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).emprestimosRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.idStatus == item.id,
-                              ),
-                          typedResults: items,
-                        ),
-                    ];
-                  },
-                );
-              },
-        ),
-      );
-}
-
-typedef $$EmprestimoStatusTableProcessedTableManager =
-    ProcessedTableManager<
-      _$AppDatabase,
-      $EmprestimoStatusTable,
-      EmprestimoStatusData,
-      $$EmprestimoStatusTableFilterComposer,
-      $$EmprestimoStatusTableOrderingComposer,
-      $$EmprestimoStatusTableAnnotationComposer,
-      $$EmprestimoStatusTableCreateCompanionBuilder,
-      $$EmprestimoStatusTableUpdateCompanionBuilder,
-      (EmprestimoStatusData, $$EmprestimoStatusTableReferences),
-      EmprestimoStatusData,
-      PrefetchHooks Function({bool dispositivosRefs, bool emprestimosRefs})
-    >;
 typedef $$DispositivosTableCreateCompanionBuilder =
     DispositivosCompanion Function({
       Value<int> id,
+      required int idTipoDispositivo,
       required int numSerie,
       required int numPatrimonio,
-      required int idTipoDispositivo,
       required int idStatus,
-      required int qtdTotal,
-      required int qtdDisponivel,
     });
 typedef $$DispositivosTableUpdateCompanionBuilder =
     DispositivosCompanion Function({
       Value<int> id,
+      Value<int> idTipoDispositivo,
       Value<int> numSerie,
       Value<int> numPatrimonio,
-      Value<int> idTipoDispositivo,
       Value<int> idStatus,
-      Value<int> qtdTotal,
-      Value<int> qtdDisponivel,
     });
 
 final class $$DispositivosTableReferences
     extends BaseReferences<_$AppDatabase, $DispositivosTable, DispositivoData> {
   $$DispositivosTableReferences(super.$_db, super.$_table, super.$_typedResult);
-
-  static $TiposDispositivoTable _idTipoDispositivoTable(_$AppDatabase db) =>
-      db.tiposDispositivo.createAlias(
-        $_aliasNameGenerator(
-          db.dispositivos.idTipoDispositivo,
-          db.tiposDispositivo.id,
-        ),
-      );
-
-  $$TiposDispositivoTableProcessedTableManager get idTipoDispositivo {
-    final $_column = $_itemColumn<int>('id_tipo_dispositivo')!;
-
-    final manager = $$TiposDispositivoTableTableManager(
-      $_db,
-      $_db.tiposDispositivo,
-    ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_idTipoDispositivoTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-
-  static $EmprestimoStatusTable _idStatusTable(_$AppDatabase db) =>
-      db.emprestimoStatus.createAlias(
-        $_aliasNameGenerator(db.dispositivos.idStatus, db.emprestimoStatus.id),
-      );
-
-  $$EmprestimoStatusTableProcessedTableManager get idStatus {
-    final $_column = $_itemColumn<int>('id_status')!;
-
-    final manager = $$EmprestimoStatusTableTableManager(
-      $_db,
-      $_db.emprestimoStatus,
-    ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_idStatusTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
 
   static MultiTypedResultKey<
     $EmprestimoDispositivosTable,
@@ -3777,6 +2503,11 @@ class $$DispositivosTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<int> get idTipoDispositivo => $composableBuilder(
+    column: $table.idTipoDispositivo,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<int> get numSerie => $composableBuilder(
     column: $table.numSerie,
     builder: (column) => ColumnFilters(column),
@@ -3787,61 +2518,10 @@ class $$DispositivosTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get qtdTotal => $composableBuilder(
-    column: $table.qtdTotal,
+  ColumnFilters<int> get idStatus => $composableBuilder(
+    column: $table.idStatus,
     builder: (column) => ColumnFilters(column),
   );
-
-  ColumnFilters<int> get qtdDisponivel => $composableBuilder(
-    column: $table.qtdDisponivel,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  $$TiposDispositivoTableFilterComposer get idTipoDispositivo {
-    final $$TiposDispositivoTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.idTipoDispositivo,
-      referencedTable: $db.tiposDispositivo,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$TiposDispositivoTableFilterComposer(
-            $db: $db,
-            $table: $db.tiposDispositivo,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$EmprestimoStatusTableFilterComposer get idStatus {
-    final $$EmprestimoStatusTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.idStatus,
-      referencedTable: $db.emprestimoStatus,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$EmprestimoStatusTableFilterComposer(
-            $db: $db,
-            $table: $db.emprestimoStatus,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
 
   Expression<bool> emprestimoDispositivosRefs(
     Expression<bool> Function($$EmprestimoDispositivosTableFilterComposer f) f,
@@ -3909,6 +2589,11 @@ class $$DispositivosTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get idTipoDispositivo => $composableBuilder(
+    column: $table.idTipoDispositivo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get numSerie => $composableBuilder(
     column: $table.numSerie,
     builder: (column) => ColumnOrderings(column),
@@ -3919,61 +2604,10 @@ class $$DispositivosTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get qtdTotal => $composableBuilder(
-    column: $table.qtdTotal,
+  ColumnOrderings<int> get idStatus => $composableBuilder(
+    column: $table.idStatus,
     builder: (column) => ColumnOrderings(column),
   );
-
-  ColumnOrderings<int> get qtdDisponivel => $composableBuilder(
-    column: $table.qtdDisponivel,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  $$TiposDispositivoTableOrderingComposer get idTipoDispositivo {
-    final $$TiposDispositivoTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.idTipoDispositivo,
-      referencedTable: $db.tiposDispositivo,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$TiposDispositivoTableOrderingComposer(
-            $db: $db,
-            $table: $db.tiposDispositivo,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$EmprestimoStatusTableOrderingComposer get idStatus {
-    final $$EmprestimoStatusTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.idStatus,
-      referencedTable: $db.emprestimoStatus,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$EmprestimoStatusTableOrderingComposer(
-            $db: $db,
-            $table: $db.emprestimoStatus,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
 }
 
 class $$DispositivosTableAnnotationComposer
@@ -3988,6 +2622,11 @@ class $$DispositivosTableAnnotationComposer
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
+  GeneratedColumn<int> get idTipoDispositivo => $composableBuilder(
+    column: $table.idTipoDispositivo,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<int> get numSerie =>
       $composableBuilder(column: $table.numSerie, builder: (column) => column);
 
@@ -3996,59 +2635,8 @@ class $$DispositivosTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<int> get qtdTotal =>
-      $composableBuilder(column: $table.qtdTotal, builder: (column) => column);
-
-  GeneratedColumn<int> get qtdDisponivel => $composableBuilder(
-    column: $table.qtdDisponivel,
-    builder: (column) => column,
-  );
-
-  $$TiposDispositivoTableAnnotationComposer get idTipoDispositivo {
-    final $$TiposDispositivoTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.idTipoDispositivo,
-      referencedTable: $db.tiposDispositivo,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$TiposDispositivoTableAnnotationComposer(
-            $db: $db,
-            $table: $db.tiposDispositivo,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$EmprestimoStatusTableAnnotationComposer get idStatus {
-    final $$EmprestimoStatusTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.idStatus,
-      referencedTable: $db.emprestimoStatus,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$EmprestimoStatusTableAnnotationComposer(
-            $db: $db,
-            $table: $db.emprestimoStatus,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
+  GeneratedColumn<int> get idStatus =>
+      $composableBuilder(column: $table.idStatus, builder: (column) => column);
 
   Expression<T> emprestimoDispositivosRefs<T extends Object>(
     Expression<T> Function($$EmprestimoDispositivosTableAnnotationComposer a) f,
@@ -4116,8 +2704,6 @@ class $$DispositivosTableTableManager
           (DispositivoData, $$DispositivosTableReferences),
           DispositivoData,
           PrefetchHooks Function({
-            bool idTipoDispositivo,
-            bool idStatus,
             bool emprestimoDispositivosRefs,
             bool problemasRefs,
           })
@@ -4136,38 +2722,30 @@ class $$DispositivosTableTableManager
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
+                Value<int> idTipoDispositivo = const Value.absent(),
                 Value<int> numSerie = const Value.absent(),
                 Value<int> numPatrimonio = const Value.absent(),
-                Value<int> idTipoDispositivo = const Value.absent(),
                 Value<int> idStatus = const Value.absent(),
-                Value<int> qtdTotal = const Value.absent(),
-                Value<int> qtdDisponivel = const Value.absent(),
               }) => DispositivosCompanion(
                 id: id,
+                idTipoDispositivo: idTipoDispositivo,
                 numSerie: numSerie,
                 numPatrimonio: numPatrimonio,
-                idTipoDispositivo: idTipoDispositivo,
                 idStatus: idStatus,
-                qtdTotal: qtdTotal,
-                qtdDisponivel: qtdDisponivel,
               ),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
+                required int idTipoDispositivo,
                 required int numSerie,
                 required int numPatrimonio,
-                required int idTipoDispositivo,
                 required int idStatus,
-                required int qtdTotal,
-                required int qtdDisponivel,
               }) => DispositivosCompanion.insert(
                 id: id,
+                idTipoDispositivo: idTipoDispositivo,
                 numSerie: numSerie,
                 numPatrimonio: numPatrimonio,
-                idTipoDispositivo: idTipoDispositivo,
                 idStatus: idStatus,
-                qtdTotal: qtdTotal,
-                qtdDisponivel: qtdDisponivel,
               ),
           withReferenceMapper: (p0) => p0
               .map(
@@ -4178,67 +2756,14 @@ class $$DispositivosTableTableManager
               )
               .toList(),
           prefetchHooksCallback:
-              ({
-                idTipoDispositivo = false,
-                idStatus = false,
-                emprestimoDispositivosRefs = false,
-                problemasRefs = false,
-              }) {
+              ({emprestimoDispositivosRefs = false, problemasRefs = false}) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
                     if (emprestimoDispositivosRefs) db.emprestimoDispositivos,
                     if (problemasRefs) db.problemas,
                   ],
-                  addJoins:
-                      <
-                        T extends TableManagerState<
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic
-                        >
-                      >(state) {
-                        if (idTipoDispositivo) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.idTipoDispositivo,
-                                    referencedTable:
-                                        $$DispositivosTableReferences
-                                            ._idTipoDispositivoTable(db),
-                                    referencedColumn:
-                                        $$DispositivosTableReferences
-                                            ._idTipoDispositivoTable(db)
-                                            .id,
-                                  )
-                                  as T;
-                        }
-                        if (idStatus) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.idStatus,
-                                    referencedTable:
-                                        $$DispositivosTableReferences
-                                            ._idStatusTable(db),
-                                    referencedColumn:
-                                        $$DispositivosTableReferences
-                                            ._idStatusTable(db)
-                                            .id,
-                                  )
-                                  as T;
-                        }
-
-                        return state;
-                      },
+                  addJoins: null,
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (emprestimoDispositivosRefs)
@@ -4304,8 +2829,6 @@ typedef $$DispositivosTableProcessedTableManager =
       (DispositivoData, $$DispositivosTableReferences),
       DispositivoData,
       PrefetchHooks Function({
-        bool idTipoDispositivo,
-        bool idStatus,
         bool emprestimoDispositivosRefs,
         bool problemasRefs,
       })
@@ -4712,25 +3235,6 @@ final class $$EmprestimosTableReferences
     );
   }
 
-  static $EmprestimoStatusTable _idStatusTable(_$AppDatabase db) =>
-      db.emprestimoStatus.createAlias(
-        $_aliasNameGenerator(db.emprestimos.idStatus, db.emprestimoStatus.id),
-      );
-
-  $$EmprestimoStatusTableProcessedTableManager get idStatus {
-    final $_column = $_itemColumn<int>('id_status')!;
-
-    final manager = $$EmprestimoStatusTableTableManager(
-      $_db,
-      $_db.emprestimoStatus,
-    ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_idStatusTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-
   static MultiTypedResultKey<$EmprestimoItensTable, List<EmprestimoItemData>>
   _emprestimoItensRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.emprestimoItens,
@@ -4779,6 +3283,11 @@ class $$EmprestimosTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<int> get idStatus => $composableBuilder(
+    column: $table.idStatus,
+    builder: (column) => ColumnFilters(column),
+  );
+
   $$UsuariosTableFilterComposer get idResponsavel {
     final $$UsuariosTableFilterComposer composer = $composerBuilder(
       composer: this,
@@ -4793,29 +3302,6 @@ class $$EmprestimosTableFilterComposer
           }) => $$UsuariosTableFilterComposer(
             $db: $db,
             $table: $db.usuarios,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$EmprestimoStatusTableFilterComposer get idStatus {
-    final $$EmprestimoStatusTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.idStatus,
-      referencedTable: $db.emprestimoStatus,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$EmprestimoStatusTableFilterComposer(
-            $db: $db,
-            $table: $db.emprestimoStatus,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -4875,6 +3361,11 @@ class $$EmprestimosTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get idStatus => $composableBuilder(
+    column: $table.idStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$UsuariosTableOrderingComposer get idResponsavel {
     final $$UsuariosTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -4889,29 +3380,6 @@ class $$EmprestimosTableOrderingComposer
           }) => $$UsuariosTableOrderingComposer(
             $db: $db,
             $table: $db.usuarios,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$EmprestimoStatusTableOrderingComposer get idStatus {
-    final $$EmprestimoStatusTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.idStatus,
-      referencedTable: $db.emprestimoStatus,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$EmprestimoStatusTableOrderingComposer(
-            $db: $db,
-            $table: $db.emprestimoStatus,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -4944,6 +3412,9 @@ class $$EmprestimosTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<int> get idStatus =>
+      $composableBuilder(column: $table.idStatus, builder: (column) => column);
+
   $$UsuariosTableAnnotationComposer get idResponsavel {
     final $$UsuariosTableAnnotationComposer composer = $composerBuilder(
       composer: this,
@@ -4958,29 +3429,6 @@ class $$EmprestimosTableAnnotationComposer
           }) => $$UsuariosTableAnnotationComposer(
             $db: $db,
             $table: $db.usuarios,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$EmprestimoStatusTableAnnotationComposer get idStatus {
-    final $$EmprestimoStatusTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.idStatus,
-      referencedTable: $db.emprestimoStatus,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$EmprestimoStatusTableAnnotationComposer(
-            $db: $db,
-            $table: $db.emprestimoStatus,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -5029,11 +3477,7 @@ class $$EmprestimosTableTableManager
           $$EmprestimosTableUpdateCompanionBuilder,
           (EmprestimoData, $$EmprestimosTableReferences),
           EmprestimoData,
-          PrefetchHooks Function({
-            bool idResponsavel,
-            bool idStatus,
-            bool emprestimoItensRefs,
-          })
+          PrefetchHooks Function({bool idResponsavel, bool emprestimoItensRefs})
         > {
   $$EmprestimosTableTableManager(_$AppDatabase db, $EmprestimosTable table)
     : super(
@@ -5083,11 +3527,7 @@ class $$EmprestimosTableTableManager
               )
               .toList(),
           prefetchHooksCallback:
-              ({
-                idResponsavel = false,
-                idStatus = false,
-                emprestimoItensRefs = false,
-              }) {
+              ({idResponsavel = false, emprestimoItensRefs = false}) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
@@ -5120,21 +3560,6 @@ class $$EmprestimosTableTableManager
                                     referencedColumn:
                                         $$EmprestimosTableReferences
                                             ._idResponsavelTable(db)
-                                            .id,
-                                  )
-                                  as T;
-                        }
-                        if (idStatus) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.idStatus,
-                                    referencedTable:
-                                        $$EmprestimosTableReferences
-                                            ._idStatusTable(db),
-                                    referencedColumn:
-                                        $$EmprestimosTableReferences
-                                            ._idStatusTable(db)
                                             .id,
                                   )
                                   as T;
@@ -5185,11 +3610,7 @@ typedef $$EmprestimosTableProcessedTableManager =
       $$EmprestimosTableUpdateCompanionBuilder,
       (EmprestimoData, $$EmprestimosTableReferences),
       EmprestimoData,
-      PrefetchHooks Function({
-        bool idResponsavel,
-        bool idStatus,
-        bool emprestimoItensRefs,
-      })
+      PrefetchHooks Function({bool idResponsavel, bool emprestimoItensRefs})
     >;
 typedef $$EmprestimoItensTableCreateCompanionBuilder =
     EmprestimoItensCompanion Function({
@@ -5245,28 +3666,6 @@ final class $$EmprestimoItensTableReferences
     );
   }
 
-  static $TiposDispositivoTable _idTipoDispositivoTable(_$AppDatabase db) =>
-      db.tiposDispositivo.createAlias(
-        $_aliasNameGenerator(
-          db.emprestimoItens.idTipoDispositivo,
-          db.tiposDispositivo.id,
-        ),
-      );
-
-  $$TiposDispositivoTableProcessedTableManager get idTipoDispositivo {
-    final $_column = $_itemColumn<int>('id_tipo_dispositivo')!;
-
-    final manager = $$TiposDispositivoTableTableManager(
-      $_db,
-      $_db.tiposDispositivo,
-    ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_idTipoDispositivoTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-
   static MultiTypedResultKey<
     $EmprestimoDispositivosTable,
     List<EmprestimoDispositivoData>
@@ -5310,6 +3709,11 @@ class $$EmprestimoItensTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<int> get idTipoDispositivo => $composableBuilder(
+    column: $table.idTipoDispositivo,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<int> get qtdSolicitada => $composableBuilder(
     column: $table.qtdSolicitada,
     builder: (column) => ColumnFilters(column),
@@ -5339,29 +3743,6 @@ class $$EmprestimoItensTableFilterComposer
           }) => $$EmprestimosTableFilterComposer(
             $db: $db,
             $table: $db.emprestimos,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$TiposDispositivoTableFilterComposer get idTipoDispositivo {
-    final $$TiposDispositivoTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.idTipoDispositivo,
-      referencedTable: $db.tiposDispositivo,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$TiposDispositivoTableFilterComposer(
-            $db: $db,
-            $table: $db.tiposDispositivo,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -5412,6 +3793,11 @@ class $$EmprestimoItensTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get idTipoDispositivo => $composableBuilder(
+    column: $table.idTipoDispositivo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get qtdSolicitada => $composableBuilder(
     column: $table.qtdSolicitada,
     builder: (column) => ColumnOrderings(column),
@@ -5449,29 +3835,6 @@ class $$EmprestimoItensTableOrderingComposer
     );
     return composer;
   }
-
-  $$TiposDispositivoTableOrderingComposer get idTipoDispositivo {
-    final $$TiposDispositivoTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.idTipoDispositivo,
-      referencedTable: $db.tiposDispositivo,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$TiposDispositivoTableOrderingComposer(
-            $db: $db,
-            $table: $db.tiposDispositivo,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
 }
 
 class $$EmprestimoItensTableAnnotationComposer
@@ -5485,6 +3848,11 @@ class $$EmprestimoItensTableAnnotationComposer
   });
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get idTipoDispositivo => $composableBuilder(
+    column: $table.idTipoDispositivo,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get qtdSolicitada => $composableBuilder(
     column: $table.qtdSolicitada,
@@ -5515,29 +3883,6 @@ class $$EmprestimoItensTableAnnotationComposer
           }) => $$EmprestimosTableAnnotationComposer(
             $db: $db,
             $table: $db.emprestimos,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$TiposDispositivoTableAnnotationComposer get idTipoDispositivo {
-    final $$TiposDispositivoTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.idTipoDispositivo,
-      referencedTable: $db.tiposDispositivo,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$TiposDispositivoTableAnnotationComposer(
-            $db: $db,
-            $table: $db.tiposDispositivo,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -5589,7 +3934,6 @@ class $$EmprestimoItensTableTableManager
           EmprestimoItemData,
           PrefetchHooks Function({
             bool idEmprestimo,
-            bool idTipoDispositivo,
             bool emprestimoDispositivosRefs,
           })
         > {
@@ -5647,11 +3991,7 @@ class $$EmprestimoItensTableTableManager
               )
               .toList(),
           prefetchHooksCallback:
-              ({
-                idEmprestimo = false,
-                idTipoDispositivo = false,
-                emprestimoDispositivosRefs = false,
-              }) {
+              ({idEmprestimo = false, emprestimoDispositivosRefs = false}) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
@@ -5684,21 +4024,6 @@ class $$EmprestimoItensTableTableManager
                                     referencedColumn:
                                         $$EmprestimoItensTableReferences
                                             ._idEmprestimoTable(db)
-                                            .id,
-                                  )
-                                  as T;
-                        }
-                        if (idTipoDispositivo) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.idTipoDispositivo,
-                                    referencedTable:
-                                        $$EmprestimoItensTableReferences
-                                            ._idTipoDispositivoTable(db),
-                                    referencedColumn:
-                                        $$EmprestimoItensTableReferences
-                                            ._idTipoDispositivoTable(db)
                                             .id,
                                   )
                                   as T;
@@ -5751,7 +4076,6 @@ typedef $$EmprestimoItensTableProcessedTableManager =
       EmprestimoItemData,
       PrefetchHooks Function({
         bool idEmprestimo,
-        bool idTipoDispositivo,
         bool emprestimoDispositivosRefs,
       })
     >;
@@ -6430,10 +4754,6 @@ class $AppDatabaseManager {
   $AppDatabaseManager(this._db);
   $$CargosTableTableManager get cargos =>
       $$CargosTableTableManager(_db, _db.cargos);
-  $$TiposDispositivoTableTableManager get tiposDispositivo =>
-      $$TiposDispositivoTableTableManager(_db, _db.tiposDispositivo);
-  $$EmprestimoStatusTableTableManager get emprestimoStatus =>
-      $$EmprestimoStatusTableTableManager(_db, _db.emprestimoStatus);
   $$DispositivosTableTableManager get dispositivos =>
       $$DispositivosTableTableManager(_db, _db.dispositivos);
   $$UsuariosTableTableManager get usuarios =>

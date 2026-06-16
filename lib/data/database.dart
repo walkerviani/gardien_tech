@@ -11,8 +11,6 @@ import 'datasources/problema_datasource.dart';
 import 'datasources/emprestimo_datasource.dart';
 import 'datasources/emprestimo_item_datasource.dart';
 import 'datasources/emprestimo_dispositivos_datasource.dart';
-import 'datasources/emprestimo_status_datasource.dart';
-import 'datasources/tipos_dispositivo_datasource.dart';
 
 part 'database.g.dart';
 
@@ -22,9 +20,7 @@ part 'database.g.dart';
   Emprestimos,
   EmprestimoDispositivos,
   EmprestimoItens,
-  EmprestimoStatus,
   Problemas,
-  TiposDispositivo,
   Usuarios
 ])
 class AppDatabase extends _$AppDatabase {
