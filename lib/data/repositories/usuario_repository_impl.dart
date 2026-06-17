@@ -1,0 +1,49 @@
+import 'package:gardien_tech/data/database.dart';
+import 'package:gardien_tech/data/datasources/usuario_datasource.dart';
+import 'package:gardien_tech/domain/entities/usuario.dart';
+import 'package:gardien_tech/domain/repositories/usuario_repository.dart';
+
+class UsuarioRepositoryImpl implements UsuarioRepository {
+  final AppDatabase _database;
+
+  UsuarioRepositoryImpl(this._database);
+
+  @override
+  Future<List<Usuario>> obterTodos() async {
+    final usuarios = await _database.select(_database.usuarios).get();
+
+    return usuarios.map((usuario) => usuario.toEntity()).toList();
+  }
+
+  @override
+  Future<Usuario?> buscarPorNome(String nome) async {
+    final usuario = await (_database.select(_database.usuarios)
+      ..where((u) => u.nome.equals(nome))).getSingleOrNull();
+
+    return usuario?.toEntity();
+  }
+
+  @override
+  Future<Usuario?> buscarPorId(int id) async {
+    final usuario = await (_database.select(_database.usuarios)
+      ..where((u) => u.id.equals(id))).getSingleOrNull();
+
+    return usuario?.toEntity();
+  }
+
+  @override
+  Future<void> criar(Usuario usuario) async {
+    await _database.into(_database.usuarios).insert(usuario.toCompanion());
+  }
+
+  @override
+  Future<void> atualizar(Usuario usuario) async {
+    await (_database.update(_database.usuarios)..where((u) => u.id.equals(usuario.id)))
+      .write(usuario.toCompanion());
+  }
+
+  @override
+  Future<void> deletar(int id) async {
+    await (_database.delete(_database.usuarios)..where((u) => u.id.equals(id))).go();
+  }
+}

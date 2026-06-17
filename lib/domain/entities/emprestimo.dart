@@ -12,7 +12,7 @@ class Emprestimo {
     this._idResponsavel,
     {DateTime? dataHoraEfetuado,
     this.dataHoraConcluido, // nullable, pois a conclusão pode não ter ocorrido ainda
-    this.idStatus = 1,
+    this.idStatus = 1, // 1 - Ativo
   }) : dataHoraEfetuado = dataHoraEfetuado ?? DateTime.now(); // initializer list — executa atribuições antes do corpo do construtor
     
   // Getters

@@ -5,8 +5,6 @@ class Dispositivo {
   int numSerie;
   int numPatrimonio;  
   int idStatus;
-  int qtdTotal; 
-  int qtdDisponivel;
 
   // Construtor
   Dispositivo(
@@ -14,10 +12,8 @@ class Dispositivo {
     this._idTipoDispositivo,
     this.numSerie,
     this.numPatrimonio,
-    this.qtdTotal,
-    this.qtdDisponivel,
-    {this.idStatus = 1
-  });
+    {this.idStatus = 1} // 1 - Disponível
+  );
 
   // Getters
   int get id => _id;
