@@ -19,8 +19,9 @@ extension CargoMapper on CargoData {
 
 extension CargoCompanionMapper on Cargo {
   CargosCompanion toCompanion() {
-    return CargosCompanion.insert(
-      nomeCargo: nomeCargo,
+    return CargosCompanion(
+      id: id != null ? Value(id!) : const Value.absent(),
+      nomeCargo: Value(nomeCargo),
     );
   }
 }
