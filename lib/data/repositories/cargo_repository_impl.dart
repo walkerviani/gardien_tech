@@ -30,9 +30,12 @@ class CargoRepositoryImpl implements CargoRepository {
 
   @override
   Future<void> atualizar(Cargo cargo) async {
+    if (cargo.id == null) {
+      throw ArgumentError('Não é possível atualizar um cargo sem id');
+    }
     await (_database.update(
       _database.cargos,
-    )..where((c) => c.id.equals(cargo.id))).write(cargo.toCompanion());
+    )..where((c) => c.id.equals(cargo.id!))).write(cargo.toCompanion());
   }
 
   @override
