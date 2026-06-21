@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:gardien_tech/domain/repositories/cargo_repository.dart';
+import 'package:gardien_tech/presentation/viewmodels/cargo_viewmodel.dart';
 import 'package:gardien_tech/presentation/views/cargos_screen.dart';
 import 'package:gardien_tech/presentation/views/usuarios_screen.dart';
+import 'package:provider/provider.dart';
 
 class FuncoesScreen extends StatelessWidget {
   const FuncoesScreen({super.key});
@@ -37,8 +40,18 @@ class FuncoesScreen extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           ElevatedButton(
-            onPressed: () { 
-              Navigator.push(context, MaterialPageRoute(builder: (_) => CargosScreen()));
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ChangeNotifierProvider(
+                    create: (context) =>
+                        CargoViewModel(context.read<CargoRepository>())
+                          ..carregarCargos(),
+                    child: const CargosScreen(),
+                  ),
+                ),
+              );
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blue,

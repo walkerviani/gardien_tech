@@ -8,4 +8,6 @@ class Cargo{
 
   // Getter
   int? get id => _id;
+
+  String? get cargoNome => nomeCargo;
 }
