@@ -18,6 +18,14 @@ class CargoRepositoryImpl implements CargoRepository {
   }
 
   @override
+  Future<Cargo?> buscarPorNome(String nome) async {
+    final cargo = await (_database.select(_database.cargos)
+      ..where((c) => c.nomeCargo.equals(nome))).getSingleOrNull();
+
+    return cargo?.toEntity();
+  }
+
+  @override
   Future<List<Cargo>> buscarTodos() async {
     final cargos = await _database.select(_database.cargos).get();
     return cargos.map((c) => c.toEntity()).toList();
@@ -33,6 +41,7 @@ class CargoRepositoryImpl implements CargoRepository {
     if (cargo.id == null) {
       throw ArgumentError('Não é possível atualizar um cargo sem id');
     }
+    
     await (_database.update(
       _database.cargos,
     )..where((c) => c.id.equals(cargo.id!))).write(cargo.toCompanion());

@@ -38,7 +38,11 @@ class UsuarioRepositoryImpl implements UsuarioRepository {
 
   @override
   Future<void> atualizar(Usuario usuario) async {
-    await (_database.update(_database.usuarios)..where((u) => u.id.equals(usuario.id)))
+    if (usuario.id == null) {
+      throw ArgumentError('Não é possível atualizar um usuario sem id');
+    }
+    
+    await (_database.update(_database.usuarios)..where((u) => u.id.equals(usuario.id!)))
       .write(usuario.toCompanion());
   }
 

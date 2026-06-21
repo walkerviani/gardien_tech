@@ -38,7 +38,11 @@ class ProblemaRepositoryImpl implements ProblemaRepository {
 
   @override
   Future<void> atualizar(Problema problema) async {
-    await (_database.update(_database.problemas)..where((p) => p.id.equals(problema.id)))
+    if (problema.id == null) {
+      throw ArgumentError('Não é possível atualizar um problema sem id');
+    }
+
+    await (_database.update(_database.problemas)..where((p) => p.id.equals(problema.id!)))
       .write(problema.toCompanion());
   }
 

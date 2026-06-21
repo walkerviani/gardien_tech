@@ -7,5 +7,8 @@ abstract class DispositivoRepository {
   Future<void> criar(Dispositivo dispositivo);
   Future<void> atualizar(Dispositivo dispositivo);
   Future<void> deletar(int id);
+  Future<void> marcarEmUso(int id);
+  Future<void> marcarDisponivel(int id);
+  Future<void> marcarIndisponivel(int id);
   Future<int> contarDisponiveisPorTipo(int idTipoDispositivo);
 }

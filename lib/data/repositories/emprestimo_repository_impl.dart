@@ -1,12 +1,18 @@
 import 'package:gardien_tech/data/database.dart';
 import 'package:gardien_tech/data/datasources/emprestimo_datasource.dart';
 import 'package:gardien_tech/domain/entities/emprestimo.dart';
+import 'package:gardien_tech/domain/enum/emprestimo_status.dart';
+import 'package:gardien_tech/domain/repositories/emprestimo_item_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_repository.dart';
 
 class EmprestimoRepositoryImpl implements EmprestimoRepository {
   final AppDatabase _database;
+  final EmprestimoItemRepository _emprestimoItemRepository;
 
-  EmprestimoRepositoryImpl(this._database);
+  EmprestimoRepositoryImpl(
+    this._database,
+    this._emprestimoItemRepository,
+  );
 
   @override
   Future<List<Emprestimo>> obterTodos() async {
@@ -39,7 +45,11 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
 
     @override
   Future<void> atualizar(Emprestimo emprestimo) async {
-    await (_database.update(_database.emprestimos)..where((e) => e.id.equals(emprestimo.id)))
+    if (emprestimo.id == null) {
+      throw ArgumentError('Não é possível atualizar um empréstimo sem id');
+    }
+
+    await (_database.update(_database.emprestimos)..where((e) => e.id.equals(emprestimo.id!)))
       .write(emprestimo.toCompanion());
   }
 
@@ -47,22 +57,21 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
   Future<void> deletar(int id) async {
     await (_database.delete(_database.emprestimos)..where((e) => e.id.equals(id))).go();
   }
-
+  
   @override
-  Future<void> debitar(int idDispositivo, int qtd) async {
-    // TODO: implement debitar
-    throw UnimplementedError();
-  }
+  Future<void> concluir(int id) async {
+    final emprestimo = await buscarPorId(id);
+    if (emprestimo == null) throw ArgumentError('Empréstimo não encontrado');
 
-  @override
-  Future<void> creditar(int idDispositivo, int qtd) async {
-    // TODO: implement creditar
-    throw UnimplementedError();
-  }
+    final itens = await _emprestimoItemRepository.obterPorEmprestimo(id);
+    final pendentes = itens.where((item) => !item.estaResolvido);
 
-  @override
-  Future<void> concluir(int idEmprestimoItem, List<int> idDispositivos) {
-    // TODO: implement concluir
-    throw UnimplementedError();
+    if (pendentes.isNotEmpty) {
+      throw StateError('Existem itens sem dispositivos vinculados');
+    }
+
+    emprestimo.dataHoraConcluido = DateTime.now();
+    emprestimo.idStatus = EmprestimoStatus.concluido.id;
+    await atualizar(emprestimo);
   }
 }
