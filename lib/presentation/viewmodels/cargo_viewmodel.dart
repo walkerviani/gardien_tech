@@ -30,6 +30,22 @@ class CargoViewModel extends ChangeNotifier {
     isLoading = true;
     errorMessage = null;
     notifyListeners();
+
+    if(nome.trim().isEmpty) {
+      errorMessage = 'Nome é obrigatório';
+      isLoading = false;
+      notifyListeners();
+      return false;
+    }
+
+    final jaExiste = await _repository.buscarPorNome(nome);
+    if(jaExiste != null) {
+      errorMessage = 'Já existe um cargo com esse nome';
+      isLoading = false;
+      notifyListeners();
+      return false;
+    }
+
     try {
       Cargo cargo = Cargo(id, nome);
       if (id != null) {
