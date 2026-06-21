@@ -30,7 +30,6 @@ class CargoViewModel extends ChangeNotifier {
     isLoading = true;
     errorMessage = null;
     notifyListeners();
-
     try {
       Cargo cargo = Cargo(id, nome);
       if (id != null) {
@@ -41,6 +40,22 @@ class CargoViewModel extends ChangeNotifier {
       return true;
     } catch (e) {
       errorMessage = 'Erro ao salvar o cargo';
+      return false;
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> deletar(int id) async {
+    isLoading = true;
+    errorMessage = null;
+    notifyListeners();
+    try {
+      await _repository.deletar(id);
+      return true;
+    } catch (e) {
+      errorMessage = 'Erro ao excluir o cargo';
       return false;
     } finally {
       isLoading = false;
