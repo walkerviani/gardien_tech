@@ -13,6 +13,7 @@ class GerenciarCargosScreen extends StatefulWidget {
 }
 
 class _GerenciarCargosScreenState extends State<GerenciarCargosScreen> {
+  final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nomeController;
   late final bool isEditing;
 
@@ -30,11 +31,12 @@ class _GerenciarCargosScreenState extends State<GerenciarCargosScreen> {
   }
 
   void _salvar() async {
+    if (!_formKey.currentState!.validate()) {
+      return; // Finaliza se tiver algum campo inválido no TextFormField
+    }
     final viewModel = context.read<CargoViewModel>();
-    final nome = _nomeController.text;
-
+    final nome = _nomeController.text.trim().toUpperCase();
     final sucesso = await viewModel.salvar(id: widget.cargoId, nome: nome);
-
     if (!mounted) return;
 
     if (sucesso) {
@@ -49,48 +51,58 @@ class _GerenciarCargosScreenState extends State<GerenciarCargosScreen> {
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<CargoViewModel>();
-
     return Scaffold(
       appBar: AppBar(
         title: Text(isEditing ? 'Editar Cargo' : 'Novo Cargo'),
         backgroundColor: const Color(0xFF2196F3),
-        foregroundColor: Colors.white,
+        foregroundColor: const Color(0xFFFFFFFF),
       ),
       body: Container(
         padding: EdgeInsets.all(12),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsetsGeometry.only(top: 10),
-              child: TextField(
-                controller: _nomeController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Nome',
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsetsGeometry.only(top: 30),
-              child: ElevatedButton(
-                onPressed: viewModel.isLoading ? null : _salvar,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size(double.infinity, 70),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsetsGeometry.only(top: 10),
+                child: TextFormField(
+                  controller: _nomeController,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'O nome é obrigatório';
+                    }
+                    return null;
+                  },
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Nome',
                   ),
                 ),
-                child: viewModel.isLoading
-                    ? const CircularProgressIndicator(color:Color(0xFF2196F3))
-                    : Text(
-                        isEditing ? 'Atualizar' : 'Salvar',
-                        style: TextStyle(fontSize: 18),
-                      ),
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsetsGeometry.only(top: 30),
+                child: ElevatedButton(
+                  onPressed: viewModel.isLoading ? null : _salvar,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF4CAF50),
+                    foregroundColor: const Color(0xFFFFFFFF),
+                    minimumSize: const Size(double.infinity, 70),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  child: viewModel.isLoading
+                      ? const CircularProgressIndicator(
+                          color: Color(0xFF2196F3),
+                        )
+                      : Text(
+                          isEditing ? 'Atualizar' : 'Salvar',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
