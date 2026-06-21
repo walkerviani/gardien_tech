@@ -35,8 +35,7 @@ class _GerenciarCargosScreenState extends State<GerenciarCargosScreen> {
       return; // Finaliza se tiver algum campo inválido no TextFormField
     }
     final viewModel = context.read<CargoViewModel>();
-    final nome = _nomeController.text;
-
+    final nome = _nomeController.text.trim().toUpperCase();
     final sucesso = await viewModel.salvar(id: widget.cargoId, nome: nome);
     if (!mounted) return;
 
