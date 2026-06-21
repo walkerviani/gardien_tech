@@ -27,6 +27,7 @@ extension EmprestimoMapper on EmprestimoData {
 extension EmprestimoCompanionMapper on Emprestimo {
   EmprestimosCompanion toCompanion() {
     return EmprestimosCompanion.insert(
+      id: id != null ? Value(id!) : const Value.absent(),
       dataHoraEfetuado: dataHoraEfetuado,
       dataHoraConcluido: Value(dataHoraConcluido),
       idResponsavel: idResponsavel,

@@ -23,6 +23,7 @@ extension UsuarioMapper on UsuarioData {
 extension UsuarioCompanionMapper on Usuario {
   UsuariosCompanion toCompanion() {
     return UsuariosCompanion.insert(
+      id: id != null ? Value(id!) : const Value.absent(),
       idCargo: idCargo,
       nome: nome,
     );

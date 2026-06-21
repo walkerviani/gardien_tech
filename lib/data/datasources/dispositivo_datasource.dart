@@ -26,6 +26,7 @@ extension DispositivoMapper on DispositivoData {
 extension DispositivoCompanionMapper on Dispositivo {
   DispositivosCompanion toCompanion() {
     return DispositivosCompanion.insert(
+      id: id != null ? Value(id!) : const Value.absent(),
       idTipoDispositivo: idTipoDispositivo,
       numSerie: numSerie,
       numPatrimonio: numPatrimonio,

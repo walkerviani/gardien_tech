@@ -1,6 +1,6 @@
 class Emprestimo {
   // Atributos
-  final int _id;
+  final int? _id;
   DateTime dataHoraEfetuado;
   DateTime? dataHoraConcluido;
   final int _idResponsavel; 
@@ -16,6 +16,6 @@ class Emprestimo {
   }) : dataHoraEfetuado = dataHoraEfetuado ?? DateTime.now(); // initializer list — executa atribuições antes do corpo do construtor
     
   // Getters
-  int get id => _id;
+  int? get id => _id;
   int get idResponsavel => _idResponsavel;
 }

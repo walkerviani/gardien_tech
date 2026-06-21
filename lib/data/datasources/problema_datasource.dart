@@ -23,6 +23,7 @@ extension ProblemaMapper on ProblemaData {
 extension ProblemaCompanionMapper on Problema {
   ProblemasCompanion toCompanion() {
     return ProblemasCompanion.insert(
+      id: id != null ? Value(id!) : const Value.absent(),
       idDispositivo: idDispositivo,
       descricao: descricao,
     );

@@ -24,6 +24,7 @@ extension EmprestimoDispositivoMapper on EmprestimoDispositivoData {
 extension EmprestimoDispositivoCompanionMapper on EmprestimoDispositivo {
   EmprestimoDispositivosCompanion toCompanion() {
     return EmprestimoDispositivosCompanion.insert(
+      id: id != null ? Value(id!) : const Value.absent(),
       idEmprestimoItem: idEmprestimoItem,
       idDispositivo: Value(idDispositivo),
     );

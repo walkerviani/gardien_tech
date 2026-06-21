@@ -1,6 +1,6 @@
 class Dispositivo {
   // Atributos
-  final int _id;
+  final int? _id;
   final int _idTipoDispositivo; // Não irá mudar o tipo do dispositivo
   int numSerie;
   int numPatrimonio;  
@@ -16,6 +16,6 @@ class Dispositivo {
   );
 
   // Getters
-  int get id => _id;
+  int? get id => _id;
   int get idTipoDispositivo => _idTipoDispositivo;
 }

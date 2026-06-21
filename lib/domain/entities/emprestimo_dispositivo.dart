@@ -1,6 +1,6 @@
 class EmprestimoDispositivo {
   // Atributos
-  final int _id;
+  final int? _id;
   final int _idEmprestimoItem;
   int? idDispositivo; // O dispositivo pode ser vinculado posteriormente, então o id deve ser nullable e mutável
 
@@ -12,7 +12,7 @@ class EmprestimoDispositivo {
   });
 
   // Getters
-  int get id => _id;
+  int? get id => _id;
   int get idEmprestimoItem => _idEmprestimoItem;
   int? get idDisp => idDispositivo;
 }
