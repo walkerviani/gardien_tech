@@ -26,7 +26,7 @@ class EmprestimoItemRepositoryIml implements EmprestimoItemRepository {
   }
 
   @override
-  Future<List<EmprestimoItem>> obterPorEmprestimo(int idEmprestimo) async {
+  Future<List<EmprestimoItem>> buscarPorEmprestimo(int idEmprestimo) async {
     final emprestimoItens = await (_database.select(_database.emprestimoItens)
       ..where((ei) => ei.idEmprestimo.equals(idEmprestimo))).get();
 
@@ -83,7 +83,7 @@ class EmprestimoItemRepositoryIml implements EmprestimoItemRepository {
     await _dispositivoRepository.marcarEmUso(idDispositivo);
 
     // Busca todo os itens vinculados e adiciona como item de empréstimo
-    final vinculados = await _edRepository.obterPorItem(idEmprestimoItem);
+    final vinculados = await _edRepository.buscarPorEmprestimoItem(idEmprestimoItem);
     final qtdVinculada = vinculados.where((ed) => ed.idDispositivo != null).length;
     if (qtdVinculada >= emprestimoItem.qtdSolicitada) {
       emprestimoItem.estaResolvido = true;

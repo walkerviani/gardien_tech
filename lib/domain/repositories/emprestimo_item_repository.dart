@@ -1,7 +1,7 @@
 import 'package:gardien_tech/domain/entities/emprestimo_item.dart';
 
 abstract class EmprestimoItemRepository {
-  Future<List<EmprestimoItem>> obterPorEmprestimo(int idEmprestimo);
+  Future<List<EmprestimoItem>> buscarPorEmprestimo(int idEmprestimo);
   Future<EmprestimoItem?> buscarPorId(int id);
   Future<void> criar(EmprestimoItem item);
   Future<void> atualizar(EmprestimoItem item);

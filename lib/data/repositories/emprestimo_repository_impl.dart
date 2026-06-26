@@ -15,14 +15,14 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
   );
 
   @override
-  Future<List<Emprestimo>> obterTodos() async {
+  Future<List<Emprestimo>> buscarTodos() async {
     final emprestimos = await _database.select(_database.emprestimos).get();
 
     return emprestimos.map((emprestimo) => emprestimo.toEntity()).toList();
   }
 
   @override
-  Future<List<Emprestimo>> obterTodosAtivos() async {
+  Future<List<Emprestimo>> buscarTodosAtivos() async {
     final emprestimos = await (_database.select(_database.emprestimos)
         ..where((emprestimo) => emprestimo.idStatus.equals(1)))
       .get();
@@ -63,7 +63,7 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
     final emprestimo = await buscarPorId(id);
     if (emprestimo == null) throw ArgumentError('Empréstimo não encontrado');
 
-    final itens = await _emprestimoItemRepository.obterPorEmprestimo(id);
+    final itens = await _emprestimoItemRepository.buscarPorEmprestimo(id);
     final pendentes = itens.where((item) => !item.estaResolvido);
 
     if (pendentes.isNotEmpty) {

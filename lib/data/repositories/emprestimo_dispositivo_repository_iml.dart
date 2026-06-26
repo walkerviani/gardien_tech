@@ -17,7 +17,7 @@ class EmprestimoDispositivoRepositoryIml implements EmprestimoDispositivoReposit
   }
 
   @override
-  Future<List<EmprestimoDispositivo>> obterPorItem(int idEmprestimoItem) async {
+  Future<List<EmprestimoDispositivo>> buscarPorEmprestimoItem(int idEmprestimoItem) async {
     final emprestimoDispositivos = await (_database.select(_database.emprestimoDispositivos)
       ..where((ed) => ed.idEmprestimoItem.equals(idEmprestimoItem))).get();
 

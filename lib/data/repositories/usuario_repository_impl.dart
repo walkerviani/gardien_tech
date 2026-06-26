@@ -9,7 +9,7 @@ class UsuarioRepositoryImpl implements UsuarioRepository {
   UsuarioRepositoryImpl(this._database);
 
   @override
-  Future<List<Usuario>> obterTodos() async {
+  Future<List<Usuario>> buscarTodos() async {
     final usuarios = await _database.select(_database.usuarios).get();
 
     return usuarios.map((usuario) => usuario.toEntity()).toList();

@@ -9,14 +9,14 @@ class ProblemaRepositoryImpl implements ProblemaRepository {
   ProblemaRepositoryImpl(this._database);
 
   @override
-  Future<List<Problema>> obterTodos() async {
+  Future<List<Problema>> buscarTodos() async {
     final problemas = await _database.select(_database.problemas).get();
 
     return problemas.map((problema) => problema.toEntity()).toList();
   }
 
   @override
-  Future<List<Problema>> obterTodosPorDispositivo(int idDispositivo) async {
+  Future<List<Problema>> buscarTodosPorDispositivo(int idDispositivo) async {
     final problemas = await (_database.select(_database.problemas)
       ..where((p) => p.idDispositivo.equals(idDispositivo)))
         .get();

@@ -1,7 +1,7 @@
 import 'package:gardien_tech/domain/entities/usuario.dart';
 
 abstract class UsuarioRepository {
-  Future<List<Usuario>> obterTodos();
+  Future<List<Usuario>> buscarTodos();
   Future<Usuario?> buscarPorNome(String nome);
   Future<Usuario?> buscarPorId(int id);
   Future<void> criar(Usuario usuario);
