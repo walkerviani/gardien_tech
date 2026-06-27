@@ -3,199 +3,6 @@
 part of 'database.dart';
 
 // ignore_for_file: type=lint
-class $CargosTable extends Cargos with TableInfo<$CargosTable, CargoData> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $CargosTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-    'id',
-    aliasedName,
-    false,
-    hasAutoIncrement: true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'PRIMARY KEY AUTOINCREMENT',
-    ),
-  );
-  static const VerificationMeta _nomeCargoMeta = const VerificationMeta(
-    'nomeCargo',
-  );
-  @override
-  late final GeneratedColumn<String> nomeCargo = GeneratedColumn<String>(
-    'nome_cargo',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  @override
-  List<GeneratedColumn> get $columns => [id, nomeCargo];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'cargos';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<CargoData> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('nome_cargo')) {
-      context.handle(
-        _nomeCargoMeta,
-        nomeCargo.isAcceptableOrUnknown(data['nome_cargo']!, _nomeCargoMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_nomeCargoMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  CargoData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return CargoData(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}id'],
-      )!,
-      nomeCargo: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}nome_cargo'],
-      )!,
-    );
-  }
-
-  @override
-  $CargosTable createAlias(String alias) {
-    return $CargosTable(attachedDatabase, alias);
-  }
-}
-
-class CargoData extends DataClass implements Insertable<CargoData> {
-  final int id;
-  final String nomeCargo;
-  const CargoData({required this.id, required this.nomeCargo});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['nome_cargo'] = Variable<String>(nomeCargo);
-    return map;
-  }
-
-  CargosCompanion toCompanion(bool nullToAbsent) {
-    return CargosCompanion(id: Value(id), nomeCargo: Value(nomeCargo));
-  }
-
-  factory CargoData.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return CargoData(
-      id: serializer.fromJson<int>(json['id']),
-      nomeCargo: serializer.fromJson<String>(json['nomeCargo']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'nomeCargo': serializer.toJson<String>(nomeCargo),
-    };
-  }
-
-  CargoData copyWith({int? id, String? nomeCargo}) =>
-      CargoData(id: id ?? this.id, nomeCargo: nomeCargo ?? this.nomeCargo);
-  CargoData copyWithCompanion(CargosCompanion data) {
-    return CargoData(
-      id: data.id.present ? data.id.value : this.id,
-      nomeCargo: data.nomeCargo.present ? data.nomeCargo.value : this.nomeCargo,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('CargoData(')
-          ..write('id: $id, ')
-          ..write('nomeCargo: $nomeCargo')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, nomeCargo);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is CargoData &&
-          other.id == this.id &&
-          other.nomeCargo == this.nomeCargo);
-}
-
-class CargosCompanion extends UpdateCompanion<CargoData> {
-  final Value<int> id;
-  final Value<String> nomeCargo;
-  const CargosCompanion({
-    this.id = const Value.absent(),
-    this.nomeCargo = const Value.absent(),
-  });
-  CargosCompanion.insert({
-    this.id = const Value.absent(),
-    required String nomeCargo,
-  }) : nomeCargo = Value(nomeCargo);
-  static Insertable<CargoData> custom({
-    Expression<int>? id,
-    Expression<String>? nomeCargo,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (nomeCargo != null) 'nome_cargo': nomeCargo,
-    });
-  }
-
-  CargosCompanion copyWith({Value<int>? id, Value<String>? nomeCargo}) {
-    return CargosCompanion(
-      id: id ?? this.id,
-      nomeCargo: nomeCargo ?? this.nomeCargo,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (nomeCargo.present) {
-      map['nome_cargo'] = Variable<String>(nomeCargo.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('CargosCompanion(')
-          ..write('id: $id, ')
-          ..write('nomeCargo: $nomeCargo')
-          ..write(')'))
-        .toString();
-  }
-}
-
 class $DispositivosTable extends Dispositivos
     with TableInfo<$DispositivosTable, DispositivoData> {
   @override
@@ -597,9 +404,6 @@ class $UsuariosTable extends Usuarios
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES cargos (id)',
-    ),
   );
   @override
   List<GeneratedColumn> get $columns => [id, nome, idCargo];
@@ -2229,7 +2033,6 @@ class ProblemasCompanion extends UpdateCompanion<ProblemaData> {
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
-  late final $CargosTable cargos = $CargosTable(this);
   late final $DispositivosTable dispositivos = $DispositivosTable(this);
   late final $UsuariosTable usuarios = $UsuariosTable(this);
   late final $EmprestimosTable emprestimos = $EmprestimosTable(this);
@@ -2244,7 +2047,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
-    cargos,
     dispositivos,
     usuarios,
     emprestimos,
@@ -2254,226 +2056,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   ];
 }
 
-typedef $$CargosTableCreateCompanionBuilder =
-    CargosCompanion Function({Value<int> id, required String nomeCargo});
-typedef $$CargosTableUpdateCompanionBuilder =
-    CargosCompanion Function({Value<int> id, Value<String> nomeCargo});
-
-final class $$CargosTableReferences
-    extends BaseReferences<_$AppDatabase, $CargosTable, CargoData> {
-  $$CargosTableReferences(super.$_db, super.$_table, super.$_typedResult);
-
-  static MultiTypedResultKey<$UsuariosTable, List<UsuarioData>>
-  _usuariosRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-    db.usuarios,
-    aliasName: $_aliasNameGenerator(db.cargos.id, db.usuarios.idCargo),
-  );
-
-  $$UsuariosTableProcessedTableManager get usuariosRefs {
-    final manager = $$UsuariosTableTableManager(
-      $_db,
-      $_db.usuarios,
-    ).filter((f) => f.idCargo.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_usuariosRefsTable($_db));
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-}
-
-class $$CargosTableFilterComposer
-    extends Composer<_$AppDatabase, $CargosTable> {
-  $$CargosTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get nomeCargo => $composableBuilder(
-    column: $table.nomeCargo,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  Expression<bool> usuariosRefs(
-    Expression<bool> Function($$UsuariosTableFilterComposer f) f,
-  ) {
-    final $$UsuariosTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.usuarios,
-      getReferencedColumn: (t) => t.idCargo,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$UsuariosTableFilterComposer(
-            $db: $db,
-            $table: $db.usuarios,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-}
-
-class $$CargosTableOrderingComposer
-    extends Composer<_$AppDatabase, $CargosTable> {
-  $$CargosTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get nomeCargo => $composableBuilder(
-    column: $table.nomeCargo,
-    builder: (column) => ColumnOrderings(column),
-  );
-}
-
-class $$CargosTableAnnotationComposer
-    extends Composer<_$AppDatabase, $CargosTable> {
-  $$CargosTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get nomeCargo =>
-      $composableBuilder(column: $table.nomeCargo, builder: (column) => column);
-
-  Expression<T> usuariosRefs<T extends Object>(
-    Expression<T> Function($$UsuariosTableAnnotationComposer a) f,
-  ) {
-    final $$UsuariosTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.usuarios,
-      getReferencedColumn: (t) => t.idCargo,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$UsuariosTableAnnotationComposer(
-            $db: $db,
-            $table: $db.usuarios,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-}
-
-class $$CargosTableTableManager
-    extends
-        RootTableManager<
-          _$AppDatabase,
-          $CargosTable,
-          CargoData,
-          $$CargosTableFilterComposer,
-          $$CargosTableOrderingComposer,
-          $$CargosTableAnnotationComposer,
-          $$CargosTableCreateCompanionBuilder,
-          $$CargosTableUpdateCompanionBuilder,
-          (CargoData, $$CargosTableReferences),
-          CargoData,
-          PrefetchHooks Function({bool usuariosRefs})
-        > {
-  $$CargosTableTableManager(_$AppDatabase db, $CargosTable table)
-    : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$CargosTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$CargosTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$CargosTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                Value<String> nomeCargo = const Value.absent(),
-              }) => CargosCompanion(id: id, nomeCargo: nomeCargo),
-          createCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                required String nomeCargo,
-              }) => CargosCompanion.insert(id: id, nomeCargo: nomeCargo),
-          withReferenceMapper: (p0) => p0
-              .map(
-                (e) =>
-                    (e.readTable(table), $$CargosTableReferences(db, table, e)),
-              )
-              .toList(),
-          prefetchHooksCallback: ({usuariosRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [if (usuariosRefs) db.usuarios],
-              addJoins: null,
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (usuariosRefs)
-                    await $_getPrefetchedData<
-                      CargoData,
-                      $CargosTable,
-                      UsuarioData
-                    >(
-                      currentTable: table,
-                      referencedTable: $$CargosTableReferences
-                          ._usuariosRefsTable(db),
-                      managerFromTypedResult: (p0) =>
-                          $$CargosTableReferences(db, table, p0).usuariosRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where((e) => e.idCargo == item.id),
-                      typedResults: items,
-                    ),
-                ];
-              },
-            );
-          },
-        ),
-      );
-}
-
-typedef $$CargosTableProcessedTableManager =
-    ProcessedTableManager<
-      _$AppDatabase,
-      $CargosTable,
-      CargoData,
-      $$CargosTableFilterComposer,
-      $$CargosTableOrderingComposer,
-      $$CargosTableAnnotationComposer,
-      $$CargosTableCreateCompanionBuilder,
-      $$CargosTableUpdateCompanionBuilder,
-      (CargoData, $$CargosTableReferences),
-      CargoData,
-      PrefetchHooks Function({bool usuariosRefs})
-    >;
 typedef $$DispositivosTableCreateCompanionBuilder =
     DispositivosCompanion Function({
       Value<int> id,
@@ -2502,10 +2084,7 @@ final class $$DispositivosTableReferences
   _emprestimoDispositivosRefsTable(_$AppDatabase db) =>
       MultiTypedResultKey.fromTable(
         db.emprestimoDispositivos,
-        aliasName: $_aliasNameGenerator(
-          db.dispositivos.id,
-          db.emprestimoDispositivos.idDispositivo,
-        ),
+        aliasName: 'dispositivos__id__emprestimo_dispositivos__id_dispositivo',
       );
 
   $$EmprestimoDispositivosTableProcessedTableManager
@@ -2526,10 +2105,7 @@ final class $$DispositivosTableReferences
   static MultiTypedResultKey<$ProblemasTable, List<ProblemaData>>
   _problemasRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.problemas,
-    aliasName: $_aliasNameGenerator(
-      db.dispositivos.id,
-      db.problemas.idDispositivo,
-    ),
+    aliasName: 'dispositivos__id__problemas__id_dispositivo',
   );
 
   $$ProblemasTableProcessedTableManager get problemasRefs {
@@ -2906,31 +2482,10 @@ final class $$UsuariosTableReferences
     extends BaseReferences<_$AppDatabase, $UsuariosTable, UsuarioData> {
   $$UsuariosTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static $CargosTable _idCargoTable(_$AppDatabase db) => db.cargos.createAlias(
-    $_aliasNameGenerator(db.usuarios.idCargo, db.cargos.id),
-  );
-
-  $$CargosTableProcessedTableManager get idCargo {
-    final $_column = $_itemColumn<int>('id_cargo')!;
-
-    final manager = $$CargosTableTableManager(
-      $_db,
-      $_db.cargos,
-    ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_idCargoTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-
   static MultiTypedResultKey<$EmprestimosTable, List<EmprestimoData>>
   _emprestimosRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.emprestimos,
-    aliasName: $_aliasNameGenerator(
-      db.usuarios.id,
-      db.emprestimos.idResponsavel,
-    ),
+    aliasName: 'usuarios__id__emprestimos__id_responsavel',
   );
 
   $$EmprestimosTableProcessedTableManager get emprestimosRefs {
@@ -2965,28 +2520,10 @@ class $$UsuariosTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  $$CargosTableFilterComposer get idCargo {
-    final $$CargosTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.idCargo,
-      referencedTable: $db.cargos,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$CargosTableFilterComposer(
-            $db: $db,
-            $table: $db.cargos,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
+  ColumnFilters<int> get idCargo => $composableBuilder(
+    column: $table.idCargo,
+    builder: (column) => ColumnFilters(column),
+  );
 
   Expression<bool> emprestimosRefs(
     Expression<bool> Function($$EmprestimosTableFilterComposer f) f,
@@ -3033,28 +2570,10 @@ class $$UsuariosTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  $$CargosTableOrderingComposer get idCargo {
-    final $$CargosTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.idCargo,
-      referencedTable: $db.cargos,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$CargosTableOrderingComposer(
-            $db: $db,
-            $table: $db.cargos,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
+  ColumnOrderings<int> get idCargo => $composableBuilder(
+    column: $table.idCargo,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$UsuariosTableAnnotationComposer
@@ -3072,28 +2591,8 @@ class $$UsuariosTableAnnotationComposer
   GeneratedColumn<String> get nome =>
       $composableBuilder(column: $table.nome, builder: (column) => column);
 
-  $$CargosTableAnnotationComposer get idCargo {
-    final $$CargosTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.idCargo,
-      referencedTable: $db.cargos,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$CargosTableAnnotationComposer(
-            $db: $db,
-            $table: $db.cargos,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
+  GeneratedColumn<int> get idCargo =>
+      $composableBuilder(column: $table.idCargo, builder: (column) => column);
 
   Expression<T> emprestimosRefs<T extends Object>(
     Expression<T> Function($$EmprestimosTableAnnotationComposer a) f,
@@ -3134,7 +2633,7 @@ class $$UsuariosTableTableManager
           $$UsuariosTableUpdateCompanionBuilder,
           (UsuarioData, $$UsuariosTableReferences),
           UsuarioData,
-          PrefetchHooks Function({bool idCargo, bool emprestimosRefs})
+          PrefetchHooks Function({bool emprestimosRefs})
         > {
   $$UsuariosTableTableManager(_$AppDatabase db, $UsuariosTable table)
     : super(
@@ -3171,42 +2670,11 @@ class $$UsuariosTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({idCargo = false, emprestimosRefs = false}) {
+          prefetchHooksCallback: ({emprestimosRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [if (emprestimosRefs) db.emprestimos],
-              addJoins:
-                  <
-                    T extends TableManagerState<
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic
-                    >
-                  >(state) {
-                    if (idCargo) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.idCargo,
-                                referencedTable: $$UsuariosTableReferences
-                                    ._idCargoTable(db),
-                                referencedColumn: $$UsuariosTableReferences
-                                    ._idCargoTable(db)
-                                    .id,
-                              )
-                              as T;
-                    }
-
-                    return state;
-                  },
+              addJoins: null,
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (emprestimosRefs)
@@ -3249,7 +2717,7 @@ typedef $$UsuariosTableProcessedTableManager =
       $$UsuariosTableUpdateCompanionBuilder,
       (UsuarioData, $$UsuariosTableReferences),
       UsuarioData,
-      PrefetchHooks Function({bool idCargo, bool emprestimosRefs})
+      PrefetchHooks Function({bool emprestimosRefs})
     >;
 typedef $$EmprestimosTableCreateCompanionBuilder =
     EmprestimosCompanion Function({
@@ -3273,9 +2741,7 @@ final class $$EmprestimosTableReferences
   $$EmprestimosTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
   static $UsuariosTable _idResponsavelTable(_$AppDatabase db) =>
-      db.usuarios.createAlias(
-        $_aliasNameGenerator(db.emprestimos.idResponsavel, db.usuarios.id),
-      );
+      db.usuarios.createAlias('emprestimos__id_responsavel__usuarios__id');
 
   $$UsuariosTableProcessedTableManager get idResponsavel {
     final $_column = $_itemColumn<int>('id_responsavel')!;
@@ -3294,10 +2760,7 @@ final class $$EmprestimosTableReferences
   static MultiTypedResultKey<$EmprestimoItensTable, List<EmprestimoItemData>>
   _emprestimoItensRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.emprestimoItens,
-    aliasName: $_aliasNameGenerator(
-      db.emprestimos.id,
-      db.emprestimoItens.idEmprestimo,
-    ),
+    aliasName: 'emprestimos__id__emprestimo_itens__id_emprestimo',
   );
 
   $$EmprestimoItensTableProcessedTableManager get emprestimoItensRefs {
@@ -3702,13 +3165,9 @@ final class $$EmprestimoItensTableReferences
     super.$_typedResult,
   );
 
-  static $EmprestimosTable _idEmprestimoTable(_$AppDatabase db) =>
-      db.emprestimos.createAlias(
-        $_aliasNameGenerator(
-          db.emprestimoItens.idEmprestimo,
-          db.emprestimos.id,
-        ),
-      );
+  static $EmprestimosTable _idEmprestimoTable(_$AppDatabase db) => db
+      .emprestimos
+      .createAlias('emprestimo_itens__id_emprestimo__emprestimos__id');
 
   $$EmprestimosTableProcessedTableManager get idEmprestimo {
     final $_column = $_itemColumn<int>('id_emprestimo')!;
@@ -3731,10 +3190,8 @@ final class $$EmprestimoItensTableReferences
   _emprestimoDispositivosRefsTable(_$AppDatabase db) =>
       MultiTypedResultKey.fromTable(
         db.emprestimoDispositivos,
-        aliasName: $_aliasNameGenerator(
-          db.emprestimoItens.id,
-          db.emprestimoDispositivos.idEmprestimoItem,
-        ),
+        aliasName:
+            'emprestimo_itens__id__emprestimo_dispositivos__id_emprestimo_item',
       );
 
   $$EmprestimoDispositivosTableProcessedTableManager
@@ -4184,10 +3641,7 @@ final class $$EmprestimoDispositivosTableReferences
 
   static $EmprestimoItensTable _idEmprestimoItemTable(_$AppDatabase db) =>
       db.emprestimoItens.createAlias(
-        $_aliasNameGenerator(
-          db.emprestimoDispositivos.idEmprestimoItem,
-          db.emprestimoItens.id,
-        ),
+        'emprestimo_dispositivos__id_emprestimo_item__emprestimo_itens__id',
       );
 
   $$EmprestimoItensTableProcessedTableManager get idEmprestimoItem {
@@ -4204,13 +3658,9 @@ final class $$EmprestimoDispositivosTableReferences
     );
   }
 
-  static $DispositivosTable _idDispositivoTable(_$AppDatabase db) =>
-      db.dispositivos.createAlias(
-        $_aliasNameGenerator(
-          db.emprestimoDispositivos.idDispositivo,
-          db.dispositivos.id,
-        ),
-      );
+  static $DispositivosTable _idDispositivoTable(_$AppDatabase db) => db
+      .dispositivos
+      .createAlias('emprestimo_dispositivos__id_dispositivo__dispositivos__id');
 
   $$DispositivosTableProcessedTableManager? get idDispositivo {
     final $_column = $_itemColumn<int>('id_dispositivo');
@@ -4567,10 +4017,9 @@ final class $$ProblemasTableReferences
     extends BaseReferences<_$AppDatabase, $ProblemasTable, ProblemaData> {
   $$ProblemasTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static $DispositivosTable _idDispositivoTable(_$AppDatabase db) =>
-      db.dispositivos.createAlias(
-        $_aliasNameGenerator(db.problemas.idDispositivo, db.dispositivos.id),
-      );
+  static $DispositivosTable _idDispositivoTable(_$AppDatabase db) => db
+      .dispositivos
+      .createAlias('problemas__id_dispositivo__dispositivos__id');
 
   $$DispositivosTableProcessedTableManager get idDispositivo {
     final $_column = $_itemColumn<int>('id_dispositivo')!;
@@ -4829,8 +4278,6 @@ typedef $$ProblemasTableProcessedTableManager =
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
-  $$CargosTableTableManager get cargos =>
-      $$CargosTableTableManager(_db, _db.cargos);
   $$DispositivosTableTableManager get dispositivos =>
       $$DispositivosTableTableManager(_db, _db.dispositivos);
   $$UsuariosTableTableManager get usuarios =>

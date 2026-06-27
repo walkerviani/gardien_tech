@@ -4,7 +4,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'dart:io';
 
-import 'datasources/cargo_datasource.dart';
 import 'datasources/usuario_datasource.dart';
 import 'datasources/dispositivo_datasource.dart';
 import 'datasources/problema_datasource.dart';
@@ -15,7 +14,6 @@ import 'datasources/emprestimo_dispositivos_datasource.dart';
 part 'database.g.dart';
 
 @DriftDatabase(tables: [
-  Cargos,
   Dispositivos,
   Emprestimos,
   EmprestimoDispositivos,
