@@ -9,5 +9,5 @@ class Usuario {
 
   // Getters
   int? get id => _id;
-  int get idCargo => _idCargo;
+  int get idTipoCargo => _idTipoCargo;
 }

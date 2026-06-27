@@ -394,19 +394,19 @@ class $UsuariosTable extends Usuarios
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _idCargoMeta = const VerificationMeta(
-    'idCargo',
+  static const VerificationMeta _idTipoCargoMeta = const VerificationMeta(
+    'idTipoCargo',
   );
   @override
-  late final GeneratedColumn<int> idCargo = GeneratedColumn<int>(
-    'id_cargo',
+  late final GeneratedColumn<int> idTipoCargo = GeneratedColumn<int>(
+    'id_tipo_cargo',
     aliasedName,
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
   @override
-  List<GeneratedColumn> get $columns => [id, nome, idCargo];
+  List<GeneratedColumn> get $columns => [id, nome, idTipoCargo];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -430,13 +430,16 @@ class $UsuariosTable extends Usuarios
     } else if (isInserting) {
       context.missing(_nomeMeta);
     }
-    if (data.containsKey('id_cargo')) {
+    if (data.containsKey('id_tipo_cargo')) {
       context.handle(
-        _idCargoMeta,
-        idCargo.isAcceptableOrUnknown(data['id_cargo']!, _idCargoMeta),
+        _idTipoCargoMeta,
+        idTipoCargo.isAcceptableOrUnknown(
+          data['id_tipo_cargo']!,
+          _idTipoCargoMeta,
+        ),
       );
     } else if (isInserting) {
-      context.missing(_idCargoMeta);
+      context.missing(_idTipoCargoMeta);
     }
     return context;
   }
@@ -455,9 +458,9 @@ class $UsuariosTable extends Usuarios
         DriftSqlType.string,
         data['${effectivePrefix}nome'],
       )!,
-      idCargo: attachedDatabase.typeMapping.read(
+      idTipoCargo: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
-        data['${effectivePrefix}id_cargo'],
+        data['${effectivePrefix}id_tipo_cargo'],
       )!,
     );
   }
@@ -471,18 +474,18 @@ class $UsuariosTable extends Usuarios
 class UsuarioData extends DataClass implements Insertable<UsuarioData> {
   final int id;
   final String nome;
-  final int idCargo;
+  final int idTipoCargo;
   const UsuarioData({
     required this.id,
     required this.nome,
-    required this.idCargo,
+    required this.idTipoCargo,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['nome'] = Variable<String>(nome);
-    map['id_cargo'] = Variable<int>(idCargo);
+    map['id_tipo_cargo'] = Variable<int>(idTipoCargo);
     return map;
   }
 
@@ -490,7 +493,7 @@ class UsuarioData extends DataClass implements Insertable<UsuarioData> {
     return UsuariosCompanion(
       id: Value(id),
       nome: Value(nome),
-      idCargo: Value(idCargo),
+      idTipoCargo: Value(idTipoCargo),
     );
   }
 
@@ -502,7 +505,7 @@ class UsuarioData extends DataClass implements Insertable<UsuarioData> {
     return UsuarioData(
       id: serializer.fromJson<int>(json['id']),
       nome: serializer.fromJson<String>(json['nome']),
-      idCargo: serializer.fromJson<int>(json['idCargo']),
+      idTipoCargo: serializer.fromJson<int>(json['idTipoCargo']),
     );
   }
   @override
@@ -511,20 +514,23 @@ class UsuarioData extends DataClass implements Insertable<UsuarioData> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'nome': serializer.toJson<String>(nome),
-      'idCargo': serializer.toJson<int>(idCargo),
+      'idTipoCargo': serializer.toJson<int>(idTipoCargo),
     };
   }
 
-  UsuarioData copyWith({int? id, String? nome, int? idCargo}) => UsuarioData(
-    id: id ?? this.id,
-    nome: nome ?? this.nome,
-    idCargo: idCargo ?? this.idCargo,
-  );
+  UsuarioData copyWith({int? id, String? nome, int? idTipoCargo}) =>
+      UsuarioData(
+        id: id ?? this.id,
+        nome: nome ?? this.nome,
+        idTipoCargo: idTipoCargo ?? this.idTipoCargo,
+      );
   UsuarioData copyWithCompanion(UsuariosCompanion data) {
     return UsuarioData(
       id: data.id.present ? data.id.value : this.id,
       nome: data.nome.present ? data.nome.value : this.nome,
-      idCargo: data.idCargo.present ? data.idCargo.value : this.idCargo,
+      idTipoCargo: data.idTipoCargo.present
+          ? data.idTipoCargo.value
+          : this.idTipoCargo,
     );
   }
 
@@ -533,58 +539,58 @@ class UsuarioData extends DataClass implements Insertable<UsuarioData> {
     return (StringBuffer('UsuarioData(')
           ..write('id: $id, ')
           ..write('nome: $nome, ')
-          ..write('idCargo: $idCargo')
+          ..write('idTipoCargo: $idTipoCargo')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, nome, idCargo);
+  int get hashCode => Object.hash(id, nome, idTipoCargo);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is UsuarioData &&
           other.id == this.id &&
           other.nome == this.nome &&
-          other.idCargo == this.idCargo);
+          other.idTipoCargo == this.idTipoCargo);
 }
 
 class UsuariosCompanion extends UpdateCompanion<UsuarioData> {
   final Value<int> id;
   final Value<String> nome;
-  final Value<int> idCargo;
+  final Value<int> idTipoCargo;
   const UsuariosCompanion({
     this.id = const Value.absent(),
     this.nome = const Value.absent(),
-    this.idCargo = const Value.absent(),
+    this.idTipoCargo = const Value.absent(),
   });
   UsuariosCompanion.insert({
     this.id = const Value.absent(),
     required String nome,
-    required int idCargo,
+    required int idTipoCargo,
   }) : nome = Value(nome),
-       idCargo = Value(idCargo);
+       idTipoCargo = Value(idTipoCargo);
   static Insertable<UsuarioData> custom({
     Expression<int>? id,
     Expression<String>? nome,
-    Expression<int>? idCargo,
+    Expression<int>? idTipoCargo,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (nome != null) 'nome': nome,
-      if (idCargo != null) 'id_cargo': idCargo,
+      if (idTipoCargo != null) 'id_tipo_cargo': idTipoCargo,
     });
   }
 
   UsuariosCompanion copyWith({
     Value<int>? id,
     Value<String>? nome,
-    Value<int>? idCargo,
+    Value<int>? idTipoCargo,
   }) {
     return UsuariosCompanion(
       id: id ?? this.id,
       nome: nome ?? this.nome,
-      idCargo: idCargo ?? this.idCargo,
+      idTipoCargo: idTipoCargo ?? this.idTipoCargo,
     );
   }
 
@@ -597,8 +603,8 @@ class UsuariosCompanion extends UpdateCompanion<UsuarioData> {
     if (nome.present) {
       map['nome'] = Variable<String>(nome.value);
     }
-    if (idCargo.present) {
-      map['id_cargo'] = Variable<int>(idCargo.value);
+    if (idTipoCargo.present) {
+      map['id_tipo_cargo'] = Variable<int>(idTipoCargo.value);
     }
     return map;
   }
@@ -608,7 +614,7 @@ class UsuariosCompanion extends UpdateCompanion<UsuarioData> {
     return (StringBuffer('UsuariosCompanion(')
           ..write('id: $id, ')
           ..write('nome: $nome, ')
-          ..write('idCargo: $idCargo')
+          ..write('idTipoCargo: $idTipoCargo')
           ..write(')'))
         .toString();
   }
@@ -2469,13 +2475,13 @@ typedef $$UsuariosTableCreateCompanionBuilder =
     UsuariosCompanion Function({
       Value<int> id,
       required String nome,
-      required int idCargo,
+      required int idTipoCargo,
     });
 typedef $$UsuariosTableUpdateCompanionBuilder =
     UsuariosCompanion Function({
       Value<int> id,
       Value<String> nome,
-      Value<int> idCargo,
+      Value<int> idTipoCargo,
     });
 
 final class $$UsuariosTableReferences
@@ -2520,8 +2526,8 @@ class $$UsuariosTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get idCargo => $composableBuilder(
-    column: $table.idCargo,
+  ColumnFilters<int> get idTipoCargo => $composableBuilder(
+    column: $table.idTipoCargo,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2570,8 +2576,8 @@ class $$UsuariosTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get idCargo => $composableBuilder(
-    column: $table.idCargo,
+  ColumnOrderings<int> get idTipoCargo => $composableBuilder(
+    column: $table.idTipoCargo,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -2591,8 +2597,10 @@ class $$UsuariosTableAnnotationComposer
   GeneratedColumn<String> get nome =>
       $composableBuilder(column: $table.nome, builder: (column) => column);
 
-  GeneratedColumn<int> get idCargo =>
-      $composableBuilder(column: $table.idCargo, builder: (column) => column);
+  GeneratedColumn<int> get idTipoCargo => $composableBuilder(
+    column: $table.idTipoCargo,
+    builder: (column) => column,
+  );
 
   Expression<T> emprestimosRefs<T extends Object>(
     Expression<T> Function($$EmprestimosTableAnnotationComposer a) f,
@@ -2650,17 +2658,21 @@ class $$UsuariosTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 Value<String> nome = const Value.absent(),
-                Value<int> idCargo = const Value.absent(),
-              }) => UsuariosCompanion(id: id, nome: nome, idCargo: idCargo),
+                Value<int> idTipoCargo = const Value.absent(),
+              }) => UsuariosCompanion(
+                id: id,
+                nome: nome,
+                idTipoCargo: idTipoCargo,
+              ),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
                 required String nome,
-                required int idCargo,
+                required int idTipoCargo,
               }) => UsuariosCompanion.insert(
                 id: id,
                 nome: nome,
-                idCargo: idCargo,
+                idTipoCargo: idTipoCargo,
               ),
           withReferenceMapper: (p0) => p0
               .map(
