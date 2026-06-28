@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gardien_tech/presentation/views/dispositivos_screen.dart';
 import 'package:gardien_tech/presentation/views/usuarios_screen.dart';
 
 class FuncoesScreen extends StatelessWidget {
@@ -22,8 +23,8 @@ class FuncoesScreen extends StatelessWidget {
               );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue,
-              foregroundColor: Colors.white,
+              backgroundColor: const Color(0xFF2196F3),
+              foregroundColor: const Color(0xFFFFFFFF),
               minimumSize: const Size(double.infinity, 70),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(4),
@@ -39,19 +40,28 @@ class FuncoesScreen extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           /*
-          Botão 2
+          Botão de gerenciamento dos dispositivos
            */
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => DispositivosScreen()),
+              );
+            },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.lightBlue,
-              foregroundColor: Colors.white,
+              backgroundColor: const Color(0xFF2196F3),
+              foregroundColor: const Color(0xFFFFFFFF),
               minimumSize: const Size(double.infinity, 70),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(4),
               ),
             ),
-            child: Text('Botão 3'),
+            child: Row(
+              children: [
+                Icon(Icons.devices, size: 30),
+                SizedBox(width: 20),
+                Text('Gerenciar Dispositivos', style: TextStyle(fontSize: 18)),
+              ],
+            ),
           ),
           const SizedBox(height: 10),
           /*
