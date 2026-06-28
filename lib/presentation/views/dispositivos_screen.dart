@@ -1,0 +1,180 @@
+import 'package:flutter/material.dart';
+import 'package:gardien_tech/domain/entities/dispositivo.dart';
+import 'package:gardien_tech/domain/enum/tipo_dispositivo.dart';
+import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
+import 'package:gardien_tech/presentation/viewmodels/dispositivo_viewmodel.dart';
+import 'package:gardien_tech/presentation/views/gerenciar_dispositivos_screen.dart';
+import 'package:provider/provider.dart';
+
+class DispositivosScreen extends StatefulWidget {
+  const DispositivosScreen({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _DispositivosScreenState();
+}
+
+class _DispositivosScreenState extends State<DispositivosScreen> {
+  void _abrirFormulario({Dispositivo? dispositivo}) async {
+    final viewModel = context.read<DispositivoViewmodel>();
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ChangeNotifierProvider(
+          create: (context) =>
+              DispositivoViewmodel(context.read<DispositivoRepository>()),
+          child: GerenciarDispositivosScreen(
+            dispositivoId: dispositivo?.id,
+            idTipoDispositivo: dispositivo?.idTipoDispositivo,
+            numSerie: dispositivo?.numSerie,
+            numPatrimonio: dispositivo?.numPatrimonio,
+          ),
+        ),
+      ),
+    );
+    if (!mounted) return;
+    viewModel.carregarDispositivos();
+  }
+
+  void _confirmarExcluir(Dispositivo dispositivo) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Excluir Dispositivo'),
+        content: Text(
+          'Deseja excluir o dispositivo com número de série: "${dispositivo.numSerie}"?',
+        ),
+        actionsAlignment: MainAxisAlignment.spaceEvenly,
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              'Cancelar',
+              style: TextStyle(color: Color(0xFF000000)),
+            ),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              final viewModel = context.read<DispositivoViewmodel>();
+              final sucesso = await viewModel.deletar(dispositivo.id!);
+              if (!mounted) return;
+              if (sucesso) {
+                viewModel.carregarDispositivos();
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(viewModel.errorMessage ?? 'Erro ao excluir'),
+                  ),
+                );
+              }
+            },
+            child: const Text('Excluir', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Dispositivos'),
+        backgroundColor: const Color(0xFF2196F3),
+        foregroundColor: Colors.white,
+      ),
+      body: Container(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          children: [
+            ElevatedButton(
+              onPressed: () => _abrirFormulario(),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                foregroundColor: Colors.white,
+                minimumSize: const Size(double.infinity, 70),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.add_to_queue, size: 30),
+                  SizedBox(width: 20),
+                  Text(
+                    'Adicionar Novo Dispositivo',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            Expanded(
+              child: Consumer<DispositivoViewmodel>(
+                builder: (context, viewModel, child) {
+                  if (viewModel.isLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (viewModel.dispositivos.isEmpty) {
+                    return const Center(
+                      child: Text('Nenhum dispositivo encontrado'),
+                    );
+                  }
+                  return ListView.builder(
+                    itemCount: viewModel.dispositivos.length,
+                    itemBuilder: (context, index) {
+                      final dispositivo = viewModel.dispositivos[index];
+                      final dispositivoTipo =
+                          TipoDispositivo.values
+                              .where(
+                                (tipoDisp) =>
+                                    tipoDisp.id ==
+                                    dispositivo.idTipoDispositivo,
+                              )
+                              .firstOrNull
+                              ?.nomeTipo ??
+                          'Cargo não encontrado';
+                      return Card(
+                        key: ValueKey(dispositivo.id),
+                        child: ListTile(
+                          title: Text(
+                            'Patrimônio: ${dispositivo.numPatrimonio}',
+                            style: TextStyle(fontWeight: FontWeight(600)),
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'N° Série: ${dispositivo.numSerie}',
+                                style: TextStyle(fontWeight: FontWeight(600)),
+                              ),
+                              Text(dispositivoTipo),
+                            ],
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                onPressed: () =>
+                                    _abrirFormulario(dispositivo: dispositivo),
+                                icon: const Icon(Icons.edit),
+                              ),
+                              IconButton(
+                                onPressed: () => _confirmarExcluir(dispositivo),
+                                icon: const Icon(Icons.delete),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
