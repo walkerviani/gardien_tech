@@ -136,32 +136,72 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
                           'Cargo não encontrado';
                       return Card(
                         key: ValueKey(dispositivo.id),
-                        child: ListTile(
-                          title: Text(
-                            'Patrimônio: ${dispositivo.numPatrimonio}',
-                            style: TextStyle(fontWeight: FontWeight(600)),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
                           ),
-                          subtitle: Column(
+                          child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'N° Série: ${dispositivo.numSerie}',
-                                style: TextStyle(fontWeight: FontWeight(600)),
+                              /* 
+                              Parte Esquerda - num patrimonio, num serie, tipo dispositivo
+                              */
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Patrimônio: ${dispositivo.numPatrimonio}',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight(600),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      'N° Série: ${dispositivo.numSerie}',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight(600),
+                                      ),
+                                    ),
+                                    Text(dispositivoTipo),
+                                  ],
+                                ),
                               ),
-                              Text(dispositivoTipo),
-                            ],
-                          ),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                onPressed: () =>
-                                    _abrirFormulario(dispositivo: dispositivo),
-                                icon: const Icon(Icons.edit),
-                              ),
-                              IconButton(
-                                onPressed: () => _confirmarExcluir(dispositivo),
-                                icon: const Icon(Icons.delete),
+                              /* 
+                              Parte Direita - botões
+                              */
+                              Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      IconButton(
+                                        onPressed: () => _abrirFormulario(
+                                          dispositivo: dispositivo,
+                                        ),
+                                        icon: const Icon(Icons.edit),
+                                      ),
+                                      IconButton(
+                                        onPressed: () =>
+                                            _confirmarExcluir(dispositivo),
+                                        icon: const Icon(Icons.delete),
+                                      ),
+                                    ],
+                                  ),
+                                  TextButton(
+                                    onPressed: () {},
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: const Color(0xFFB00303),
+                                      foregroundColor: const Color(0xFFFFFFFF),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      )
+                                    ),
+                                    child: const Text('Relatar problema'),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
