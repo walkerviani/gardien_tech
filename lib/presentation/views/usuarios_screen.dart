@@ -15,6 +15,14 @@ class UsuariosScreen extends StatefulWidget {
 
 class _UsuariosScreenState extends State<UsuariosScreen> {
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<UsuarioViewmodel>().carregarUsuarios();
+    });
+  }
+
   void _abrirFormulario({Usuario? usuario}) async {
     final viewModel = context.read<UsuarioViewmodel>();
     await Navigator.push(
