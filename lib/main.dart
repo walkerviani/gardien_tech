@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gardien_tech/data/database.dart';
+import 'package:gardien_tech/data/repositories/dispositivo_repository_impl.dart';
 import 'package:gardien_tech/data/repositories/usuario_repository_impl.dart';
+import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
 import 'package:gardien_tech/domain/repositories/usuario_repository.dart';
+import 'package:gardien_tech/presentation/viewmodels/dispositivo_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/usuario_viewmodel.dart';
 import 'package:gardien_tech/presentation/views/main_screen.dart';
 import 'package:provider/provider.dart';
@@ -19,9 +22,17 @@ void main() {
           create: (context) =>
               UsuarioRepositoryImpl(context.read<AppDatabase>()),
         ),
+        Provider<DispositivoRepository>(
+          create: (context) =>
+              DispositivoRepositoryImpl(context.read<AppDatabase>()),
+        ),
         ChangeNotifierProvider<UsuarioViewmodel>(
           create: (context) =>
               UsuarioViewmodel(context.read<UsuarioRepository>()),
+        ),
+        ChangeNotifierProvider<DispositivoViewmodel>(
+          create: (context) =>
+              DispositivoViewmodel(context.read<DispositivoRepository>()),
         ),
       ],
       child: const MyApp(),
