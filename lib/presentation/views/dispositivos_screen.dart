@@ -3,6 +3,7 @@ import 'package:gardien_tech/domain/entities/dispositivo.dart';
 import 'package:gardien_tech/domain/enum/tipo_dispositivo.dart';
 import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
 import 'package:gardien_tech/presentation/viewmodels/dispositivo_viewmodel.dart';
+import 'package:gardien_tech/presentation/views/dispositivo_problema_screen.dart';
 import 'package:gardien_tech/presentation/views/gerenciar_dispositivos_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -14,7 +15,6 @@ class DispositivosScreen extends StatefulWidget {
 }
 
 class _DispositivosScreenState extends State<DispositivosScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -147,11 +147,11 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
                         key: ValueKey(dispositivo.id),
                         child: Padding(
                           padding: EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
+                            horizontal: 6,
+                            vertical: 6,
                           ),
                           child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               /* 
                               Parte Esquerda - num patrimonio, num serie, tipo dispositivo
@@ -161,19 +161,35 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Patrimônio: ${dispositivo.numPatrimonio}',
+                                      dispositivoTipo,
                                       style: TextStyle(
                                         fontWeight: FontWeight(600),
+                                        fontSize: 18,
                                       ),
                                     ),
-                                    const SizedBox(height: 4),
                                     Text(
-                                      'N° Série: ${dispositivo.numSerie}',
+                                      'PATRIMÔNIO',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight(600),
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    Text('${dispositivo.numPatrimonio}',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        ),
+                                    ),
+                                    Text(
+                                      'NÚMERO DE SÉRIE',
                                       style: TextStyle(
                                         fontWeight: FontWeight(600),
                                       ),
                                     ),
-                                    Text(dispositivoTipo),
+                                    Text('${dispositivo.numSerie}',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -200,15 +216,31 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
                                     ],
                                   ),
                                   TextButton(
-                                    onPressed: () {},
+                                    onPressed: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => ChangeNotifierProvider(
+                                          create: (context) =>
+                                              DispositivoViewmodel(
+                                                context
+                                                    .read<
+                                                      DispositivoRepository
+                                                    >(),
+                                              ),
+                                          child: DispositivoProblemaScreen(
+                                            idDispositivo: dispositivo.id!,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                     style: TextButton.styleFrom(
                                       backgroundColor: const Color(0xFFB00303),
                                       foregroundColor: const Color(0xFFFFFFFF),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8),
-                                      )
+                                      ),
                                     ),
-                                    child: const Text('Relatar problema'),
+                                    child: const Text('Problemas relatados'),
                                   ),
                                 ],
                               ),
