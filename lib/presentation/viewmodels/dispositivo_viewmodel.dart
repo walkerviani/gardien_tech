@@ -28,27 +28,13 @@ class DispositivoViewmodel extends ChangeNotifier {
 
   Future<bool> salvar({
     int? id,
-    required String numSerie,
-    required String numPatrimonio,
+    required int numSerie,
+    required int numPatrimonio,
     required int idTipoDispositivo,
   }) async {
     isLoading = true;
     errorMessage = null;
     notifyListeners();
-
-    if (numSerie.trim().isEmpty) {
-      errorMessage = 'Número de série é obrigatório';
-      isLoading = false;
-      notifyListeners();
-      return false;
-    }
-
-    if (numPatrimonio.trim().isEmpty) {
-      errorMessage = 'Número de patrimônio é obrigatório';
-      isLoading = false;
-      notifyListeners();
-      return false;
-    }
 
     try {
       Dispositivo dispositivo = Dispositivo(id, idTipoDispositivo, numSerie, numPatrimonio);
