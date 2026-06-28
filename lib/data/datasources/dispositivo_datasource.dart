@@ -6,7 +6,7 @@ import 'package:gardien_tech/domain/entities/dispositivo.dart';
 class Dispositivos extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get idTipoDispositivo => integer()();
-  IntColumn get numSerie => integer()();
+  TextColumn get numSerie => text()();
   IntColumn get numPatrimonio => integer()();
   IntColumn get idStatus => integer()();
 }

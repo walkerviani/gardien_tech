@@ -2,7 +2,7 @@ class Dispositivo {
   // Atributos
   final int? _id;
   final int _idTipoDispositivo; // Não irá mudar o tipo do dispositivo
-  int numSerie;
+  String numSerie;
   int numPatrimonio;  
   int idStatus;
 

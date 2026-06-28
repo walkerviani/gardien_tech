@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:gardien_tech/domain/enum/tipo_dispositivo.dart';
 import 'package:gardien_tech/presentation/viewmodels/dispositivo_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -8,7 +7,7 @@ import 'package:provider/provider.dart';
 class GerenciarDispositivosScreen extends StatefulWidget {
   final int? dispositivoId;
   final int? idTipoDispositivo;
-  final int? numSerie;
+  final String? numSerie;
   final int? numPatrimonio;
 
   const GerenciarDispositivosScreen({
@@ -61,7 +60,7 @@ class _GerenciarDispositivosScreenState
       return; // Finaliza se tiver algum campo inválido no Form
     }
     final viewModel = context.read<DispositivoViewmodel>();
-    final numSerie = int.parse(_numSerieController.text.trim());
+    final numSerie = _numSerieController.text.trim();
     final numPatrimonio = int.parse(_numPatrimonioController.text.trim());
     final sucesso = await viewModel.salvar(
       id: widget.dispositivoId,

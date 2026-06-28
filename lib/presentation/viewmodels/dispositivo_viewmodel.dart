@@ -28,7 +28,7 @@ class DispositivoViewmodel extends ChangeNotifier {
 
   Future<bool> salvar({
     int? id,
-    required int numSerie,
+    required String numSerie,
     required int numPatrimonio,
     required int idTipoDispositivo,
   }) async {
