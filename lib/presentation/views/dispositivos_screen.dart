@@ -3,6 +3,7 @@ import 'package:gardien_tech/domain/entities/dispositivo.dart';
 import 'package:gardien_tech/domain/enum/tipo_dispositivo.dart';
 import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
 import 'package:gardien_tech/presentation/viewmodels/dispositivo_viewmodel.dart';
+import 'package:gardien_tech/presentation/views/dispositivo_problema_screen.dart';
 import 'package:gardien_tech/presentation/views/gerenciar_dispositivos_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -14,6 +15,14 @@ class DispositivosScreen extends StatefulWidget {
 }
 
 class _DispositivosScreenState extends State<DispositivosScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<DispositivoViewmodel>().carregarDispositivos();
+    });
+  }
+
   void _abrirFormulario({Dispositivo? dispositivo}) async {
     final viewModel = context.read<DispositivoViewmodel>();
     await Navigator.push(
@@ -136,32 +145,104 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
                           'Cargo não encontrado';
                       return Card(
                         key: ValueKey(dispositivo.id),
-                        child: ListTile(
-                          title: Text(
-                            'Patrimônio: ${dispositivo.numPatrimonio}',
-                            style: TextStyle(fontWeight: FontWeight(600)),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 6,
                           ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text(
-                                'N° Série: ${dispositivo.numSerie}',
-                                style: TextStyle(fontWeight: FontWeight(600)),
+                              /* 
+                              Parte Esquerda - num patrimonio, num serie, tipo dispositivo
+                              */
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      dispositivoTipo,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight(600),
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                    Text(
+                                      'PATRIMÔNIO',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight(600),
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    Text('${dispositivo.numPatrimonio}',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        ),
+                                    ),
+                                    Text(
+                                      'NÚMERO DE SÉRIE',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight(600),
+                                      ),
+                                    ),
+                                    Text('${dispositivo.numSerie}',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              Text(dispositivoTipo),
-                            ],
-                          ),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                onPressed: () =>
-                                    _abrirFormulario(dispositivo: dispositivo),
-                                icon: const Icon(Icons.edit),
-                              ),
-                              IconButton(
-                                onPressed: () => _confirmarExcluir(dispositivo),
-                                icon: const Icon(Icons.delete),
+                              /* 
+                              Parte Direita - botões
+                              */
+                              Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      IconButton(
+                                        onPressed: () => _abrirFormulario(
+                                          dispositivo: dispositivo,
+                                        ),
+                                        icon: const Icon(Icons.edit),
+                                      ),
+                                      IconButton(
+                                        onPressed: () =>
+                                            _confirmarExcluir(dispositivo),
+                                        icon: const Icon(Icons.delete),
+                                      ),
+                                    ],
+                                  ),
+                                  TextButton(
+                                    onPressed: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => ChangeNotifierProvider(
+                                          create: (context) =>
+                                              DispositivoViewmodel(
+                                                context
+                                                    .read<
+                                                      DispositivoRepository
+                                                    >(),
+                                              ),
+                                          child: DispositivoProblemaScreen(
+                                            idDispositivo: dispositivo.id!,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: const Color(0xFFB00303),
+                                      foregroundColor: const Color(0xFFFFFFFF),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                    child: const Text('Problemas relatados'),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
