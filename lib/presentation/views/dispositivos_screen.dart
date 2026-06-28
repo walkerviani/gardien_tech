@@ -174,7 +174,7 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
                                         fontSize: 16,
                                       ),
                                     ),
-                                    Text('${dispositivo.numPatrimonio}',
+                                    Text(dispositivo.numPatrimonio,
                                       style: TextStyle(
                                         fontSize: 16,
                                         ),
@@ -185,7 +185,7 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
                                         fontWeight: FontWeight(600),
                                       ),
                                     ),
-                                    Text('${dispositivo.numSerie}',
+                                    Text(dispositivo.numSerie,
                                       style: TextStyle(
                                         fontSize: 16,
                                         ),

@@ -7,7 +7,7 @@ class Dispositivos extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get idTipoDispositivo => integer()();
   TextColumn get numSerie => text()();
-  IntColumn get numPatrimonio => integer()();
+  TextColumn get numPatrimonio => text()();
   IntColumn get idStatus => integer()();
 }
 

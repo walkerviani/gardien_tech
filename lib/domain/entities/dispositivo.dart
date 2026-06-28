@@ -3,7 +3,7 @@ class Dispositivo {
   final int? _id;
   final int _idTipoDispositivo; // Não irá mudar o tipo do dispositivo
   String numSerie;
-  int numPatrimonio;  
+  String numPatrimonio;  
   int idStatus;
 
   // Construtor

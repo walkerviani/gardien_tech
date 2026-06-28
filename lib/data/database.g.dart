@@ -48,11 +48,11 @@ class $DispositivosTable extends Dispositivos
     'numPatrimonio',
   );
   @override
-  late final GeneratedColumn<int> numPatrimonio = GeneratedColumn<int>(
+  late final GeneratedColumn<String> numPatrimonio = GeneratedColumn<String>(
     'num_patrimonio',
     aliasedName,
     false,
-    type: DriftSqlType.int,
+    type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
   static const VerificationMeta _idStatusMeta = const VerificationMeta(
@@ -149,7 +149,7 @@ class $DispositivosTable extends Dispositivos
         data['${effectivePrefix}num_serie'],
       )!,
       numPatrimonio: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
+        DriftSqlType.string,
         data['${effectivePrefix}num_patrimonio'],
       )!,
       idStatus: attachedDatabase.typeMapping.read(
@@ -169,7 +169,7 @@ class DispositivoData extends DataClass implements Insertable<DispositivoData> {
   final int id;
   final int idTipoDispositivo;
   final String numSerie;
-  final int numPatrimonio;
+  final String numPatrimonio;
   final int idStatus;
   const DispositivoData({
     required this.id,
@@ -184,7 +184,7 @@ class DispositivoData extends DataClass implements Insertable<DispositivoData> {
     map['id'] = Variable<int>(id);
     map['id_tipo_dispositivo'] = Variable<int>(idTipoDispositivo);
     map['num_serie'] = Variable<String>(numSerie);
-    map['num_patrimonio'] = Variable<int>(numPatrimonio);
+    map['num_patrimonio'] = Variable<String>(numPatrimonio);
     map['id_status'] = Variable<int>(idStatus);
     return map;
   }
@@ -208,7 +208,7 @@ class DispositivoData extends DataClass implements Insertable<DispositivoData> {
       id: serializer.fromJson<int>(json['id']),
       idTipoDispositivo: serializer.fromJson<int>(json['idTipoDispositivo']),
       numSerie: serializer.fromJson<String>(json['numSerie']),
-      numPatrimonio: serializer.fromJson<int>(json['numPatrimonio']),
+      numPatrimonio: serializer.fromJson<String>(json['numPatrimonio']),
       idStatus: serializer.fromJson<int>(json['idStatus']),
     );
   }
@@ -219,7 +219,7 @@ class DispositivoData extends DataClass implements Insertable<DispositivoData> {
       'id': serializer.toJson<int>(id),
       'idTipoDispositivo': serializer.toJson<int>(idTipoDispositivo),
       'numSerie': serializer.toJson<String>(numSerie),
-      'numPatrimonio': serializer.toJson<int>(numPatrimonio),
+      'numPatrimonio': serializer.toJson<String>(numPatrimonio),
       'idStatus': serializer.toJson<int>(idStatus),
     };
   }
@@ -228,7 +228,7 @@ class DispositivoData extends DataClass implements Insertable<DispositivoData> {
     int? id,
     int? idTipoDispositivo,
     String? numSerie,
-    int? numPatrimonio,
+    String? numPatrimonio,
     int? idStatus,
   }) => DispositivoData(
     id: id ?? this.id,
@@ -281,7 +281,7 @@ class DispositivosCompanion extends UpdateCompanion<DispositivoData> {
   final Value<int> id;
   final Value<int> idTipoDispositivo;
   final Value<String> numSerie;
-  final Value<int> numPatrimonio;
+  final Value<String> numPatrimonio;
   final Value<int> idStatus;
   const DispositivosCompanion({
     this.id = const Value.absent(),
@@ -294,7 +294,7 @@ class DispositivosCompanion extends UpdateCompanion<DispositivoData> {
     this.id = const Value.absent(),
     required int idTipoDispositivo,
     required String numSerie,
-    required int numPatrimonio,
+    required String numPatrimonio,
     required int idStatus,
   }) : idTipoDispositivo = Value(idTipoDispositivo),
        numSerie = Value(numSerie),
@@ -304,7 +304,7 @@ class DispositivosCompanion extends UpdateCompanion<DispositivoData> {
     Expression<int>? id,
     Expression<int>? idTipoDispositivo,
     Expression<String>? numSerie,
-    Expression<int>? numPatrimonio,
+    Expression<String>? numPatrimonio,
     Expression<int>? idStatus,
   }) {
     return RawValuesInsertable({
@@ -320,7 +320,7 @@ class DispositivosCompanion extends UpdateCompanion<DispositivoData> {
     Value<int>? id,
     Value<int>? idTipoDispositivo,
     Value<String>? numSerie,
-    Value<int>? numPatrimonio,
+    Value<String>? numPatrimonio,
     Value<int>? idStatus,
   }) {
     return DispositivosCompanion(
@@ -345,7 +345,7 @@ class DispositivosCompanion extends UpdateCompanion<DispositivoData> {
       map['num_serie'] = Variable<String>(numSerie.value);
     }
     if (numPatrimonio.present) {
-      map['num_patrimonio'] = Variable<int>(numPatrimonio.value);
+      map['num_patrimonio'] = Variable<String>(numPatrimonio.value);
     }
     if (idStatus.present) {
       map['id_status'] = Variable<int>(idStatus.value);
@@ -2067,7 +2067,7 @@ typedef $$DispositivosTableCreateCompanionBuilder =
       Value<int> id,
       required int idTipoDispositivo,
       required String numSerie,
-      required int numPatrimonio,
+      required String numPatrimonio,
       required int idStatus,
     });
 typedef $$DispositivosTableUpdateCompanionBuilder =
@@ -2075,7 +2075,7 @@ typedef $$DispositivosTableUpdateCompanionBuilder =
       Value<int> id,
       Value<int> idTipoDispositivo,
       Value<String> numSerie,
-      Value<int> numPatrimonio,
+      Value<String> numPatrimonio,
       Value<int> idStatus,
     });
 
@@ -2151,7 +2151,7 @@ class $$DispositivosTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get numPatrimonio => $composableBuilder(
+  ColumnFilters<String> get numPatrimonio => $composableBuilder(
     column: $table.numPatrimonio,
     builder: (column) => ColumnFilters(column),
   );
@@ -2237,7 +2237,7 @@ class $$DispositivosTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get numPatrimonio => $composableBuilder(
+  ColumnOrderings<String> get numPatrimonio => $composableBuilder(
     column: $table.numPatrimonio,
     builder: (column) => ColumnOrderings(column),
   );
@@ -2268,7 +2268,7 @@ class $$DispositivosTableAnnotationComposer
   GeneratedColumn<String> get numSerie =>
       $composableBuilder(column: $table.numSerie, builder: (column) => column);
 
-  GeneratedColumn<int> get numPatrimonio => $composableBuilder(
+  GeneratedColumn<String> get numPatrimonio => $composableBuilder(
     column: $table.numPatrimonio,
     builder: (column) => column,
   );
@@ -2362,7 +2362,7 @@ class $$DispositivosTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<int> idTipoDispositivo = const Value.absent(),
                 Value<String> numSerie = const Value.absent(),
-                Value<int> numPatrimonio = const Value.absent(),
+                Value<String> numPatrimonio = const Value.absent(),
                 Value<int> idStatus = const Value.absent(),
               }) => DispositivosCompanion(
                 id: id,
@@ -2376,7 +2376,7 @@ class $$DispositivosTableTableManager
                 Value<int> id = const Value.absent(),
                 required int idTipoDispositivo,
                 required String numSerie,
-                required int numPatrimonio,
+                required String numPatrimonio,
                 required int idStatus,
               }) => DispositivosCompanion.insert(
                 id: id,

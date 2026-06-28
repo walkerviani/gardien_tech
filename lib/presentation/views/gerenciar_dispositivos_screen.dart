@@ -8,7 +8,7 @@ class GerenciarDispositivosScreen extends StatefulWidget {
   final int? dispositivoId;
   final int? idTipoDispositivo;
   final String? numSerie;
-  final int? numPatrimonio;
+  final String? numPatrimonio;
 
   const GerenciarDispositivosScreen({
     super.key,
@@ -61,7 +61,7 @@ class _GerenciarDispositivosScreenState
     }
     final viewModel = context.read<DispositivoViewmodel>();
     final numSerie = _numSerieController.text.trim();
-    final numPatrimonio = int.parse(_numPatrimonioController.text.trim());
+    final numPatrimonio = _numPatrimonioController.text.trim();
     final sucesso = await viewModel.salvar(
       id: widget.dispositivoId,
       numSerie: numSerie,
