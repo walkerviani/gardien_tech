@@ -14,6 +14,15 @@ class DispositivosScreen extends StatefulWidget {
 }
 
 class _DispositivosScreenState extends State<DispositivosScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<DispositivoViewmodel>().carregarDispositivos();
+    });
+  }
+
   void _abrirFormulario({Dispositivo? dispositivo}) async {
     final viewModel = context.read<DispositivoViewmodel>();
     await Navigator.push(
