@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:gardien_tech/domain/enum/tipo_dispositivo.dart';
 import 'package:gardien_tech/presentation/viewmodels/dispositivo_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -34,11 +33,9 @@ class _GerenciarDispositivosScreenState
   void initState() {
     super.initState();
     isEditing = widget.dispositivoId != null;
-    _numSerieController = TextEditingController(
-      text: widget.numSerie?.toString() ?? '',
-    );
+    _numSerieController = TextEditingController(text: widget.numSerie ?? '');
     _numPatrimonioController = TextEditingController(
-      text: widget.numPatrimonio?.toString() ?? '',
+      text: widget.numPatrimonio ?? '',
     );
 
     if (isEditing && widget.idTipoDispositivo != null) {
@@ -55,7 +52,7 @@ class _GerenciarDispositivosScreenState
     super.dispose();
   }
 
-  Future<void> _salvar() async{
+  Future<void> _salvar() async {
     if (!_formKey.currentState!.validate()) {
       return; // Finaliza se tiver algum campo inválido no Form
     }
@@ -104,9 +101,6 @@ class _GerenciarDispositivosScreenState
                     Expanded(
                       child: TextFormField(
                         controller: _numSerieController,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
                             return 'O número de série é obrigatório';
@@ -117,7 +111,6 @@ class _GerenciarDispositivosScreenState
                           border: OutlineInputBorder(),
                           labelText: 'Número de Série',
                         ),
-                        keyboardType: TextInputType.number,
                       ),
                     ),
                     /*
@@ -159,9 +152,6 @@ class _GerenciarDispositivosScreenState
                     Expanded(
                       child: TextFormField(
                         controller: _numPatrimonioController,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
                             return 'O número de patrimônio é obrigatório';
@@ -172,7 +162,6 @@ class _GerenciarDispositivosScreenState
                           border: OutlineInputBorder(),
                           labelText: 'Número de Patrimônio',
                         ),
-                        keyboardType: TextInputType.number,
                       ),
                     ),
                     /*
