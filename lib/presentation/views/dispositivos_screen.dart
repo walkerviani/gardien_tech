@@ -229,6 +229,8 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
                                               ),
                                           child: DispositivoProblemaScreen(
                                             idDispositivo: dispositivo.id!,
+                                            numSerie: dispositivo.numSerie,
+                                            numPatrimonio: dispositivo.numPatrimonio,
                                           ),
                                         ),
                                       ),
