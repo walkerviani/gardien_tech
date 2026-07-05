@@ -104,11 +104,12 @@ class _GerenciarUsuarioScreenState extends State<GerenciarUsuarioScreen> {
               Campo do cargo
               */
               Padding(
-                padding: const EdgeInsets.only(top: 30),
+                padding: const EdgeInsets.only(top: 20),
                 child: SizedBox(
                   width: double.infinity,
                   child: DropdownMenuFormField<TipoCargo>(
                     label: const Text('Cargo'),
+                    menuHeight: 200,
                     validator: (cargo) {
                       if (cargo == null) {
                         return 'Selecione um cargo';
@@ -132,7 +133,7 @@ class _GerenciarUsuarioScreenState extends State<GerenciarUsuarioScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
