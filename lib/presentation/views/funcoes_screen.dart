@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gardien_tech/presentation/views/dispositivos_screen.dart';
+import 'package:gardien_tech/presentation/views/problemas_ativos_screen.dart';
 import 'package:gardien_tech/presentation/views/usuarios_screen.dart';
 
 class FuncoesScreen extends StatelessWidget {
@@ -68,7 +69,9 @@ class FuncoesScreen extends StatelessWidget {
           Botão de visualizar problemas relatados
            */
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => ProblemasAtivosScreen()));
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF006dc4),
               foregroundColor: Colors.white,
