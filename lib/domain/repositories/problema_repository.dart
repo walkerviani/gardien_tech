@@ -1,3 +1,4 @@
+import 'package:gardien_tech/data/dto/dispositivo_com_problema_dto.dart';
 import 'package:gardien_tech/domain/entities/problema.dart';
 
 abstract class ProblemaRepository {
@@ -7,4 +8,5 @@ abstract class ProblemaRepository {
   Future<void> criar(Problema problema);
   Future<void> atualizar(Problema problema);
   Future<void> deletar(int id);
+  Future<List<DispositivoComProblemaDto>> buscarProblemasAtivosComDispositivos();
 }
