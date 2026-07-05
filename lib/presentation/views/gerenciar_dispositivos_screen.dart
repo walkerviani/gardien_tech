@@ -91,14 +91,16 @@ class _GerenciarDispositivosScreenState
           key: _formKey,
           child: Column(
             children: [
-              /*
-              Campo do número de série
-              */
               Padding(
                 padding: const EdgeInsets.only(top: 10),
                 child: Row(
                   children: [
                     Expanded(
+
+                    /*
+                    Campo do número de série
+                    */
+
                       child: TextFormField(
                         controller: _numSerieController,
                         validator: (value) {
@@ -113,9 +115,11 @@ class _GerenciarDispositivosScreenState
                         ),
                       ),
                     ),
+
                     /*
-                    Dica do que é o número de patrimônio
+                    Botão de dica: Número de série
                     */
+
                     IconButton(
                       onPressed: () {
                         showDialog(
@@ -142,14 +146,16 @@ class _GerenciarDispositivosScreenState
                   ],
                 ),
               ),
-              /*
-              Campo do número de patrimônio
-              */
               Padding(
-                padding: const EdgeInsets.only(top: 30),
+                padding: const EdgeInsets.only(top: 20),
                 child: Row(
                   children: [
                     Expanded(
+
+                    /*
+                    Campo do número de patrimônio
+                    */
+                    
                       child: TextFormField(
                         controller: _numPatrimonioController,
                         validator: (value) {
@@ -164,9 +170,11 @@ class _GerenciarDispositivosScreenState
                         ),
                       ),
                     ),
+
                     /*
-                    Dica do que é o número de patrimônio
+                    Botão de dica: Número do patrimônio
                     */
+
                     IconButton(
                       onPressed: () {
                         showDialog(
@@ -194,9 +202,14 @@ class _GerenciarDispositivosScreenState
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 30),
+                padding: const EdgeInsets.only(top: 20),
                 child: SizedBox(
                   width: double.infinity,
+
+                  /* 
+                  DrowpdownMenu do tipo do dispositivo
+                  */
+
                   child: DropdownMenuFormField<TipoDispositivo>(
                     label: const Text('Tipo do Dispositivo'),
                     menuHeight: 200,
@@ -223,9 +236,14 @@ class _GerenciarDispositivosScreenState
                   ),
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
+
+                /*
+                Botão de salvar
+                */
+
                 child: ElevatedButton(
                   onPressed: viewModel.isLoading ? null : _salvar,
                   style: ElevatedButton.styleFrom(
