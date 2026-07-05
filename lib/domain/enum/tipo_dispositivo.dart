@@ -8,12 +8,12 @@ enum TipoDispositivo {
   projetor(7, 'PROJETOR'),
   webcam(8, 'WEBCAM'),
   headset(9, 'HEADSET'),
-  caboHdmi(10, 'CABO_HDMI'),
-  adaptadorUsb(11, 'ADAPTADOR_USB'),
+  caboHdmi(10, 'CABO HDMI'),
+  adaptadorUsb(11, 'ADAPTADOR USB'),
   roteador(12, 'ROTEADOR'),
-  switch_(13, 'SWITCH'), // Usa o _ em 'switch_' pois 'switch' é uma palavra reservada
+  switch_(13, 'SWITCH'),
   impressora(14, 'IMPRESSORA'),
-  caixaDeSom(15, 'CAIXA_DE_SOM'),
+  caixaDeSom(15, 'CAIXA DE SOM'),
   outro(16, 'OUTRO');
 
   final int id;
