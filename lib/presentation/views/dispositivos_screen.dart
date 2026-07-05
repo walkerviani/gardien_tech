@@ -96,11 +96,9 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
         padding: const EdgeInsets.all(12),
         child: Column(
           children: [
-
             /*
             Botão de criar novo dispositivo
             */
-
             ElevatedButton(
               onPressed: () => _abrirFormulario(),
               style: ElevatedButton.styleFrom(
@@ -124,11 +122,9 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
             ),
             const SizedBox(height: 12),
             Expanded(
-
               /*
               Espaço onde aparece os dispositivos criados
               */
-
               child: Consumer<DispositivoViewmodel>(
                 builder: (context, viewModel, child) {
                   if (viewModel.isLoading) {
@@ -159,7 +155,7 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
                       */
 
                       return Card(
-                        key: ValueKey(dispositivo.id), 
+                        key: ValueKey(dispositivo.id),
                         child: Padding(
                           padding: EdgeInsets.symmetric(
                             horizontal: 6,
@@ -168,54 +164,56 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-
                               /* 
                               Parte Esquerda - número de patrimonio, número de serie e tipo dispositivo
                               */
-
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      dispositivoTipo,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight(900),
-                                        fontSize: 20,
+                                    Text.rich(
+                                      TextSpan(
+                                        children: <TextSpan>[
+                                          TextSpan(
+                                            text: '$dispositivoTipo \n',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: 'PATRIMÔNIO \n',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: '${dispositivo.numPatrimonio} \n',
+                                            style: TextStyle(fontSize: 13),
+                                          ),
+                                          TextSpan(
+                                            text: 'NÚMERO DE SÉRIE \n',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: dispositivo.numSerie,
+                                            style: TextStyle(fontSize: 13),
+                                          ),
+                                        ],
                                       ),
-                                    ),
-                                    Text(
-                                      'PATRIMÔNIO',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight(700),
-                                        fontSize: 15,
-                                      ),
-                                    ),
-                                    Text(dispositivo.numPatrimonio,
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        ),
-                                    ),
-                                    Text(
-                                      'NÚMERO DE SÉRIE',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight(700),
-                                        fontSize: 15,
-                                      ),
-                                    ),
-                                    Text(dispositivo.numSerie,
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        ),
                                     ),
                                   ],
                                 ),
                               ),
                               const SizedBox(width: 20),
+
                               /* 
                               Parte Direita - Botões de editar, excluir e problemas
                               */
-
                               Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -250,7 +248,8 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
                                           child: DispositivoProblemaScreen(
                                             idDispositivo: dispositivo.id!,
                                             numSerie: dispositivo.numSerie,
-                                            numPatrimonio: dispositivo.numPatrimonio,
+                                            numPatrimonio:
+                                                dispositivo.numPatrimonio,
                                           ),
                                         ),
                                       ),
