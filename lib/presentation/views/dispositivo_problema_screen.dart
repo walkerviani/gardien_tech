@@ -22,6 +22,7 @@ class DispositivoProblemaScreen extends StatefulWidget {
 }
 
 class _DispositivoProblemaScreenState extends State<DispositivoProblemaScreen> {
+  
   @override
   void initState() {
     super.initState();
@@ -102,26 +103,52 @@ class _DispositivoProblemaScreenState extends State<DispositivoProblemaScreen> {
         padding: const EdgeInsets.all(12),
         child: Column(
           children: [
+
+            /*
+            Informações do dispositivo selecionado
+            */
+
             Container(
-              padding: EdgeInsets.all(8),
+              padding: EdgeInsets.all(5),
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
+                border: Border.all(color: const Color(0xFF000000)),
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Align(
                 alignment: Alignment.topLeft,
-                child: Text(
-                  'Dispositivo Atual \n'
-                  'Número de série: ${widget.numSerie} \n'
-                  'Número de Patrimônio: ${widget.numPatrimonio}',
+                child: Text.rich(
+                  TextSpan(
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: 'Dispositivo Atual \n',
+                        style: TextStyle(
+                          fontWeight: FontWeight(900),
+                          fontSize: 13,
+                        ),
+                      ),
+                      TextSpan(
+                        text: 'Número de Série: ${widget.numSerie} \n',
+                        style: TextStyle(fontSize: 13),
+                      ),
+                      TextSpan(
+                        text: 'Número de Patrimônio: ${widget.numPatrimonio}',
+                        style: TextStyle(fontSize: 13),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
+
+            /*
+            Botão de relatar novo problema
+            */
+
             ElevatedButton(
               onPressed: () => _abrirFormulario(),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFE7AF06),
+                backgroundColor: const Color(0xFFe76f06),
                 foregroundColor: Colors.white,
                 minimumSize: const Size(double.infinity, 70),
                 shape: RoundedRectangleBorder(
@@ -137,6 +164,11 @@ class _DispositivoProblemaScreenState extends State<DispositivoProblemaScreen> {
               ),
             ),
             const SizedBox(height: 12),
+
+            /*
+            Espaço dos problemas salvos
+            */
+
             Expanded(
               child: Consumer<ProblemaViewmodel>(
                 builder: (context, viewModel, child) {
@@ -152,37 +184,38 @@ class _DispositivoProblemaScreenState extends State<DispositivoProblemaScreen> {
                     itemCount: viewModel.problemas.length,
                     itemBuilder: (context, index) {
                       final problema = viewModel.problemas[index];
+                      
+                      /* 
+                      Card de cada problema
+                      */
+
                       return Card(
                         key: ValueKey(problema.id),
                         child: Padding(
                           padding: EdgeInsets.all(12),
-                          child: Column(
-                            children: [
-                              Text(
-                                'Problema ${(index + 1).toString()}',
-                                style: TextStyle(
-                                  fontWeight: FontWeight(600),
-                                  fontSize: 18,
+                          child: ListTile(
+                            title: Text(
+                              '${index + 1}',
+                              style: TextStyle(
+                                fontWeight: FontWeight(900),
+                                fontSize: 18,
+                              ),
+                            ),
+                            subtitle: Text(problema.descricao),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  onPressed: () =>
+                                      _abrirFormulario(problema: problema),
+                                  icon: const Icon(Icons.edit),
                                 ),
-                              ),
-                              const SizedBox(height: 6),
-                              Text(problema.descricao),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  IconButton(
-                                    onPressed: () =>
-                                        _abrirFormulario(problema: problema),
-                                    icon: const Icon(Icons.edit),
-                                  ),
-                                  IconButton(
-                                    onPressed: () =>
-                                        _confirmarExcluir(problema),
-                                    icon: const Icon(Icons.delete),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                IconButton(
+                                  onPressed: () => _confirmarExcluir(problema),
+                                  icon: const Icon(Icons.delete),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );
