@@ -57,8 +57,8 @@ class _GerenciarDispositivosScreenState
       return; // Finaliza se tiver algum campo inválido no Form
     }
     final viewModel = context.read<DispositivoViewmodel>();
-    final numSerie = _numSerieController.text.trim();
-    final numPatrimonio = _numPatrimonioController.text.trim();
+    final numSerie = _numSerieController.text.trim().toUpperCase();
+    final numPatrimonio = _numPatrimonioController.text.trim().toUpperCase();
     final sucesso = await viewModel.salvar(
       id: widget.dispositivoId,
       numSerie: numSerie,
