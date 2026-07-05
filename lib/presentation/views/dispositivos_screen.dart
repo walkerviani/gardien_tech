@@ -96,6 +96,11 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
         padding: const EdgeInsets.all(12),
         child: Column(
           children: [
+
+            /*
+            Botão de criar novo dispositivo
+            */
+
             ElevatedButton(
               onPressed: () => _abrirFormulario(),
               style: ElevatedButton.styleFrom(
@@ -119,6 +124,11 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
             ),
             const SizedBox(height: 12),
             Expanded(
+
+              /*
+              Espaço onde aparece os dispositivos criados
+              */
+
               child: Consumer<DispositivoViewmodel>(
                 builder: (context, viewModel, child) {
                   if (viewModel.isLoading) {
@@ -143,8 +153,13 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
                               .firstOrNull
                               ?.nomeTipo ??
                           'Cargo não encontrado';
+
+                      /*
+                      Card de cada dispositivo
+                      */
+
                       return Card(
-                        key: ValueKey(dispositivo.id),
+                        key: ValueKey(dispositivo.id), 
                         child: Padding(
                           padding: EdgeInsets.symmetric(
                             horizontal: 6,
@@ -153,9 +168,11 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
+
                               /* 
-                              Parte Esquerda - num patrimonio, num serie, tipo dispositivo
+                              Parte Esquerda - número de patrimonio, número de serie e tipo dispositivo
                               */
+
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -163,39 +180,42 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
                                     Text(
                                       dispositivoTipo,
                                       style: TextStyle(
-                                        fontWeight: FontWeight(600),
-                                        fontSize: 18,
+                                        fontWeight: FontWeight(900),
+                                        fontSize: 20,
                                       ),
                                     ),
                                     Text(
                                       'PATRIMÔNIO',
                                       style: TextStyle(
-                                        fontWeight: FontWeight(600),
-                                        fontSize: 16,
+                                        fontWeight: FontWeight(700),
+                                        fontSize: 15,
                                       ),
                                     ),
                                     Text(dispositivo.numPatrimonio,
                                       style: TextStyle(
-                                        fontSize: 16,
+                                        fontSize: 15,
                                         ),
                                     ),
                                     Text(
                                       'NÚMERO DE SÉRIE',
                                       style: TextStyle(
-                                        fontWeight: FontWeight(600),
+                                        fontWeight: FontWeight(700),
+                                        fontSize: 15,
                                       ),
                                     ),
                                     Text(dispositivo.numSerie,
                                       style: TextStyle(
-                                        fontSize: 16,
+                                        fontSize: 15,
                                         ),
                                     ),
                                   ],
                                 ),
                               ),
+                              const SizedBox(width: 20),
                               /* 
-                              Parte Direita - botões
+                              Parte Direita - Botões de editar, excluir e problemas
                               */
+
                               Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -236,7 +256,7 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
                                       ),
                                     ),
                                     style: TextButton.styleFrom(
-                                      backgroundColor: const Color(0xFFB00303),
+                                      backgroundColor: const Color(0xFFe76f06),
                                       foregroundColor: const Color(0xFFFFFFFF),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8),
