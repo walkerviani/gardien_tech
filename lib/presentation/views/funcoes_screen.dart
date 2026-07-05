@@ -23,7 +23,7 @@ class FuncoesScreen extends StatelessWidget {
               );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF2196F3),
+              backgroundColor: const Color(0xFF006dc4),
               foregroundColor: const Color(0xFFFFFFFF),
               minimumSize: const Size(double.infinity, 70),
               shape: RoundedRectangleBorder(
@@ -34,7 +34,7 @@ class FuncoesScreen extends StatelessWidget {
               children: [
                 Icon(Icons.person, size: 30),
                 SizedBox(width: 20),
-                Text('Gerenciar Usuários', style: TextStyle(fontSize: 18)),
+                Text('Gerenciar usuários', style: TextStyle(fontSize: 18)),
               ],
             ),
           ),
@@ -48,7 +48,7 @@ class FuncoesScreen extends StatelessWidget {
               );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF2196F3),
+              backgroundColor: const Color(0xFF006dc4),
               foregroundColor: const Color(0xFFFFFFFF),
               minimumSize: const Size(double.infinity, 70),
               shape: RoundedRectangleBorder(
@@ -59,25 +59,53 @@ class FuncoesScreen extends StatelessWidget {
               children: [
                 Icon(Icons.devices, size: 30),
                 SizedBox(width: 20),
-                Text('Gerenciar Dispositivos', style: TextStyle(fontSize: 18)),
+                Text('Gerenciar dispositivos', style: TextStyle(fontSize: 18)),
               ],
             ),
           ),
           const SizedBox(height: 10),
           /*
-          Botão 3
+          Botão de visualizar problemas relatados
            */
           ElevatedButton(
             onPressed: () {},
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.lightBlue,
+              backgroundColor: const Color(0xFF006dc4),
               foregroundColor: Colors.white,
               minimumSize: const Size(double.infinity, 70),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(4),
               ),
             ),
-            child: Text('Botão 3'),
+            child: Row(
+              children: [
+                Icon(Icons.report_problem, size: 30),
+                SizedBox(width: 20),
+                Text('Dispositivos com problemas', style: TextStyle(fontSize: 18)),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+          /*
+          Botão de exportar relatórios
+          */
+          ElevatedButton(
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF006dc4),
+              foregroundColor: Colors.white,
+              minimumSize: const Size(double.infinity, 70),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.picture_as_pdf, size: 30),
+                SizedBox(width: 20),
+                Text('Exportar relatórios', style: TextStyle(fontSize: 18)),
+              ],
+            ),
           ),
         ],
       ),

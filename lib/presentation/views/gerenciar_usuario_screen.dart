@@ -71,7 +71,7 @@ class _GerenciarUsuarioScreenState extends State<GerenciarUsuarioScreen> {
     final viewModel = context.watch<UsuarioViewmodel>();
     return Scaffold(
       appBar: AppBar(
-        title: Text(isEditing ? 'Editar Usuário' : 'Criar Usuário'),
+        title: Text(isEditing ? 'Editar usuário' : 'Criar usuário'),
         backgroundColor: const Color(0xFF2196F3),
         foregroundColor: Colors.white,
       ),
@@ -81,11 +81,13 @@ class _GerenciarUsuarioScreenState extends State<GerenciarUsuarioScreen> {
           key: _formKey,
           child: Column(
             children: [
-              /*
-              Campo do nome
-              */
               Padding(
                 padding: const EdgeInsets.only(top: 10),
+
+                /*
+                Campo do nome
+                */
+
                 child: TextFormField(
                   controller: _nomeController,
                   validator: (value) {
@@ -100,15 +102,18 @@ class _GerenciarUsuarioScreenState extends State<GerenciarUsuarioScreen> {
                   ),
                 ),
               ),
-              /* 
-              Campo do cargo
-              */
               Padding(
-                padding: const EdgeInsets.only(top: 30),
+                padding: const EdgeInsets.only(top: 20),
                 child: SizedBox(
                   width: double.infinity,
+
+                  /* 
+                  DropdownMenu do cargo
+                  */
+
                   child: DropdownMenuFormField<TipoCargo>(
                     label: const Text('Cargo'),
+                    menuHeight: 200,
                     validator: (cargo) {
                       if (cargo == null) {
                         return 'Selecione um cargo';
@@ -132,9 +137,14 @@ class _GerenciarUsuarioScreenState extends State<GerenciarUsuarioScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
+
+                /* 
+                Botão de Salvar
+                */
+
                 child: ElevatedButton(
                   onPressed: viewModel.isLoading ? null : _salvar,
                   style: ElevatedButton.styleFrom(

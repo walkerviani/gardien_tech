@@ -37,16 +37,20 @@ class _GerenciarProblemasScreenState extends State<GerenciarProblemasScreen> {
   }
 
   Future<void> _salvar() async {
-    if(!_formKey.currentState!.validate()){
+    if (!_formKey.currentState!.validate()) {
       return; // Finaliza se tiver algum campo inválido no Form
     }
     final viewModel = context.read<ProblemaViewmodel>();
     final descricao = _descricaoController.text;
-    final sucesso = await viewModel.salvar(id: widget.problemaId, idDispositivo: widget.dispositivoId, descricao: descricao);
+    final sucesso = await viewModel.salvar(
+      id: widget.problemaId,
+      idDispositivo: widget.dispositivoId,
+      descricao: descricao,
+    );
 
-    if(!mounted) return;
+    if (!mounted) return;
 
-    if(sucesso) {
+    if (sucesso) {
       Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -60,7 +64,7 @@ class _GerenciarProblemasScreenState extends State<GerenciarProblemasScreen> {
     final viewModel = context.watch<ProblemaViewmodel>();
     return Scaffold(
       appBar: AppBar(
-        title: Text(isEditing ? 'Editar Problema' : 'Criar Problema'),
+        title: Text(isEditing ? 'Editar problema' : 'Criar problema'),
         backgroundColor: const Color(0xFF2196F3),
         foregroundColor: Colors.white,
       ),
@@ -74,6 +78,10 @@ class _GerenciarProblemasScreenState extends State<GerenciarProblemasScreen> {
                 padding: EdgeInsets.only(top: 10),
                 child: Column(
                   children: [
+                    /*
+                    Campo da descrição
+                    */
+
                     TextFormField(
                       controller: _descricaoController,
                       validator: (value) {
@@ -91,26 +99,31 @@ class _GerenciarProblemasScreenState extends State<GerenciarProblemasScreen> {
                       maxLength: 255,
                       keyboardType: TextInputType.multiline,
                     ),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 10),
+
+                    /* 
+                    Botão de Salvar
+                    */
+
                     ElevatedButton(
-                  onPressed: viewModel.isLoading ? null : _salvar,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF4CAF50),
-                    foregroundColor: const Color(0xFFFFFFFF),
-                    minimumSize: const Size(double.infinity, 70),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
-                  child: viewModel.isLoading
-                      ? const CircularProgressIndicator(
-                          color: Color(0xFF4CAF50),
-                        )
-                      : Text(
-                          isEditing ? 'Atualizar' : 'Salvar',
-                          style: TextStyle(fontSize: 18),
+                      onPressed: viewModel.isLoading ? null : _salvar,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF4CAF50),
+                        foregroundColor: const Color(0xFFFFFFFF),
+                        minimumSize: const Size(double.infinity, 70),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
                         ),
-                ),
+                      ),
+                      child: viewModel.isLoading
+                          ? const CircularProgressIndicator(
+                              color: Color(0xFF4CAF50),
+                            )
+                          : Text(
+                              isEditing ? 'Atualizar' : 'Salvar',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                    ),
                   ],
                 ),
               ),

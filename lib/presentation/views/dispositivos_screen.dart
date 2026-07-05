@@ -96,6 +96,9 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
         padding: const EdgeInsets.all(12),
         child: Column(
           children: [
+            /*
+            Botão de criar novo dispositivo
+            */
             ElevatedButton(
               onPressed: () => _abrirFormulario(),
               style: ElevatedButton.styleFrom(
@@ -111,7 +114,7 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
                   Icon(Icons.add_to_queue, size: 30),
                   SizedBox(width: 20),
                   Text(
-                    'Adicionar Novo Dispositivo',
+                    'Adicionar novo dispositivo',
                     style: TextStyle(fontSize: 18),
                   ),
                 ],
@@ -119,6 +122,9 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
             ),
             const SizedBox(height: 12),
             Expanded(
+              /*
+              Espaço onde aparece os dispositivos criados
+              */
               child: Consumer<DispositivoViewmodel>(
                 builder: (context, viewModel, child) {
                   if (viewModel.isLoading) {
@@ -143,6 +149,11 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
                               .firstOrNull
                               ?.nomeTipo ??
                           'Cargo não encontrado';
+
+                      /*
+                      Card de cada dispositivo
+                      */
+
                       return Card(
                         key: ValueKey(dispositivo.id),
                         child: Padding(
@@ -154,47 +165,54 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               /* 
-                              Parte Esquerda - num patrimonio, num serie, tipo dispositivo
+                              Parte Esquerda - número de patrimonio, número de serie e tipo dispositivo
                               */
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      dispositivoTipo,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight(600),
-                                        fontSize: 18,
+                                    Text.rich(
+                                      TextSpan(
+                                        children: <TextSpan>[
+                                          TextSpan(
+                                            text: '$dispositivoTipo \n',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: 'PATRIMÔNIO \n',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: '${dispositivo.numPatrimonio} \n',
+                                            style: TextStyle(fontSize: 13),
+                                          ),
+                                          TextSpan(
+                                            text: 'NÚMERO DE SÉRIE \n',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: dispositivo.numSerie,
+                                            style: TextStyle(fontSize: 13),
+                                          ),
+                                        ],
                                       ),
-                                    ),
-                                    Text(
-                                      'PATRIMÔNIO',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight(600),
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                    Text(dispositivo.numPatrimonio,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        ),
-                                    ),
-                                    Text(
-                                      'NÚMERO DE SÉRIE',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight(600),
-                                      ),
-                                    ),
-                                    Text(dispositivo.numSerie,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        ),
                                     ),
                                   ],
                                 ),
                               ),
+                              const SizedBox(width: 20),
+
                               /* 
-                              Parte Direita - botões
+                              Parte Direita - Botões de editar, excluir e problemas
                               */
                               Column(
                                 mainAxisSize: MainAxisSize.min,
@@ -230,13 +248,14 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
                                           child: DispositivoProblemaScreen(
                                             idDispositivo: dispositivo.id!,
                                             numSerie: dispositivo.numSerie,
-                                            numPatrimonio: dispositivo.numPatrimonio,
+                                            numPatrimonio:
+                                                dispositivo.numPatrimonio,
                                           ),
                                         ),
                                       ),
                                     ),
                                     style: TextButton.styleFrom(
-                                      backgroundColor: const Color(0xFFB00303),
+                                      backgroundColor: const Color(0xFFe76f06),
                                       foregroundColor: const Color(0xFFFFFFFF),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8),

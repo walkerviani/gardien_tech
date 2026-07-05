@@ -57,8 +57,8 @@ class _GerenciarDispositivosScreenState
       return; // Finaliza se tiver algum campo inválido no Form
     }
     final viewModel = context.read<DispositivoViewmodel>();
-    final numSerie = _numSerieController.text.trim();
-    final numPatrimonio = _numPatrimonioController.text.trim();
+    final numSerie = _numSerieController.text.trim().toUpperCase();
+    final numPatrimonio = _numPatrimonioController.text.trim().toUpperCase();
     final sucesso = await viewModel.salvar(
       id: widget.dispositivoId,
       numSerie: numSerie,
@@ -81,7 +81,7 @@ class _GerenciarDispositivosScreenState
     final viewModel = context.watch<DispositivoViewmodel>();
     return Scaffold(
       appBar: AppBar(
-        title: Text(isEditing ? 'Editar Dispositivo' : 'Criar Dispositivo'),
+        title: Text(isEditing ? 'Editar dispositivo' : 'Criar dispositivo'),
         backgroundColor: const Color(0xFF2196F3),
         foregroundColor: Colors.white,
       ),
@@ -91,14 +91,16 @@ class _GerenciarDispositivosScreenState
           key: _formKey,
           child: Column(
             children: [
-              /*
-              Campo do número de série
-              */
               Padding(
                 padding: const EdgeInsets.only(top: 10),
                 child: Row(
                   children: [
                     Expanded(
+
+                    /*
+                    Campo do número de série
+                    */
+
                       child: TextFormField(
                         controller: _numSerieController,
                         validator: (value) {
@@ -109,19 +111,21 @@ class _GerenciarDispositivosScreenState
                         },
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
-                          labelText: 'Número de Série',
+                          labelText: 'Número de série',
                         ),
                       ),
                     ),
+
                     /*
-                    Dica do que é o número de patrimônio
+                    Botão de dica: Número de série
                     */
+
                     IconButton(
                       onPressed: () {
                         showDialog(
                           context: context,
                           builder: (_) => AlertDialog(
-                            title: const Text('Número de Série'),
+                            title: const Text('Número de série'),
                             content: const Text(
                               'Código único gravado pelo fabricante que identifica o equipamento.',
                             ),
@@ -142,14 +146,16 @@ class _GerenciarDispositivosScreenState
                   ],
                 ),
               ),
-              /*
-              Campo do número de patrimônio
-              */
               Padding(
-                padding: const EdgeInsets.only(top: 30),
+                padding: const EdgeInsets.only(top: 20),
                 child: Row(
                   children: [
                     Expanded(
+
+                    /*
+                    Campo do número de patrimônio
+                    */
+                    
                       child: TextFormField(
                         controller: _numPatrimonioController,
                         validator: (value) {
@@ -160,19 +166,21 @@ class _GerenciarDispositivosScreenState
                         },
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
-                          labelText: 'Número de Patrimônio',
+                          labelText: 'Número de patrimônio',
                         ),
                       ),
                     ),
+
                     /*
-                    Dica do que é o número de patrimônio
+                    Botão de dica: Número do patrimônio
                     */
+
                     IconButton(
                       onPressed: () {
                         showDialog(
                           context: context,
                           builder: (_) => AlertDialog(
-                            title: const Text('Número de Patrimônio'),
+                            title: const Text('Número de patrimônio'),
                             content: const Text(
                               'Número de identificação único do bem patrimonial da organização. Geralmente encontrado em uma etiqueta colada no equipamento.',
                             ),
@@ -194,11 +202,16 @@ class _GerenciarDispositivosScreenState
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 30),
+                padding: const EdgeInsets.only(top: 20),
                 child: SizedBox(
                   width: double.infinity,
+
+                  /* 
+                  DrowpdownMenu do tipo do dispositivo
+                  */
+
                   child: DropdownMenuFormField<TipoDispositivo>(
-                    label: const Text('Tipo do Dispositivo'),
+                    label: const Text('Tipo do dispositivo'),
                     menuHeight: 200,
                     validator: (tipoDisp) {
                       if (tipoDisp == null) {
@@ -223,9 +236,14 @@ class _GerenciarDispositivosScreenState
                   ),
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
+
+                /*
+                Botão de salvar
+                */
+
                 child: ElevatedButton(
                   onPressed: viewModel.isLoading ? null : _salvar,
                   style: ElevatedButton.styleFrom(
