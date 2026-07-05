@@ -14,6 +14,7 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
   OpcaoEmprestimo opcaoView = OpcaoEmprestimo.quantidade;
   final List<TextEditingController> _controlador = [TextEditingController()];
   final List<bool> _isChecked = [false];
+  final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -23,57 +24,75 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
         backgroundColor: const Color(0xFF2196F3),
         foregroundColor: Colors.white,
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(15),
-          child: Column(
-            children: [
-              TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Responsável',
-                ),
-                keyboardType: TextInputType.text,
+      body: ListView(
+        controller: _scrollController,
+        padding: const EdgeInsets.all(15),
+        children: [
+          TextField(
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Responsável',
+            ),
+            keyboardType: TextInputType.text,
+          ),
+          SizedBox(height: 12),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'Selecionar equipamentos por:',
+              style: TextStyle(fontSize: 20),
+            ),
+          ),
+          SizedBox(height: 8),
+          SegmentedButton<OpcaoEmprestimo>(
+            style: SegmentedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: const Color(0xFF2196F3),
+              selectedForegroundColor: Colors.white,
+              selectedBackgroundColor: const Color(0xFF2196F3),
+            ),
+            segments: const <ButtonSegment<OpcaoEmprestimo>>[
+              ButtonSegment<OpcaoEmprestimo>(
+                value: OpcaoEmprestimo.quantidade,
+                label: Text('Por Quantidade'),
+                icon: Icon(Icons.inventory_2_outlined),
               ),
-              SizedBox(height: 12),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Selecionar equipamentos por:',
-                  style: TextStyle(fontSize: 20),
-                ),
+              ButtonSegment<OpcaoEmprestimo>(
+                value: OpcaoEmprestimo.unidade,
+                label: Text('Por Unidade'),
+                icon: Icon(Icons.computer),
               ),
-              SegmentedButton<OpcaoEmprestimo>(
-                style: SegmentedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: const Color(0xFF2196F3),
-                  selectedForegroundColor: Colors.white,
-                  selectedBackgroundColor: const Color(0xFF2196F3),
-                ),
-                segments: const <ButtonSegment<OpcaoEmprestimo>>[
-                  ButtonSegment<OpcaoEmprestimo>(
-                    value: OpcaoEmprestimo.quantidade,
-                    label: Text('Por Quantidade'),
-                    icon: Icon(Icons.inventory_2_outlined),
-                  ),
-                  ButtonSegment<OpcaoEmprestimo>(
-                    value: OpcaoEmprestimo.unidade,
-                    label: Text('Por Unidade'),
-                    icon: Icon(Icons.computer),
-                  ),
-                ],
-                selected: <OpcaoEmprestimo>{opcaoView},
-                onSelectionChanged: (Set<OpcaoEmprestimo> novaSelecao) {
-                  setState(() {
-                    opcaoView = novaSelecao.first;
-                  });
-                },
-              ),
-              if (opcaoView == OpcaoEmprestimo.quantidade)
-                _buildPorQuantidade()
-              else
-                _buildPorUnidade(),
             ],
+            selected: <OpcaoEmprestimo>{opcaoView},
+            onSelectionChanged: (Set<OpcaoEmprestimo> novaSelecao) {
+              setState(() {
+                opcaoView = novaSelecao.first;
+              });
+            },
+          ),
+          SizedBox(height: 12),
+          if (opcaoView == OpcaoEmprestimo.quantidade)
+            _buildPorQuantidade()
+          else
+            _buildPorUnidade(),
+        ],
+      ),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
+          child: ElevatedButton(
+            onPressed: () {
+              // TODO: criar empréstimo
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF2196F3),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: const Text('Adicionar', style: TextStyle(fontSize: 16)),
           ),
         ),
       ),
@@ -83,11 +102,11 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
   Widget _buildPorQuantidade() {
     return Column(
       children: [
-        SizedBox(height: 12),
         Align(
           alignment: Alignment.centerLeft,
           child: Text('Informe a quantidade', style: TextStyle(fontSize: 20)),
         ),
+        SizedBox(height: 8),
         TextField(
           decoration: InputDecoration(
             border: OutlineInputBorder(),
@@ -107,94 +126,95 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
           alignment: Alignment.centerRight,
           child: Text('Devolvido', style: TextStyle(fontSize: 12)),
         ),
-        ListView.builder(
-          physics: NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: _controlador.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  //Botão de remover
-                  ElevatedButton(
-                    onPressed: () {
+        ...List.generate(_controlador.length, (index) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      if (_controlador.length > 1) {
+                        _controlador.removeAt(index);
+                        _isChecked.removeAt(index);
+                      }
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    fixedSize: Size(48, 48),
+                    backgroundColor: const Color(0xFF2196F3),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Icon(Icons.remove, color: Colors.white),
+                ),
+                SizedBox(width: 8),
+                Expanded(
+                  child: TextField(
+                    controller: _controlador[index],
+                    textAlign: TextAlign.center,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Identificador',
+                    ),
+                  ),
+                ),
+                SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _controlador.add(TextEditingController());
+                      _isChecked.add(false);
+                    });
+
+                    Future.delayed(Duration(milliseconds: 100), () {
+                      _scrollController.animateTo(
+                        _scrollController.position.maxScrollExtent,
+                        duration: Duration(milliseconds: 300),
+                        curve: Curves.easeOut,
+                      );
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    fixedSize: Size(48, 48),
+                    backgroundColor: const Color(0xFF2196F3),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Icon(Icons.add, color: Colors.white),
+                ),
+                SizedBox(width: 8),
+                Transform.scale(
+                  scale: 1.5,
+                  child: Checkbox(
+                    value: _isChecked[index],
+                    onChanged: (bool? value) {
                       setState(() {
-                        if (_controlador.length > 1) {
-                          _controlador.removeAt(index);
-                          _isChecked.removeAt(index);
-                        }
+                        _isChecked[index] = value!;
                       });
                     },
-                    style: ElevatedButton.styleFrom(
-                      fixedSize: Size(48, 48),
-                      backgroundColor: const Color(0xFF2196F3),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: Icon(Icons.remove, color: Colors.white),
+                    checkColor: Colors.white,
+                    activeColor: const Color(0xFF2196F3),
                   ),
-                  SizedBox(width: 8),
-                  // Campo do número identificador
-                  Expanded(
-                    child: TextField(
-                      textAlign: TextAlign.center,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Identificador',
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  //Botão de adicionar
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _controlador.add(TextEditingController());
-                        _isChecked.add(
-                          false,
-                        ); //Recebe o valor de falso ao iniciar um novo
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      fixedSize: Size(48, 48),
-                      backgroundColor: const Color(0xFF2196F3),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: Icon(Icons.add, color: Colors.white),
-                  ),
-                  SizedBox(width: 8),
-                  Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 5),
-                        child: Transform.scale(
-                          scale: 1.5,
-                          child: Checkbox(
-                            value: _isChecked[index],
-                            onChanged: (bool? value) {
-                              setState(() {
-                                _isChecked[index] = value!;
-                              });
-                            },
-                            checkColor: Colors.white,
-                            activeColor: const Color(0xFF2196F3),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
+                ),
+              ],
+            ),
+          );
+        }),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    for (var c in _controlador) {
+      c.dispose();
+    }
+    super.dispose();
   }
 }
