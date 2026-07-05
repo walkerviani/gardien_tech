@@ -114,7 +114,7 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
                   Icon(Icons.add_to_queue, size: 30),
                   SizedBox(width: 20),
                   Text(
-                    'Adicionar Novo Dispositivo',
+                    'Adicionar novo dispositivo',
                     style: TextStyle(fontSize: 18),
                   ),
                 ],

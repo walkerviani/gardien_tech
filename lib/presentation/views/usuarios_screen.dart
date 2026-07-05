@@ -108,7 +108,7 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
                   Icon(Icons.person_add, size: 30),
                   SizedBox(width: 20),
                   Text(
-                    'Adicionar Novo Usuário',
+                    'Adicionar novo usuário',
                     style: TextStyle(fontSize: 18),
                   ),
                 ],

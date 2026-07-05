@@ -71,7 +71,7 @@ class _GerenciarUsuarioScreenState extends State<GerenciarUsuarioScreen> {
     final viewModel = context.watch<UsuarioViewmodel>();
     return Scaffold(
       appBar: AppBar(
-        title: Text(isEditing ? 'Editar Usuário' : 'Criar Usuário'),
+        title: Text(isEditing ? 'Editar usuário' : 'Criar usuário'),
         backgroundColor: const Color(0xFF2196F3),
         foregroundColor: Colors.white,
       ),

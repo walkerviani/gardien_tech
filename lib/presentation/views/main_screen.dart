@@ -49,7 +49,7 @@ class _MainScreenState extends State<MainScreen>{
           setState(() => _abaAtual = aba);
         },
         items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Página Inicial'),
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Página inicial'),
         BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Adicionar'),
         BottomNavigationBarItem(icon: Icon(Icons.apps), label: 'Funções')
       ], 

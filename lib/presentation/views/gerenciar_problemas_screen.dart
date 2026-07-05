@@ -64,7 +64,7 @@ class _GerenciarProblemasScreenState extends State<GerenciarProblemasScreen> {
     final viewModel = context.watch<ProblemaViewmodel>();
     return Scaffold(
       appBar: AppBar(
-        title: Text(isEditing ? 'Editar Problema' : 'Criar Problema'),
+        title: Text(isEditing ? 'Editar problema' : 'Criar problema'),
         backgroundColor: const Color(0xFF2196F3),
         foregroundColor: Colors.white,
       ),

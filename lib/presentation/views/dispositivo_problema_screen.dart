@@ -57,7 +57,7 @@ class _DispositivoProblemaScreenState extends State<DispositivoProblemaScreen> {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Excluir Problema'),
+        title: const Text('Excluir problema'),
         content: Text('Deseja excluir o problema atual?'),
         actionsAlignment: MainAxisAlignment.spaceEvenly,
         actions: [
@@ -120,18 +120,18 @@ class _DispositivoProblemaScreenState extends State<DispositivoProblemaScreen> {
                   TextSpan(
                     children: <TextSpan>[
                       TextSpan(
-                        text: 'Dispositivo Atual \n',
+                        text: 'Dispositivo atual \n',
                         style: TextStyle(
                           fontWeight: FontWeight(900),
                           fontSize: 13,
                         ),
                       ),
                       TextSpan(
-                        text: 'Número de Série: ${widget.numSerie} \n',
+                        text: 'Número de série: ${widget.numSerie} \n',
                         style: TextStyle(fontSize: 13),
                       ),
                       TextSpan(
-                        text: 'Número de Patrimônio: ${widget.numPatrimonio}',
+                        text: 'Número de patrimônio: ${widget.numPatrimonio}',
                         style: TextStyle(fontSize: 13),
                       ),
                     ],

@@ -81,7 +81,7 @@ class _GerenciarDispositivosScreenState
     final viewModel = context.watch<DispositivoViewmodel>();
     return Scaffold(
       appBar: AppBar(
-        title: Text(isEditing ? 'Editar Dispositivo' : 'Criar Dispositivo'),
+        title: Text(isEditing ? 'Editar dispositivo' : 'Criar dispositivo'),
         backgroundColor: const Color(0xFF2196F3),
         foregroundColor: Colors.white,
       ),
@@ -111,7 +111,7 @@ class _GerenciarDispositivosScreenState
                         },
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
-                          labelText: 'Número de Série',
+                          labelText: 'Número de série',
                         ),
                       ),
                     ),
@@ -125,7 +125,7 @@ class _GerenciarDispositivosScreenState
                         showDialog(
                           context: context,
                           builder: (_) => AlertDialog(
-                            title: const Text('Número de Série'),
+                            title: const Text('Número de série'),
                             content: const Text(
                               'Código único gravado pelo fabricante que identifica o equipamento.',
                             ),
@@ -166,7 +166,7 @@ class _GerenciarDispositivosScreenState
                         },
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
-                          labelText: 'Número de Patrimônio',
+                          labelText: 'Número de patrimônio',
                         ),
                       ),
                     ),
@@ -180,7 +180,7 @@ class _GerenciarDispositivosScreenState
                         showDialog(
                           context: context,
                           builder: (_) => AlertDialog(
-                            title: const Text('Número de Patrimônio'),
+                            title: const Text('Número de patrimônio'),
                             content: const Text(
                               'Número de identificação único do bem patrimonial da organização. Geralmente encontrado em uma etiqueta colada no equipamento.',
                             ),
@@ -211,7 +211,7 @@ class _GerenciarDispositivosScreenState
                   */
 
                   child: DropdownMenuFormField<TipoDispositivo>(
-                    label: const Text('Tipo do Dispositivo'),
+                    label: const Text('Tipo do dispositivo'),
                     menuHeight: 200,
                     validator: (tipoDisp) {
                       if (tipoDisp == null) {
