@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:gardien_tech/data/dto/dispositivo_com_problema_dto.dart';
 import 'package:gardien_tech/domain/entities/problema.dart';
 import 'package:gardien_tech/domain/repositories/problema_repository.dart';
 
@@ -10,6 +11,15 @@ class ProblemaViewmodel extends ChangeNotifier{
   bool isLoading = false;
   String? errorMessage;
   List<Problema> problemas = [];
+  List<DispositivoComProblemaDto> problemasAtivos = [];
+
+  int quantidadeTotalDisponiveisComProblemas() {
+    final idsUnicos = <int>{};
+    for(var problema in problemasAtivos){
+      idsUnicos.add(problema.idDispositivo);
+    }
+    return idsUnicos.length;
+  }
 
   Future<void> carregarProblemas() async {
     isLoading = true;
@@ -20,6 +30,7 @@ class ProblemaViewmodel extends ChangeNotifier{
       problemas = await _repository.buscarTodos();
     } catch (e) {
       errorMessage = 'Erro ao carregar os problemas do dispositivo';
+      problemas = [];
     } finally {
       isLoading = false;
       notifyListeners();
@@ -35,12 +46,28 @@ class ProblemaViewmodel extends ChangeNotifier{
       problemas = await _repository.buscarTodosPorDispositivo(idDispositivo);
     } catch (e) {
       errorMessage = 'Erro ao carregar os problemas do dispositivo';
+      problemas = [];
     } finally {
       isLoading = false;
       notifyListeners();
     }
   }
 
+  Future<void> carregarDispositivosComProblemas() async {
+    isLoading = true;
+    errorMessage = null;
+    notifyListeners();
+
+    try{
+      problemasAtivos = await _repository.buscarProblemasAtivosComDispositivos();
+    } catch (e){
+      errorMessage = 'Erro ao carregar os problemas ativos';
+      problemasAtivos = [];
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
 
   Future<bool> salvar({
     int? id,
