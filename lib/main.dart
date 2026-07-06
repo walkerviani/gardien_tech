@@ -7,6 +7,7 @@ import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
 import 'package:gardien_tech/domain/repositories/problema_repository.dart';
 import 'package:gardien_tech/domain/repositories/usuario_repository.dart';
 import 'package:gardien_tech/presentation/viewmodels/dispositivo_viewmodel.dart';
+import 'package:gardien_tech/presentation/viewmodels/gerenciar_usuario_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/problema_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/problemas_ativos_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/usuario_viewmodel.dart';
@@ -49,6 +50,10 @@ void main() {
         ChangeNotifierProvider<ProblemasAtivosViewmodel>(
           create: ((context) =>
               ProblemasAtivosViewmodel(context.read<ProblemaRepository>())),
+        ),
+        ChangeNotifierProvider<GerenciarUsuarioViewmodel>(
+          create: ((context) =>
+              GerenciarUsuarioViewmodel(context.read<UsuarioRepository>())),
         ),
       ],
       child: const MyApp(),
