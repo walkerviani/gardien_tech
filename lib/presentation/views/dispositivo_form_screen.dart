@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:gardien_tech/domain/enum/tipo_dispositivo.dart';
-import 'package:gardien_tech/presentation/viewmodels/dispositivo_viewmodel.dart';
+import 'package:gardien_tech/presentation/viewmodels/dispositivo_form_viewmodel.dart';
 import 'package:provider/provider.dart';
 
-class GerenciarDispositivosScreen extends StatefulWidget {
+class DispositivoFormScreen extends StatefulWidget {
   final int? dispositivoId;
   final int? idTipoDispositivo;
   final String? numSerie;
   final String? numPatrimonio;
 
-  const GerenciarDispositivosScreen({
+  const DispositivoFormScreen({
     super.key,
     this.dispositivoId,
     this.idTipoDispositivo,
@@ -18,11 +18,11 @@ class GerenciarDispositivosScreen extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() => _GerenciarDispositivosScreenState();
+  State<StatefulWidget> createState() => _DispositivoFormScreenState();
 }
 
-class _GerenciarDispositivosScreenState
-    extends State<GerenciarDispositivosScreen> {
+class _DispositivoFormScreenState
+    extends State<DispositivoFormScreen> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _numSerieController;
   late final TextEditingController _numPatrimonioController;
@@ -56,7 +56,7 @@ class _GerenciarDispositivosScreenState
     if (!_formKey.currentState!.validate()) {
       return; // Finaliza se tiver algum campo inválido no Form
     }
-    final viewModel = context.read<DispositivoViewmodel>();
+    final viewModel = context.read<DispositivoFormViewmodel>();
     final numSerie = _numSerieController.text.trim().toUpperCase();
     final numPatrimonio = _numPatrimonioController.text.trim().toUpperCase();
     final sucesso = await viewModel.salvar(
@@ -78,7 +78,7 @@ class _GerenciarDispositivosScreenState
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<DispositivoViewmodel>();
+    final viewModel = context.watch<DispositivoFormViewmodel>();
     return Scaffold(
       appBar: AppBar(
         title: Text(isEditing ? 'Editar dispositivo' : 'Criar dispositivo'),

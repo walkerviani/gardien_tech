@@ -2,35 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:gardien_tech/data/dto/dispositivo_com_problema_dto.dart';
 import 'package:gardien_tech/domain/enum/tipo_dispositivo.dart';
 import 'package:gardien_tech/domain/repositories/problema_repository.dart';
-import 'package:gardien_tech/presentation/viewmodels/problema_viewmodel.dart';
-import 'package:gardien_tech/presentation/views/gerenciar_problemas_screen.dart';
+import 'package:gardien_tech/presentation/viewmodels/problema_list_viewmodel.dart';
+import 'package:gardien_tech/presentation/views/problema_form_screen.dart';
 import 'package:provider/provider.dart';
 
-class ProblemasAtivosScreen extends StatefulWidget {
-  const ProblemasAtivosScreen({super.key});
+class ProblemaListScreen extends StatefulWidget {
+  const ProblemaListScreen({super.key});
 
   @override
-  State<StatefulWidget> createState() => _ProblemasAtivosScreenState();
+  State<StatefulWidget> createState() => _ProblemaListScreenState();
 }
 
-class _ProblemasAtivosScreenState extends State<ProblemasAtivosScreen> {
+class _ProblemaListScreenState extends State<ProblemaListScreen> {
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ProblemaViewmodel>().carregarDispositivosComProblemas();
+      context.read<ProblemaListViewmodel>().carregarDispositivosComProblemas();
     });
   }
 
   void _abrirFormulario({required DispositivoComProblemaDto problema}) async {
-    final viewModel = context.read<ProblemaViewmodel>();
+    final viewModel = context.read<ProblemaListViewmodel>();
     await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => ChangeNotifierProvider(
           create: (context) =>
-              ProblemaViewmodel(context.read<ProblemaRepository>()),
-          child: GerenciarProblemasScreen(
+              ProblemaListViewmodel(context.read<ProblemaRepository>()),
+          child: ProblemaFormScreen(
             problemaId: problema.idProblema,
             dispositivoId: problema.idDispositivo,
             descricao: problema.descricao,
@@ -60,7 +60,7 @@ class _ProblemasAtivosScreenState extends State<ProblemasAtivosScreen> {
           TextButton(
             onPressed: () async {
               Navigator.pop(context);
-              final viewmodel = context.read<ProblemaViewmodel>();
+              final viewmodel = context.read<ProblemaListViewmodel>();
               final sucesso = await viewmodel.deletar(problema.idProblema);
               if (!mounted) return;
               if (sucesso) {
@@ -95,7 +95,7 @@ class _ProblemasAtivosScreenState extends State<ProblemasAtivosScreen> {
             /*
             Informações do dispositivo selecionado
             */
-            Consumer<ProblemaViewmodel>(
+            Consumer<ProblemaListViewmodel>(
               builder: (context, viewModel, child) {
                 if (viewModel.problemasAtivos.isEmpty) {
                   // Se a lista estiver vazia não apresente as informações
@@ -133,7 +133,7 @@ class _ProblemasAtivosScreenState extends State<ProblemasAtivosScreen> {
             const SizedBox(height: 10),
 
             Expanded(
-              child: Consumer<ProblemaViewmodel>(
+              child: Consumer<ProblemaListViewmodel>(
                 builder: (context, viewModel, child) {
                   if (viewModel.isLoading) {
                     return const Center(child: CircularProgressIndicator());

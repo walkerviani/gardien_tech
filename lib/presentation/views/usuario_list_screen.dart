@@ -2,36 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:gardien_tech/domain/entities/usuario.dart';
 import 'package:gardien_tech/domain/enum/tipo_cargo.dart';
 import 'package:gardien_tech/domain/repositories/usuario_repository.dart';
-import 'package:gardien_tech/presentation/viewmodels/usuario_viewmodel.dart';
-import 'package:gardien_tech/presentation/views/gerenciar_usuario_screen.dart';
+import 'package:gardien_tech/presentation/viewmodels/usuario_list_viewmodel.dart';
+import 'package:gardien_tech/presentation/views/usuario_form_screen.dart';
 import 'package:provider/provider.dart';
 
-class UsuariosScreen extends StatefulWidget {
-  const UsuariosScreen({super.key});
+class UsuarioListScreen extends StatefulWidget {
+  const UsuarioListScreen({super.key});
 
   @override
-  State<StatefulWidget> createState() => _UsuariosScreenState();
+  State<StatefulWidget> createState() => _UsuarioListScreenState();
 }
 
-class _UsuariosScreenState extends State<UsuariosScreen> {
+class _UsuarioListScreenState extends State<UsuarioListScreen> {
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<UsuarioViewmodel>().carregarUsuarios();
+      context.read<UsuarioListViewmodel>().carregarUsuarios();
     });
   }
 
   void _abrirFormulario({Usuario? usuario}) async {
-    final viewModel = context.read<UsuarioViewmodel>();
+    final viewModel = context.read<UsuarioListViewmodel>();
     await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => ChangeNotifierProvider(
           create: (context) =>
-              UsuarioViewmodel(context.read<UsuarioRepository>()),
-          child: GerenciarUsuarioScreen(
+              UsuarioListViewmodel(context.read<UsuarioRepository>()),
+          child: UsuarioFormScreen(
             usuarioId: usuario?.id,
             usuarioidTipoCargo: usuario?.idTipoCargo,
             usuarioNome: usuario?.nome,
@@ -61,7 +61,7 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
           TextButton(
             onPressed: () async {
               Navigator.pop(context);
-              final viewModel = context.read<UsuarioViewmodel>();
+              final viewModel = context.read<UsuarioListViewmodel>();
               final sucesso = await viewModel.deletar(usuario.id!);
               if (!mounted) return;
               if (sucesso) {
@@ -116,7 +116,7 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
             ),
             const SizedBox(height: 12),
             Expanded(
-              child: Consumer<UsuarioViewmodel>(
+              child: Consumer<UsuarioListViewmodel>(
                 builder: (context, viewModel, child) {
                   if (viewModel.isLoading) {
                     return const Center(child: CircularProgressIndicator());

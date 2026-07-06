@@ -2,10 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:gardien_tech/domain/entities/dispositivo.dart';
 import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
 
-class DispositivoViewmodel extends ChangeNotifier {
+class DispositivoListViewmodel extends ChangeNotifier {
   final DispositivoRepository _repository;
 
-  DispositivoViewmodel(this._repository);
+  DispositivoListViewmodel(this._repository);
 
   bool isLoading = false;
   String? errorMessage;

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:gardien_tech/presentation/viewmodels/problema_viewmodel.dart';
+import 'package:gardien_tech/presentation/viewmodels/problema_form_viewmodel.dart';
 import 'package:provider/provider.dart';
 
-class GerenciarProblemasScreen extends StatefulWidget {
+class ProblemaFormScreen extends StatefulWidget {
   final int? problemaId;
   final int dispositivoId;
   final String? descricao;
 
-  const GerenciarProblemasScreen({
+  const ProblemaFormScreen({
     super.key,
     this.problemaId,
     required this.dispositivoId,
@@ -15,10 +15,10 @@ class GerenciarProblemasScreen extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() => _GerenciarProblemasScreenState();
+  State<StatefulWidget> createState() => _ProblemaFormScreenState();
 }
 
-class _GerenciarProblemasScreenState extends State<GerenciarProblemasScreen> {
+class _ProblemaFormScreenState extends State<ProblemaFormScreen> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _descricaoController;
   late final bool isEditing;
@@ -40,7 +40,7 @@ class _GerenciarProblemasScreenState extends State<GerenciarProblemasScreen> {
     if (!_formKey.currentState!.validate()) {
       return; // Finaliza se tiver algum campo inválido no Form
     }
-    final viewModel = context.read<ProblemaViewmodel>();
+    final viewModel = context.read<ProblemaFormViewmodel>();
     final descricao = _descricaoController.text;
     final sucesso = await viewModel.salvar(
       id: widget.problemaId,
@@ -61,7 +61,7 @@ class _GerenciarProblemasScreenState extends State<GerenciarProblemasScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<ProblemaViewmodel>();
+    final viewModel = context.watch<ProblemaFormViewmodel>();
     return Scaffold(
       appBar: AppBar(
         title: Text(isEditing ? 'Editar problema' : 'Criar problema'),

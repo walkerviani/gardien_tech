@@ -2,36 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:gardien_tech/domain/entities/dispositivo.dart';
 import 'package:gardien_tech/domain/enum/tipo_dispositivo.dart';
 import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
-import 'package:gardien_tech/presentation/viewmodels/dispositivo_viewmodel.dart';
-import 'package:gardien_tech/presentation/views/dispositivo_problema_screen.dart';
-import 'package:gardien_tech/presentation/views/gerenciar_dispositivos_screen.dart';
+import 'package:gardien_tech/presentation/viewmodels/dispositivo_list_viewmodel.dart';
+import 'package:gardien_tech/presentation/views/dispositivo_problema_list_screen.dart';
+import 'package:gardien_tech/presentation/views/dispositivo_form_screen.dart';
 import 'package:provider/provider.dart';
 
-class DispositivosScreen extends StatefulWidget {
-  const DispositivosScreen({super.key});
+class DispositivoListScreen extends StatefulWidget {
+  const DispositivoListScreen({super.key});
 
   @override
-  State<StatefulWidget> createState() => _DispositivosScreenState();
+  State<StatefulWidget> createState() => _DispositivoListScreenState();
 }
 
-class _DispositivosScreenState extends State<DispositivosScreen> {
+class _DispositivoListScreenState extends State<DispositivoListScreen> {
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<DispositivoViewmodel>().carregarDispositivos();
+      context.read<DispositivoListViewmodel>().carregarDispositivos();
     });
   }
 
   void _abrirFormulario({Dispositivo? dispositivo}) async {
-    final viewModel = context.read<DispositivoViewmodel>();
+    final viewModel = context.read<DispositivoListViewmodel>();
     await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => ChangeNotifierProvider(
           create: (context) =>
-              DispositivoViewmodel(context.read<DispositivoRepository>()),
-          child: GerenciarDispositivosScreen(
+              DispositivoListViewmodel(context.read<DispositivoRepository>()),
+          child: DispositivoFormScreen(
             dispositivoId: dispositivo?.id,
             idTipoDispositivo: dispositivo?.idTipoDispositivo,
             numSerie: dispositivo?.numSerie,
@@ -64,7 +64,7 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
           TextButton(
             onPressed: () async {
               Navigator.pop(context);
-              final viewModel = context.read<DispositivoViewmodel>();
+              final viewModel = context.read<DispositivoListViewmodel>();
               final sucesso = await viewModel.deletar(dispositivo.id!);
               if (!mounted) return;
               if (sucesso) {
@@ -125,7 +125,7 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
               /*
               Espaço onde aparece os dispositivos criados
               */
-              child: Consumer<DispositivoViewmodel>(
+              child: Consumer<DispositivoListViewmodel>(
                 builder: (context, viewModel, child) {
                   if (viewModel.isLoading) {
                     return const Center(child: CircularProgressIndicator());
@@ -239,13 +239,13 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
                                       MaterialPageRoute(
                                         builder: (_) => ChangeNotifierProvider(
                                           create: (context) =>
-                                              DispositivoViewmodel(
+                                              DispositivoListViewmodel(
                                                 context
                                                     .read<
                                                       DispositivoRepository
                                                     >(),
                                               ),
-                                          child: DispositivoProblemaScreen(
+                                          child: DispositivoProblemaListScreen(
                                             idDispositivo: dispositivo.id!,
                                             numSerie: dispositivo.numSerie,
                                             numPatrimonio:

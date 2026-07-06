@@ -6,9 +6,13 @@ import 'package:gardien_tech/data/repositories/usuario_repository_impl.dart';
 import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
 import 'package:gardien_tech/domain/repositories/problema_repository.dart';
 import 'package:gardien_tech/domain/repositories/usuario_repository.dart';
-import 'package:gardien_tech/presentation/viewmodels/dispositivo_viewmodel.dart';
-import 'package:gardien_tech/presentation/viewmodels/problema_viewmodel.dart';
-import 'package:gardien_tech/presentation/viewmodels/usuario_viewmodel.dart';
+import 'package:gardien_tech/presentation/viewmodels/dispositivo_list_viewmodel.dart';
+import 'package:gardien_tech/presentation/viewmodels/dispositivo_form_viewmodel.dart';
+import 'package:gardien_tech/presentation/viewmodels/problema_form_viewmodel.dart';
+import 'package:gardien_tech/presentation/viewmodels/usuario_form_viewmodel.dart';
+import 'package:gardien_tech/presentation/viewmodels/dispositivo_problema_list_viewmodel.dart';
+import 'package:gardien_tech/presentation/viewmodels/problema_list_viewmodel.dart';
+import 'package:gardien_tech/presentation/viewmodels/usuario_list_viewmodel.dart';
 import 'package:gardien_tech/presentation/views/main_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -33,17 +37,33 @@ void main() {
           create: (context) =>
               ProblemaRepositoryImpl(context.read<AppDatabase>()),
         ),
-        ChangeNotifierProvider<UsuarioViewmodel>(
+        ChangeNotifierProvider<UsuarioListViewmodel>(
           create: (context) =>
-              UsuarioViewmodel(context.read<UsuarioRepository>()),
+              UsuarioListViewmodel(context.read<UsuarioRepository>()),
         ),
-        ChangeNotifierProvider<DispositivoViewmodel>(
+        ChangeNotifierProvider<DispositivoListViewmodel>(
           create: (context) =>
-              DispositivoViewmodel(context.read<DispositivoRepository>()),
+              DispositivoListViewmodel(context.read<DispositivoRepository>()),
         ),
-        ChangeNotifierProvider<ProblemaViewmodel>(
+        ChangeNotifierProvider<DispositivoProblemaListViewmodel>(
           create: ((context) =>
-              ProblemaViewmodel(context.read<ProblemaRepository>())),
+              DispositivoProblemaListViewmodel(context.read<ProblemaRepository>())),
+        ),
+        ChangeNotifierProvider<ProblemaListViewmodel>(
+          create: ((context) =>
+              ProblemaListViewmodel(context.read<ProblemaRepository>())),
+        ),
+        ChangeNotifierProvider<UsuarioFormViewmodel>(
+          create: ((context) =>
+              UsuarioFormViewmodel(context.read<UsuarioRepository>())),
+        ),
+        ChangeNotifierProvider<ProblemaFormViewmodel>(
+          create: ((context) =>
+              ProblemaFormViewmodel(context.read<ProblemaRepository>())),
+        ),
+        ChangeNotifierProvider<DispositivoFormViewmodel>(
+          create: (context) =>
+              DispositivoFormViewmodel(context.read<DispositivoRepository>()),
         ),
       ],
       child: const MyApp(),

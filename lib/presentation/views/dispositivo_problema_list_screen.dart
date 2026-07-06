@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:gardien_tech/domain/entities/problema.dart';
 import 'package:gardien_tech/domain/repositories/problema_repository.dart';
-import 'package:gardien_tech/presentation/viewmodels/problema_viewmodel.dart';
-import 'package:gardien_tech/presentation/views/gerenciar_problemas_screen.dart';
+import 'package:gardien_tech/presentation/viewmodels/dispositivo_problema_list_viewmodel.dart';
+import 'package:gardien_tech/presentation/views/problema_form_screen.dart';
 import 'package:provider/provider.dart';
 
-class DispositivoProblemaScreen extends StatefulWidget {
+class DispositivoProblemaListScreen extends StatefulWidget {
   final int idDispositivo;
   final String? numSerie;
   final String? numPatrimonio;
 
-  const DispositivoProblemaScreen({
+  const DispositivoProblemaListScreen({
     super.key,
     required this.idDispositivo,
     this.numSerie,
@@ -18,30 +18,31 @@ class DispositivoProblemaScreen extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() => _DispositivoProblemaScreenState();
+  State<StatefulWidget> createState() => _DispositivoProblemaListScreenState();
 }
 
-class _DispositivoProblemaScreenState extends State<DispositivoProblemaScreen> {
-  
+class _DispositivoProblemaListScreenState
+    extends State<DispositivoProblemaListScreen> {
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ProblemaViewmodel>().carregarProblemasPorDisp(
+      context.read<DispositivoProblemaListViewmodel>().carregarProblemasPorDisp(
         widget.idDispositivo,
       );
     });
   }
 
   void _abrirFormulario({Problema? problema}) async {
-    final viewModel = context.read<ProblemaViewmodel>();
+    final viewModel = context.read<DispositivoProblemaListViewmodel>();
     await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => ChangeNotifierProvider(
-          create: (context) =>
-              ProblemaViewmodel(context.read<ProblemaRepository>()),
-          child: GerenciarProblemasScreen(
+          create: (context) => DispositivoProblemaListViewmodel(
+            context.read<ProblemaRepository>(),
+          ),
+          child: ProblemaFormScreen(
             problemaId: problema?.id,
             dispositivoId: widget.idDispositivo,
             descricao: problema?.descricao,
@@ -71,7 +72,8 @@ class _DispositivoProblemaScreenState extends State<DispositivoProblemaScreen> {
           TextButton(
             onPressed: () async {
               Navigator.pop(context);
-              final viewmodel = context.read<ProblemaViewmodel>();
+              final viewmodel = context
+                  .read<DispositivoProblemaListViewmodel>();
               final sucesso = await viewmodel.deletar(problema.id!);
               if (!mounted) return;
               if (sucesso) {
@@ -103,11 +105,9 @@ class _DispositivoProblemaScreenState extends State<DispositivoProblemaScreen> {
         padding: const EdgeInsets.all(12),
         child: Column(
           children: [
-
             /*
             Informações do dispositivo selecionado
             */
-
             Container(
               padding: EdgeInsets.all(5),
               decoration: BoxDecoration(
@@ -144,7 +144,6 @@ class _DispositivoProblemaScreenState extends State<DispositivoProblemaScreen> {
             /*
             Botão de relatar novo problema
             */
-
             ElevatedButton(
               onPressed: () => _abrirFormulario(),
               style: ElevatedButton.styleFrom(
@@ -168,9 +167,8 @@ class _DispositivoProblemaScreenState extends State<DispositivoProblemaScreen> {
             /*
             Espaço dos problemas salvos
             */
-
             Expanded(
-              child: Consumer<ProblemaViewmodel>(
+              child: Consumer<DispositivoProblemaListViewmodel>(
                 builder: (context, viewModel, child) {
                   if (viewModel.isLoading) {
                     return const Center(child: CircularProgressIndicator());
@@ -184,7 +182,7 @@ class _DispositivoProblemaScreenState extends State<DispositivoProblemaScreen> {
                     itemCount: viewModel.problemas.length,
                     itemBuilder: (context, index) {
                       final problema = viewModel.problemas[index];
-                      
+
                       /* 
                       Card de cada problema
                       */
