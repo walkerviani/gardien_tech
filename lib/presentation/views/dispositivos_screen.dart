@@ -4,7 +4,7 @@ import 'package:gardien_tech/domain/enum/tipo_dispositivo.dart';
 import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
 import 'package:gardien_tech/presentation/viewmodels/dispositivo_viewmodel.dart';
 import 'package:gardien_tech/presentation/views/dispositivo_problema_screen.dart';
-import 'package:gardien_tech/presentation/views/gerenciar_dispositivos_screen.dart';
+import 'package:gardien_tech/presentation/views/dispositivos_form_screen.dart';
 import 'package:provider/provider.dart';
 
 class DispositivosScreen extends StatefulWidget {
@@ -31,7 +31,7 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
         builder: (_) => ChangeNotifierProvider(
           create: (context) =>
               DispositivoViewmodel(context.read<DispositivoRepository>()),
-          child: GerenciarDispositivosScreen(
+          child: DispositivoFormScreen(
             dispositivoId: dispositivo?.id,
             idTipoDispositivo: dispositivo?.idTipoDispositivo,
             numSerie: dispositivo?.numSerie,

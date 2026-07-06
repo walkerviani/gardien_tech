@@ -3,13 +3,13 @@ import 'package:gardien_tech/domain/enum/tipo_dispositivo.dart';
 import 'package:gardien_tech/presentation/viewmodels/gerenciar_dispositivos_viewmodel.dart';
 import 'package:provider/provider.dart';
 
-class GerenciarDispositivosScreen extends StatefulWidget {
+class DispositivoFormScreen extends StatefulWidget {
   final int? dispositivoId;
   final int? idTipoDispositivo;
   final String? numSerie;
   final String? numPatrimonio;
 
-  const GerenciarDispositivosScreen({
+  const DispositivoFormScreen({
     super.key,
     this.dispositivoId,
     this.idTipoDispositivo,
@@ -18,11 +18,11 @@ class GerenciarDispositivosScreen extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() => _GerenciarDispositivosScreenState();
+  State<StatefulWidget> createState() => _DispositivoFormScreenState();
 }
 
-class _GerenciarDispositivosScreenState
-    extends State<GerenciarDispositivosScreen> {
+class _DispositivoFormScreenState
+    extends State<DispositivoFormScreen> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _numSerieController;
   late final TextEditingController _numPatrimonioController;
