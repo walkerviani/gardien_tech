@@ -6,14 +6,14 @@ import 'package:gardien_tech/presentation/viewmodels/problemas_ativos_viewmodel.
 import 'package:gardien_tech/presentation/views/problemas_form_screen.dart';
 import 'package:provider/provider.dart';
 
-class ProblemasAtivosScreen extends StatefulWidget {
-  const ProblemasAtivosScreen({super.key});
+class ProblemaListScreen extends StatefulWidget {
+  const ProblemaListScreen({super.key});
 
   @override
-  State<StatefulWidget> createState() => _ProblemasAtivosScreenState();
+  State<StatefulWidget> createState() => _ProblemaListScreenState();
 }
 
-class _ProblemasAtivosScreenState extends State<ProblemasAtivosScreen> {
+class _ProblemaListScreenState extends State<ProblemaListScreen> {
   @override
   void initState() {
     super.initState();

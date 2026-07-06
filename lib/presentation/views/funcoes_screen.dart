@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gardien_tech/presentation/views/dispositivos_screen.dart';
-import 'package:gardien_tech/presentation/views/problemas_ativos_screen.dart';
+import 'package:gardien_tech/presentation/views/problemas_list_screen.dart';
 import 'package:gardien_tech/presentation/views/usuario_list_screen.dart';
 
 class FuncoesScreen extends StatelessWidget {
@@ -70,7 +70,7 @@ class FuncoesScreen extends StatelessWidget {
            */
           ElevatedButton(
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => ProblemasAtivosScreen()));
+              Navigator.push(context, MaterialPageRoute(builder: (_) => ProblemaListScreen()));
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF006dc4),
