@@ -6,14 +6,14 @@ import 'package:gardien_tech/presentation/viewmodels/usuario_viewmodel.dart';
 import 'package:gardien_tech/presentation/views/usuario_form_screen.dart';
 import 'package:provider/provider.dart';
 
-class UsuariosScreen extends StatefulWidget {
-  const UsuariosScreen({super.key});
+class UsuarioListScreen extends StatefulWidget {
+  const UsuarioListScreen({super.key});
 
   @override
-  State<StatefulWidget> createState() => _UsuariosScreenState();
+  State<StatefulWidget> createState() => _UsuarioListScreenState();
 }
 
-class _UsuariosScreenState extends State<UsuariosScreen> {
+class _UsuarioListScreenState extends State<UsuarioListScreen> {
 
   @override
   void initState() {

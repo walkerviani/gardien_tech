@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gardien_tech/presentation/views/dispositivos_screen.dart';
 import 'package:gardien_tech/presentation/views/problemas_ativos_screen.dart';
-import 'package:gardien_tech/presentation/views/usuarios_screen.dart';
+import 'package:gardien_tech/presentation/views/usuario_list_screen.dart';
 
 class FuncoesScreen extends StatelessWidget {
   const FuncoesScreen({super.key});
@@ -20,7 +20,7 @@ class FuncoesScreen extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => UsuariosScreen()),
+                MaterialPageRoute(builder: (_) => UsuarioListScreen()),
               );
             },
             style: ElevatedButton.styleFrom(
