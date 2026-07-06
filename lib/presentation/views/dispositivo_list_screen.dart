@@ -3,18 +3,18 @@ import 'package:gardien_tech/domain/entities/dispositivo.dart';
 import 'package:gardien_tech/domain/enum/tipo_dispositivo.dart';
 import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
 import 'package:gardien_tech/presentation/viewmodels/dispositivo_viewmodel.dart';
-import 'package:gardien_tech/presentation/views/dispositivo_problema_screen.dart';
-import 'package:gardien_tech/presentation/views/dispositivos_form_screen.dart';
+import 'package:gardien_tech/presentation/views/dispositivo_problema__list_screen.dart';
+import 'package:gardien_tech/presentation/views/dispositivo_form_screen.dart';
 import 'package:provider/provider.dart';
 
-class DispositivosScreen extends StatefulWidget {
-  const DispositivosScreen({super.key});
+class DispositivoListScreen extends StatefulWidget {
+  const DispositivoListScreen({super.key});
 
   @override
-  State<StatefulWidget> createState() => _DispositivosScreenState();
+  State<StatefulWidget> createState() => _DispositivoListScreenState();
 }
 
-class _DispositivosScreenState extends State<DispositivosScreen> {
+class _DispositivoListScreenState extends State<DispositivoListScreen> {
   @override
   void initState() {
     super.initState();
@@ -245,7 +245,7 @@ class _DispositivosScreenState extends State<DispositivosScreen> {
                                                       DispositivoRepository
                                                     >(),
                                               ),
-                                          child: DispositivoProblemaScreen(
+                                          child: DispositivoProblemaListScreen(
                                             idDispositivo: dispositivo.id!,
                                             numSerie: dispositivo.numSerie,
                                             numPatrimonio:
