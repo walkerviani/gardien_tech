@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gardien_tech/domain/entities/problema.dart';
 import 'package:gardien_tech/domain/repositories/problema_repository.dart';
 import 'package:gardien_tech/presentation/viewmodels/problema_viewmodel.dart';
-import 'package:gardien_tech/presentation/views/gerenciar_problemas_screen.dart';
+import 'package:gardien_tech/presentation/views/problemas_form_screen.dart';
 import 'package:provider/provider.dart';
 
 class DispositivoProblemaScreen extends StatefulWidget {
@@ -41,7 +41,7 @@ class _DispositivoProblemaScreenState extends State<DispositivoProblemaScreen> {
         builder: (_) => ChangeNotifierProvider(
           create: (context) =>
               ProblemaViewmodel(context.read<ProblemaRepository>()),
-          child: GerenciarProblemasScreen(
+          child: ProblemaFormScreen(
             problemaId: problema?.id,
             dispositivoId: widget.idDispositivo,
             descricao: problema?.descricao,

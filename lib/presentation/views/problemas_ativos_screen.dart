@@ -3,7 +3,7 @@ import 'package:gardien_tech/data/dto/dispositivo_com_problema_dto.dart';
 import 'package:gardien_tech/domain/enum/tipo_dispositivo.dart';
 import 'package:gardien_tech/domain/repositories/problema_repository.dart';
 import 'package:gardien_tech/presentation/viewmodels/problemas_ativos_viewmodel.dart';
-import 'package:gardien_tech/presentation/views/gerenciar_problemas_screen.dart';
+import 'package:gardien_tech/presentation/views/problemas_form_screen.dart';
 import 'package:provider/provider.dart';
 
 class ProblemasAtivosScreen extends StatefulWidget {
@@ -30,7 +30,7 @@ class _ProblemasAtivosScreenState extends State<ProblemasAtivosScreen> {
         builder: (_) => ChangeNotifierProvider(
           create: (context) =>
               ProblemasAtivosViewmodel(context.read<ProblemaRepository>()),
-          child: GerenciarProblemasScreen(
+          child: ProblemaFormScreen(
             problemaId: problema.idProblema,
             dispositivoId: problema.idDispositivo,
             descricao: problema.descricao,

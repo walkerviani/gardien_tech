@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:gardien_tech/presentation/viewmodels/gerenciar_problemas_viewmodel.dart';
 import 'package:provider/provider.dart';
 
-class GerenciarProblemasScreen extends StatefulWidget {
+class ProblemaFormScreen extends StatefulWidget {
   final int? problemaId;
   final int dispositivoId;
   final String? descricao;
 
-  const GerenciarProblemasScreen({
+  const ProblemaFormScreen({
     super.key,
     this.problemaId,
     required this.dispositivoId,
@@ -15,10 +15,10 @@ class GerenciarProblemasScreen extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() => _GerenciarProblemasScreenState();
+  State<StatefulWidget> createState() => _ProblemaFormScreenState();
 }
 
-class _GerenciarProblemasScreenState extends State<GerenciarProblemasScreen> {
+class _ProblemaFormScreenState extends State<ProblemaFormScreen> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _descricaoController;
   late final bool isEditing;
