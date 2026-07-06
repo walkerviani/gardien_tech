@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gardien_tech/domain/enum/tipo_cargo.dart';
-import 'package:gardien_tech/presentation/viewmodels/usuario_viewmodel.dart';
+import 'package:gardien_tech/presentation/viewmodels/gerenciar_usuario_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class GerenciarUsuarioScreen extends StatefulWidget {
@@ -48,7 +48,7 @@ class _GerenciarUsuarioScreenState extends State<GerenciarUsuarioScreen> {
     if (!_formKey.currentState!.validate()) {
       return; // Finaliza se tiver algum campo inválido no Form
     }
-    final viewModel = context.read<UsuarioViewmodel>();
+    final viewModel = context.read<GerenciarUsuarioViewmodel>();
     final nome = _nomeController.text.trim().toUpperCase();
     final sucesso = await viewModel.salvar(
       id: widget.usuarioId,
@@ -68,7 +68,7 @@ class _GerenciarUsuarioScreenState extends State<GerenciarUsuarioScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<UsuarioViewmodel>();
+    final viewModel = context.watch<GerenciarUsuarioViewmodel>();
     return Scaffold(
       appBar: AppBar(
         title: Text(isEditing ? 'Editar usuário' : 'Criar usuário'),
