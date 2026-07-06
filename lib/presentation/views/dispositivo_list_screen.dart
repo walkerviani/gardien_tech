@@ -3,7 +3,7 @@ import 'package:gardien_tech/domain/entities/dispositivo.dart';
 import 'package:gardien_tech/domain/enum/tipo_dispositivo.dart';
 import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
 import 'package:gardien_tech/presentation/viewmodels/dispositivo_list_viewmodel.dart';
-import 'package:gardien_tech/presentation/views/dispositivo_problema__list_screen.dart';
+import 'package:gardien_tech/presentation/views/dispositivo_problema_list_screen.dart';
 import 'package:gardien_tech/presentation/views/dispositivo_form_screen.dart';
 import 'package:provider/provider.dart';
 
