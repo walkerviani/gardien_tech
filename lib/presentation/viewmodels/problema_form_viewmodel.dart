@@ -2,10 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:gardien_tech/domain/entities/problema.dart';
 import 'package:gardien_tech/domain/repositories/problema_repository.dart';
 
-class GerenciarProblemasViewmodel extends ChangeNotifier{
+class ProblemaFormViewmodel extends ChangeNotifier{
    final ProblemaRepository _repository;
 
-  GerenciarProblemasViewmodel(this._repository);
+  ProblemaFormViewmodel(this._repository);
 
   bool isLoading = false;
   String? errorMessage;

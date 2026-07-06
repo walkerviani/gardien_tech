@@ -8,7 +8,7 @@ import 'package:gardien_tech/domain/repositories/problema_repository.dart';
 import 'package:gardien_tech/domain/repositories/usuario_repository.dart';
 import 'package:gardien_tech/presentation/viewmodels/dispositivo_list_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/dispositivo_form_viewmodel.dart';
-import 'package:gardien_tech/presentation/viewmodels/gerenciar_problemas_viewmodel.dart';
+import 'package:gardien_tech/presentation/viewmodels/problema_form_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/usuario_form_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/dispositivo_problema_list_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/problema_list_viewmodel.dart';
@@ -57,9 +57,9 @@ void main() {
           create: ((context) =>
               UsuarioFormViewmodel(context.read<UsuarioRepository>())),
         ),
-        ChangeNotifierProvider<GerenciarProblemasViewmodel>(
+        ChangeNotifierProvider<ProblemaFormViewmodel>(
           create: ((context) =>
-              GerenciarProblemasViewmodel(context.read<ProblemaRepository>())),
+              ProblemaFormViewmodel(context.read<ProblemaRepository>())),
         ),
         ChangeNotifierProvider<DispositivoFormViewmodel>(
           create: (context) =>

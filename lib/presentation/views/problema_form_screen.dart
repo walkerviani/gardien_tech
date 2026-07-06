@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gardien_tech/presentation/viewmodels/gerenciar_problemas_viewmodel.dart';
+import 'package:gardien_tech/presentation/viewmodels/problema_form_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class ProblemaFormScreen extends StatefulWidget {
@@ -40,7 +40,7 @@ class _ProblemaFormScreenState extends State<ProblemaFormScreen> {
     if (!_formKey.currentState!.validate()) {
       return; // Finaliza se tiver algum campo inválido no Form
     }
-    final viewModel = context.read<GerenciarProblemasViewmodel>();
+    final viewModel = context.read<ProblemaFormViewmodel>();
     final descricao = _descricaoController.text;
     final sucesso = await viewModel.salvar(
       id: widget.problemaId,
@@ -61,7 +61,7 @@ class _ProblemaFormScreenState extends State<ProblemaFormScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<GerenciarProblemasViewmodel>();
+    final viewModel = context.watch<ProblemaFormViewmodel>();
     return Scaffold(
       appBar: AppBar(
         title: Text(isEditing ? 'Editar problema' : 'Criar problema'),
