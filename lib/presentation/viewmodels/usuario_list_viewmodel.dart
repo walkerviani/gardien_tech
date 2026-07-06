@@ -2,10 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:gardien_tech/domain/entities/usuario.dart';
 import 'package:gardien_tech/domain/repositories/usuario_repository.dart';
 
-class UsuarioViewmodel extends ChangeNotifier {
+class UsuarioListViewmodel extends ChangeNotifier {
   final UsuarioRepository _repository;
 
-  UsuarioViewmodel(this._repository);
+  UsuarioListViewmodel(this._repository);
 
   bool isLoading = false;
   String? errorMessage;
