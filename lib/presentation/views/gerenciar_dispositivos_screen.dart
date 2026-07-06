@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gardien_tech/domain/enum/tipo_dispositivo.dart';
-import 'package:gardien_tech/presentation/viewmodels/dispositivo_viewmodel.dart';
+import 'package:gardien_tech/presentation/viewmodels/gerenciar_dispositivos_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class GerenciarDispositivosScreen extends StatefulWidget {
@@ -56,7 +56,7 @@ class _GerenciarDispositivosScreenState
     if (!_formKey.currentState!.validate()) {
       return; // Finaliza se tiver algum campo inválido no Form
     }
-    final viewModel = context.read<DispositivoViewmodel>();
+    final viewModel = context.read<GerenciarDispositivosViewmodel>();
     final numSerie = _numSerieController.text.trim().toUpperCase();
     final numPatrimonio = _numPatrimonioController.text.trim().toUpperCase();
     final sucesso = await viewModel.salvar(
@@ -78,7 +78,7 @@ class _GerenciarDispositivosScreenState
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<DispositivoViewmodel>();
+    final viewModel = context.watch<GerenciarDispositivosViewmodel>();
     return Scaffold(
       appBar: AppBar(
         title: Text(isEditing ? 'Editar dispositivo' : 'Criar dispositivo'),
