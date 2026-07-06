@@ -3,7 +3,7 @@ import 'package:gardien_tech/domain/entities/usuario.dart';
 import 'package:gardien_tech/domain/enum/tipo_cargo.dart';
 import 'package:gardien_tech/domain/repositories/usuario_repository.dart';
 import 'package:gardien_tech/presentation/viewmodels/usuario_viewmodel.dart';
-import 'package:gardien_tech/presentation/views/gerenciar_usuario_screen.dart';
+import 'package:gardien_tech/presentation/views/usuario_form_screen.dart';
 import 'package:provider/provider.dart';
 
 class UsuariosScreen extends StatefulWidget {
@@ -31,7 +31,7 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
         builder: (_) => ChangeNotifierProvider(
           create: (context) =>
               UsuarioViewmodel(context.read<UsuarioRepository>()),
-          child: GerenciarUsuarioScreen(
+          child: UsuarioFormScreen(
             usuarioId: usuario?.id,
             usuarioidTipoCargo: usuario?.idTipoCargo,
             usuarioNome: usuario?.nome,

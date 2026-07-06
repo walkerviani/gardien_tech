@@ -3,12 +3,12 @@ import 'package:gardien_tech/domain/enum/tipo_cargo.dart';
 import 'package:gardien_tech/presentation/viewmodels/gerenciar_usuario_viewmodel.dart';
 import 'package:provider/provider.dart';
 
-class GerenciarUsuarioScreen extends StatefulWidget {
+class UsuarioFormScreen extends StatefulWidget {
   final int? usuarioId;
   final String? usuarioNome;
   final int? usuarioidTipoCargo;
 
-  const GerenciarUsuarioScreen({
+  const UsuarioFormScreen({
     super.key,
     this.usuarioidTipoCargo,
     this.usuarioId,
@@ -16,10 +16,10 @@ class GerenciarUsuarioScreen extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() => _GerenciarUsuarioScreenState();
+  State<StatefulWidget> createState() => _UsuarioFormScreenState();
 }
 
-class _GerenciarUsuarioScreenState extends State<GerenciarUsuarioScreen> {
+class _UsuarioFormScreenState extends State<UsuarioFormScreen> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nomeController;
   late final bool isEditing;
