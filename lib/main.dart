@@ -9,10 +9,10 @@ import 'package:gardien_tech/domain/repositories/usuario_repository.dart';
 import 'package:gardien_tech/presentation/viewmodels/dispositivo_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/gerenciar_dispositivos_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/gerenciar_problemas_viewmodel.dart';
-import 'package:gardien_tech/presentation/viewmodels/gerenciar_usuario_viewmodel.dart';
-import 'package:gardien_tech/presentation/viewmodels/problema_viewmodel.dart';
-import 'package:gardien_tech/presentation/viewmodels/problemas_ativos_viewmodel.dart';
-import 'package:gardien_tech/presentation/viewmodels/usuario_viewmodel.dart';
+import 'package:gardien_tech/presentation/viewmodels/usuario_form_viewmodel.dart';
+import 'package:gardien_tech/presentation/viewmodels/dispositivo_problema_list_viewmodel.dart';
+import 'package:gardien_tech/presentation/viewmodels/problema_list_viewmodel.dart';
+import 'package:gardien_tech/presentation/viewmodels/usuario_list_viewmodel.dart';
 import 'package:gardien_tech/presentation/views/main_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -37,25 +37,25 @@ void main() {
           create: (context) =>
               ProblemaRepositoryImpl(context.read<AppDatabase>()),
         ),
-        ChangeNotifierProvider<UsuarioViewmodel>(
+        ChangeNotifierProvider<UsuarioListViewmodel>(
           create: (context) =>
-              UsuarioViewmodel(context.read<UsuarioRepository>()),
+              UsuarioListViewmodel(context.read<UsuarioRepository>()),
         ),
         ChangeNotifierProvider<DispositivoViewmodel>(
           create: (context) =>
               DispositivoViewmodel(context.read<DispositivoRepository>()),
         ),
-        ChangeNotifierProvider<ProblemaViewmodel>(
+        ChangeNotifierProvider<DispositivoProblemaListViewmodel>(
           create: ((context) =>
-              ProblemaViewmodel(context.read<ProblemaRepository>())),
+              DispositivoProblemaListViewmodel(context.read<ProblemaRepository>())),
         ),
-        ChangeNotifierProvider<ProblemasAtivosViewmodel>(
+        ChangeNotifierProvider<ProblemaListViewmodel>(
           create: ((context) =>
-              ProblemasAtivosViewmodel(context.read<ProblemaRepository>())),
+              ProblemaListViewmodel(context.read<ProblemaRepository>())),
         ),
-        ChangeNotifierProvider<GerenciarUsuarioViewmodel>(
+        ChangeNotifierProvider<UsuarioFormViewmodel>(
           create: ((context) =>
-              GerenciarUsuarioViewmodel(context.read<UsuarioRepository>())),
+              UsuarioFormViewmodel(context.read<UsuarioRepository>())),
         ),
         ChangeNotifierProvider<GerenciarProblemasViewmodel>(
           create: ((context) =>
