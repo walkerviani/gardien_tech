@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gardien_tech/domain/entities/usuario.dart';
 import 'package:gardien_tech/domain/enum/tipo_cargo.dart';
 import 'package:gardien_tech/domain/repositories/usuario_repository.dart';
-import 'package:gardien_tech/presentation/viewmodels/usuario_viewmodel.dart';
+import 'package:gardien_tech/presentation/viewmodels/usuario_list_viewmodel.dart';
 import 'package:gardien_tech/presentation/views/usuario_form_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -19,18 +19,18 @@ class _UsuarioListScreenState extends State<UsuarioListScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<UsuarioViewmodel>().carregarUsuarios();
+      context.read<UsuarioListViewmodel>().carregarUsuarios();
     });
   }
 
   void _abrirFormulario({Usuario? usuario}) async {
-    final viewModel = context.read<UsuarioViewmodel>();
+    final viewModel = context.read<UsuarioListViewmodel>();
     await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => ChangeNotifierProvider(
           create: (context) =>
-              UsuarioViewmodel(context.read<UsuarioRepository>()),
+              UsuarioListViewmodel(context.read<UsuarioRepository>()),
           child: UsuarioFormScreen(
             usuarioId: usuario?.id,
             usuarioidTipoCargo: usuario?.idTipoCargo,
@@ -61,7 +61,7 @@ class _UsuarioListScreenState extends State<UsuarioListScreen> {
           TextButton(
             onPressed: () async {
               Navigator.pop(context);
-              final viewModel = context.read<UsuarioViewmodel>();
+              final viewModel = context.read<UsuarioListViewmodel>();
               final sucesso = await viewModel.deletar(usuario.id!);
               if (!mounted) return;
               if (sucesso) {
@@ -116,7 +116,7 @@ class _UsuarioListScreenState extends State<UsuarioListScreen> {
             ),
             const SizedBox(height: 12),
             Expanded(
-              child: Consumer<UsuarioViewmodel>(
+              child: Consumer<UsuarioListViewmodel>(
                 builder: (context, viewModel, child) {
                   if (viewModel.isLoading) {
                     return const Center(child: CircularProgressIndicator());
