@@ -3,10 +3,10 @@ import 'package:gardien_tech/data/datasources/emprestimo_dispositivos_datasource
 import 'package:gardien_tech/domain/entities/emprestimo_dispositivo.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_dispositivo_repository.dart';
 
-class EmprestimoDispositivoRepositoryIml implements EmprestimoDispositivoRepository{
+class EmprestimoDispositivoRepositoryImpl implements EmprestimoDispositivoRepository{
   final AppDatabase _database;
 
-  EmprestimoDispositivoRepositoryIml(this._database);
+  EmprestimoDispositivoRepositoryImpl(this._database);
 
   @override
   Future<EmprestimoDispositivo?> buscarPorId(int id) async {
