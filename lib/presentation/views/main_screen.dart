@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gardien_tech/presentation/views/emprestimo_form_screen.dart';
 import 'package:gardien_tech/presentation/views/funcoes_screen.dart';
-import 'package:gardien_tech/presentation/views/splash_screen.dart';
 
 enum Aba { home, adicionar, funcoes}
 
@@ -44,7 +43,7 @@ class _MainScreenState extends State<MainScreen>{
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => SplashScreen(nextScreen: (_) => const EmprestimoFormScreen()), // Aparece a SplashScreen e segue para EmprestimoFormScreen
+                builder: (context) => EmprestimoFormScreen(),
               ),
             );
             return;
