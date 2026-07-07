@@ -3,7 +3,7 @@ import 'package:gardien_tech/domain/entities/problema.dart';
 import 'package:gardien_tech/domain/repositories/problema_repository.dart';
 
 class ProblemaFormViewmodel extends ChangeNotifier{
-   final ProblemaRepository _repository;
+  final ProblemaRepository _repository;
 
   ProblemaFormViewmodel(this._repository);
 

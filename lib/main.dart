@@ -73,11 +73,9 @@ void main() {
 
         // ==========================
         // REPOSITÓRIOS DE EMPRÉSTIMO
-        // ORDEM IMPORTANTE
         // ==========================
 
 
-        // 1º
         Provider<EmprestimoDispositivoRepository>(
           create: (context) =>
               EmprestimoDispositivoRepositoryImpl(
@@ -86,7 +84,7 @@ void main() {
         ),
 
 
-        // 2º depende de:
+        // Depende de:
         // EmprestimoDispositivoRepository
         // DispositivoRepository
 
@@ -100,7 +98,7 @@ void main() {
         ),
 
 
-        // 3º depende de:
+        // Depende de:
         // EmprestimoItemRepository
 
         Provider<EmprestimoRepository>(
