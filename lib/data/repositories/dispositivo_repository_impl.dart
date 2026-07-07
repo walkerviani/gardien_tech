@@ -33,6 +33,25 @@ class DispositivoRepositoryImpl implements DispositivoRepository {
   }
 
   @override
+  Future<List<Dispositivo>> buscarDescricao(String filtro) async {
+    final f = filtro.trim();
+
+    if (f.isEmpty) return [];
+
+    final query = _database.select(_database.dispositivos)
+      ..where((d) =>
+          // Usa índice para otimização
+          d.numPatrimonio.like('$f%') |   
+          d.numSerie.like('$f%') |        
+          d.numPatrimonio.like('%$f%') |  
+          d.numSerie.like('%$f%'))
+      ..limit(15);
+
+    final rows = await query.get();
+    return rows.map((d) => d.toEntity()).toList();
+  }
+
+  @override
   Future<void> criar(Dispositivo dispositivo) async {
     await _database.into(_database.dispositivos).insert(dispositivo.toCompanion());
   }
@@ -83,5 +102,13 @@ class DispositivoRepositoryImpl implements DispositivoRepository {
     if (dispositivo == null) throw ArgumentError('Dispositivo não encontrado');
     dispositivo.idStatus = DispositivoStatus.indisponivel.id;
     await atualizar(dispositivo);
+  }
+  
+  @override
+  Future<Dispositivo?> buscarPorPatrimonio(String numPatrimonio) async {
+    final result = await (_database.select(_database.dispositivos)
+      ..where((d) => d.numPatrimonio.equals(numPatrimonio)))
+      .getSingleOrNull();
+    return result?.toEntity();
   }
 }
