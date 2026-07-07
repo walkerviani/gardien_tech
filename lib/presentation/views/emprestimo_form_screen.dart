@@ -5,6 +5,7 @@ import 'package:gardien_tech/domain/repositories/emprestimo_dispositivo_reposito
 import 'package:gardien_tech/domain/repositories/emprestimo_item_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_repository.dart';
 import 'package:gardien_tech/domain/repositories/usuario_repository.dart';
+import 'package:gardien_tech/presentation/extentions/dispositivo_search_formatter.dart';
 import 'package:gardien_tech/presentation/viewmodels/emprestimo_form_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:gardien_tech/domain/enum/tipo_dispositivo.dart';
@@ -327,7 +328,7 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
                   itemBuilder: (context, index) {
                     final dispositivo = viewModel.opcoesUnidade[index];
                     return ListTile(
-                      title: Text(dispositivo.descricao),
+                      title: Text(dispositivo.descricaoBusca),
                       onTap: () => viewModel.selecionarDispositivo(dispositivo),
                     );
                   },

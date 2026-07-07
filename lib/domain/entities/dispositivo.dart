@@ -25,5 +25,4 @@ class Dispositivo {
   // Getters
   int? get id => _id;
   int get idTipoDispositivo => _idTipoDispositivo;
-  String get descricao => '$numPatrimonio - ${tipo.nomeTipo} - $numSerie';
 }
