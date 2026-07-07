@@ -22,7 +22,7 @@ class _ProblemaListScreenState extends State<ProblemaListScreen> {
     });
   }
 
-  void _abrirFormulario({required DispositivoComProblemaDto problema}) async {
+  void _abrirFormulario({required DispositivoComProblemaDTO problema}) async {
     final viewModel = context.read<ProblemaListViewmodel>();
     await Navigator.push(
       context,
@@ -42,7 +42,7 @@ class _ProblemaListScreenState extends State<ProblemaListScreen> {
     viewModel.carregarDispositivosComProblemas();
   }
 
-  void _confirmarExcluir(DispositivoComProblemaDto problema) {
+  void _confirmarExcluir(DispositivoComProblemaDTO problema) {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(

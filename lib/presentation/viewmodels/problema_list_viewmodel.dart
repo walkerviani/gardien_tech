@@ -9,7 +9,7 @@ class ProblemaListViewmodel extends ChangeNotifier{
 
   bool isLoading = false;
   String? errorMessage;
-  List<DispositivoComProblemaDto> problemasAtivos = [];
+  List<DispositivoComProblemaDTO> problemasAtivos = [];
 
   int quantidadeTotalDisponiveisComProblemas() {
     final idsUnicos = <int>{};
