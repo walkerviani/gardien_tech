@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gardien_tech/domain/enum/emprestimo_status.dart';
+import 'package:gardien_tech/domain/enum/tipo_cargo.dart';
+import 'package:gardien_tech/presentation/viewmodels/emprestimo_list_viewmodel.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class EmprestimoListScreen extends StatefulWidget {
   const EmprestimoListScreen({super.key});
@@ -95,71 +99,104 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
 
-          Card(
-            color: Color(0xFF006dc4),
-            child: Padding(
-              padding: EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '08:23 - Marcela (Professor)',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
+          Expanded(
+            child: Consumer<EmprestimoListViewmodel>(
+              builder: (context, viewmodel, child) {
+                if (viewmodel.isLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (viewmodel.emprestimos.isEmpty) {
+                  return const Text('Nenhum empréstimo encontrado');
+                }
+                return ListView.builder(
+                  itemCount: viewmodel.emprestimos.length,
+                  itemBuilder: (context, index) {
+                    final emprestimo = viewmodel.emprestimos[index];
+                    final status =
+                        EmprestimoStatus.values
+                            .where((status) => status.id == emprestimo.idTipoCargo)
+                            .firstOrNull
+                            ?.nomeStatus ??
+                        'Desconhecido';
+                    final usuarioCargo =
+                          TipoCargo.values
+                              .where((cargo) => cargo.id == emprestimo.idTipoCargo)
+                              .firstOrNull
+                              ?.nomeCargo ??
+                          'Cargo não encontrado';
+                    final dispositivoStr = emprestimo.qtdSolicitada > 1 ? 'Dispositivos' : 'Dispositivo';
+
+                    return Card(
+                      color: Color(0xFF006dc4),
+                      child: Padding(
+                        padding: EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '${emprestimo.dataHoraEfetuado} - ${emprestimo.nomeUsuario} ($usuarioCargo)',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      '${emprestimo.qtdSolicitada} $dispositivoStr',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(width: 8),
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.green,
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: Text(
+                                    'Ativo',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                          Text(
-                            '10 Dispositivos',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                            Center(
+                              child: TextButton(
+                                onPressed: () {},
+                                child: Text(
+                                  'Clique para mais detalhes',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(width: 8),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.green,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Text(
-                          'Ativo',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
-                  Center(
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        'Clique para mais detalhes',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                    );
+                  },
+                );
+              },
             ),
           ),
         ],
