@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gardien_tech/domain/enum/emprestimo_status.dart';
 import 'package:gardien_tech/domain/enum/tipo_cargo.dart';
 import 'package:gardien_tech/presentation/viewmodels/emprestimo_list_viewmodel.dart';
 import 'package:intl/intl.dart';
@@ -19,31 +18,32 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
   @override
   void initState() {
     super.initState();
-
     _dataController = DateTime.now();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<EmprestimoListViewmodel>().carregarEmprestimosDoDia(
+        _dataController,
+      );
+    });
   }
 
   String get dataSelecionada =>
       DateFormat('dd/MM/yyyy').format(_dataController);
 
-
-  String _stringStatus(int statusId) {
-    String status = EmprestimoStatus.values.where((statusStr) => statusStr.id == statusId)
-    .firstOrNull?.nomeStatus ?? 'Status não Encontrado';
-    return status;
+  Color _colorStatus(int statusId) {
+    switch (statusId) {
+      case 1:
+        return Colors.green;
+      case 2:
+        return Colors.brown;
+      case 3:
+        return Colors.cyan;
+      default:
+        return Colors.red;
+    }
   }
 
-  Color _colorStatus(int statusId) {
-    switch(statusId) {
-      case 1: 
-      return Colors.green;
-      case 2:
-      return Colors.brown;
-      case 3: 
-      return Colors.cyan;
-      default:
-      return Colors.red;
-    }
+  String _dataFormatada(DateTime data) {
+    return DateFormat('dd/MM/yyyy').format(data);
   }
 
   @override
@@ -96,7 +96,12 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                       actionsAlignment: MainAxisAlignment.center,
                       actions: [
                         TextButton(
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () {
+                            context
+                                .read<EmprestimoListViewmodel>()
+                                .carregarEmprestimosDoDia(_dataController);
+                            Navigator.pop(context);
+                          },
                           child: Text(
                             'Salvar',
                             style: TextStyle(color: Color(0xFF000000)),
@@ -120,7 +125,6 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
             ],
           ),
           const SizedBox(height: 10),
-
           Expanded(
             child: Consumer<EmprestimoListViewmodel>(
               builder: (context, viewmodel, child) {
@@ -136,15 +140,22 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                   itemBuilder: (context, index) {
                     final emprestimo = viewmodel.emprestimos[index];
                     final usuarioCargo =
-                          TipoCargo.values
-                              .where((cargo) => cargo.id == emprestimo.idTipoCargo)
-                              .firstOrNull
-                              ?.nomeCargo ??
-                          'Cargo não encontrado';
-                    final dispositivoStr = emprestimo.qtdSolicitada > 1 ? 'Dispositivos' : 'Dispositivo';
+                        TipoCargo.values
+                            .where(
+                              (cargo) => cargo.id == emprestimo.idTipoCargo,
+                            )
+                            .firstOrNull
+                            ?.nomeCargo ??
+                        'Cargo não encontrado';
+                    final dispositivoStr = emprestimo.qtdSolicitada > 1
+                        ? 'Dispositivos'
+                        : 'Dispositivo';
+                    String nomeCortado = emprestimo.nomeUsuario.length > 15
+                        ? '${emprestimo.nomeUsuario.substring(0, 12)}...'
+                        : emprestimo.nomeUsuario;
 
                     return Card(
-                      color: Color(0xFF006dc4),
+                      color: _colorStatus(emprestimo.idStatusEmprestimo),
                       child: Padding(
                         padding: EdgeInsets.all(12),
                         child: Column(
@@ -157,38 +168,22 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      '${emprestimo.dataHoraEfetuado} - ${emprestimo.nomeUsuario} ($usuarioCargo)',
+                                      '${_dataFormatada(emprestimo.dataHoraEfetuado)} - $nomeCortado',
+
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
+                                        fontSize: 16,
                                       ),
                                     ),
                                     Text(
-                                      '${emprestimo.qtdSolicitada} $dispositivoStr',
+                                      '$usuarioCargo\n${emprestimo.qtdSolicitada} $dispositivoStr',
                                       style: TextStyle(
                                         color: Colors.white,
-                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
                                       ),
                                     ),
                                   ],
-                                ),
-                                const SizedBox(width: 8),
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 4,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: _colorStatus(emprestimo.idStatusEmprestimo),
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                  child: Text(
-                                    '(${_stringStatus(emprestimo.idStatusEmprestimo)})',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
                                 ),
                               ],
                             ),
