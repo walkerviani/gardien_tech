@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart';
 import 'package:gardien_tech/data/database.dart';
 import 'package:gardien_tech/data/datasources/usuario_datasource.dart';
 import 'package:gardien_tech/domain/entities/usuario.dart';
@@ -21,6 +22,23 @@ class UsuarioRepositoryImpl implements UsuarioRepository {
       ..where((u) => u.nome.equals(nome))).getSingleOrNull();
 
     return usuario?.toEntity();
+  }
+
+  @override
+  Future<List<Usuario>> buscarNome(String filtro) async {
+    final f = filtro.trim();
+
+    if (f.isEmpty) return [];
+
+    final query = _database.select(_database.usuarios)
+      ..where((u) =>
+          // Usa índice para otimização
+          u.nome.like('$f%') |         
+          u.nome.like('%$f%'))
+      ..limit(15);
+
+    final rows = await query.get();
+    return rows.map((u) => u.toEntity()).toList();
   }
 
   @override

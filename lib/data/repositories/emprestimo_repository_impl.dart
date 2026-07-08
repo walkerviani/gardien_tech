@@ -39,10 +39,8 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
   }
 
   @override
-  Future<void> criar(Emprestimo emprestimo) async {
-    await _database
-        .into(_database.emprestimos)
-        .insert(emprestimo.toCompanion());
+  Future<int> criar(Emprestimo emprestimo) async {
+    return await _database.into(_database.emprestimos).insert(emprestimo.toCompanion());
   }
 
   @override

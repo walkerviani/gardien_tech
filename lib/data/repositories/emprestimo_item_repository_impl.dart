@@ -6,12 +6,12 @@ import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_dispositivo_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_item_repository.dart';
 
-class EmprestimoItemRepositoryIml implements EmprestimoItemRepository {
+class EmprestimoItemRepositoryImpl implements EmprestimoItemRepository {
   final AppDatabase _database;
   final EmprestimoDispositivoRepository _edRepository;
   final DispositivoRepository _dispositivoRepository;
 
-  EmprestimoItemRepositoryIml(
+  EmprestimoItemRepositoryImpl(
     this._database,
     this._edRepository,
     this._dispositivoRepository,
@@ -34,8 +34,8 @@ class EmprestimoItemRepositoryIml implements EmprestimoItemRepository {
   }
 
   @override
-  Future<void> criar(EmprestimoItem item) async {
-    await _database.into(_database.emprestimoItens).insert(item.toCompanion());
+  Future<int> criar(EmprestimoItem item) async {
+    return await _database.into(_database.emprestimoItens).insert(item.toCompanion());
   }
 
   @override

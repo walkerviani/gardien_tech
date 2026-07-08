@@ -42,8 +42,10 @@ class _MainScreenState extends State<MainScreen>{
 
           if(aba == Aba.adicionar) {
             Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => EmprestimoFormScreen()),
+              context,
+              MaterialPageRoute(
+                builder: (context) => EmprestimoFormScreen(),
+              ),
             );
             return;
           }

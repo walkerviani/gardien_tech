@@ -4,6 +4,8 @@ abstract class DispositivoRepository {
   Future<Dispositivo?> buscarPorId(int id);
   Future<List<Dispositivo>> buscarTodos();
   Future<List<Dispositivo>> buscarPorTipo(int idTipoDispositivo);
+  Future<List<Dispositivo>> buscarDescricao(String filtro);
+  Future<Dispositivo?> buscarPorPatrimonio(String numPatrimonio);
   Future<void> criar(Dispositivo dispositivo);
   Future<void> atualizar(Dispositivo dispositivo);
   Future<void> deletar(int id);
