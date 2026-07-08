@@ -26,6 +26,26 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
   String get dataSelecionada =>
       DateFormat('dd/MM/yyyy').format(_dataController);
 
+
+  String _stringStatus(int statusId) {
+    String status = EmprestimoStatus.values.where((statusStr) => statusStr.id == statusId)
+    .firstOrNull?.nomeStatus ?? 'Status não Encontrado';
+    return status;
+  }
+
+  Color _colorStatus(int statusId) {
+    switch(statusId) {
+      case 1: 
+      return Colors.green;
+      case 2:
+      return Colors.brown;
+      case 3: 
+      return Colors.cyan;
+      default:
+      return Colors.red;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -115,12 +135,6 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                   itemCount: viewmodel.emprestimos.length,
                   itemBuilder: (context, index) {
                     final emprestimo = viewmodel.emprestimos[index];
-                    final status =
-                        EmprestimoStatus.values
-                            .where((status) => status.id == emprestimo.idTipoCargo)
-                            .firstOrNull
-                            ?.nomeStatus ??
-                        'Desconhecido';
                     final usuarioCargo =
                           TipoCargo.values
                               .where((cargo) => cargo.id == emprestimo.idTipoCargo)
@@ -165,11 +179,11 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                                     vertical: 4,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.green,
+                                    color: _colorStatus(emprestimo.idStatusEmprestimo),
                                     borderRadius: BorderRadius.circular(4),
                                   ),
                                   child: Text(
-                                    'Ativo',
+                                    '(${_stringStatus(emprestimo.idStatusEmprestimo)})',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
