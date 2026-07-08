@@ -23,9 +23,7 @@ import 'package:gardien_tech/presentation/viewmodels/emprestimo_list_viewmodel.d
 import 'package:gardien_tech/presentation/viewmodels/problema_form_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/usuario_form_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/dispositivo_problema_list_viewmodel.dart';
-import 'package:gardien_tech/presentation/viewmodels/problema_form_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/problema_list_viewmodel.dart';
-import 'package:gardien_tech/presentation/viewmodels/usuario_form_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/usuario_list_viewmodel.dart';
 
 import 'package:gardien_tech/presentation/views/main_screen.dart';
@@ -112,13 +110,13 @@ void main() {
         ),
         
         Provider<EmprestimoDispositivoRepository>(
-          create: (context) => EmprestimoDispositivoRepositoryIml(
+          create: (context) => EmprestimoDispositivoRepositoryImpl(
             context.read<AppDatabase>(),
           ),
         ),
         
         Provider<EmprestimoItemRepository>(
-          create: (context) => EmprestimoItemRepositoryIml(
+          create: (context) => EmprestimoItemRepositoryImpl(
             context.read<AppDatabase>(),
             context.read<EmprestimoDispositivoRepository>(),
             context.read<DispositivoRepository>(),
@@ -150,7 +148,6 @@ void main() {
               DispositivoListViewmodel(
                 context.read<DispositivoRepository>(),
               ),
-              DispositivoListViewmodel(context.read<DispositivoRepository>()),
         ),
         
         ChangeNotifierProvider<DispositivoProblemaListViewmodel>(
