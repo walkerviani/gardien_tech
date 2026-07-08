@@ -1,4 +1,4 @@
-class DispositivoComProblemaDto {
+class DispositivoComProblemaDTO {
   int idProblema;
   int idDispositivo;
   String descricao;
@@ -6,7 +6,7 @@ class DispositivoComProblemaDto {
   String numSerie;
   String numPatrimonio;
 
-  DispositivoComProblemaDto({
+  DispositivoComProblemaDTO({
     required this.idProblema,
     required this.idDispositivo,
     required this.descricao,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gardien_tech/presentation/views/emprestimo_form_screen.dart';
+import 'package:gardien_tech/presentation/views/emprestimo_list_screen.dart';
 import 'package:gardien_tech/presentation/views/funcoes_screen.dart';
 
 enum Aba { home, adicionar, funcoes}
@@ -15,7 +16,7 @@ class _MainScreenState extends State<MainScreen>{
   Aba _abaAtual = Aba.home;
 
   final Map<Aba, Widget> _telas = {
-    Aba.home: Center(child: Text('Página Inicial')),
+    Aba.home: const EmprestimoListScreen(),
     Aba.funcoes: const FuncoesScreen(),
   };
   

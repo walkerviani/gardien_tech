@@ -58,7 +58,7 @@ class ProblemaRepositoryImpl implements ProblemaRepository {
   }
 
   @override
-  Future<List<DispositivoComProblemaDto>>
+  Future<List<DispositivoComProblemaDTO>>
   buscarProblemasAtivosComDispositivos() async {
     final listaProblemas = await (_database.select(_database.problemas).join([
       innerJoin(
@@ -71,7 +71,7 @@ class ProblemaRepositoryImpl implements ProblemaRepository {
       final problema = row.readTable(_database.problemas);
       final dispositivos = row.readTable(_database.dispositivos);
 
-      return DispositivoComProblemaDto(
+      return DispositivoComProblemaDTO(
         idProblema: problema.id,
         idDispositivo: dispositivos.id,
         descricao: problema.descricao,

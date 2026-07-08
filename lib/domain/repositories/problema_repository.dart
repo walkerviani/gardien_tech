@@ -8,5 +8,5 @@ abstract class ProblemaRepository {
   Future<void> criar(Problema problema);
   Future<void> atualizar(Problema problema);
   Future<void> deletar(int id);
-  Future<List<DispositivoComProblemaDto>> buscarProblemasAtivosComDispositivos();
+  Future<List<DispositivoComProblemaDTO>> buscarProblemasAtivosComDispositivos();
 }

@@ -19,6 +19,9 @@ import 'package:gardien_tech/domain/repositories/usuario_repository.dart';
 
 import 'package:gardien_tech/presentation/viewmodels/dispositivo_form_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/dispositivo_list_viewmodel.dart';
+import 'package:gardien_tech/presentation/viewmodels/emprestimo_list_viewmodel.dart';
+import 'package:gardien_tech/presentation/viewmodels/problema_form_viewmodel.dart';
+import 'package:gardien_tech/presentation/viewmodels/usuario_form_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/dispositivo_problema_list_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/problema_form_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/problema_list_viewmodel.dart';
@@ -48,7 +51,7 @@ void main() {
         // ==========================
         // REPOSITÓRIOS BÁSICOS
         // ==========================
-
+        
         Provider<UsuarioRepository>(
           create: (context) =>
               UsuarioRepositoryImpl(
@@ -74,7 +77,6 @@ void main() {
         // ==========================
         // REPOSITÓRIOS DE EMPRÉSTIMO
         // ==========================
-
 
         Provider<EmprestimoDispositivoRepository>(
           create: (context) =>
@@ -108,14 +110,28 @@ void main() {
                 context.read<EmprestimoItemRepository>(),
               ),
         ),
-
-
-
-        // ==========================
-        // VIEWMODELS
-        // ==========================
-
-
+        
+        Provider<EmprestimoDispositivoRepository>(
+          create: (context) => EmprestimoDispositivoRepositoryIml(
+            context.read<AppDatabase>(),
+          ),
+        ),
+        
+        Provider<EmprestimoItemRepository>(
+          create: (context) => EmprestimoItemRepositoryIml(
+            context.read<AppDatabase>(),
+            context.read<EmprestimoDispositivoRepository>(),
+            context.read<DispositivoRepository>(),
+          ),
+        ),
+        
+        Provider<EmprestimoRepository>(
+          create: (context) => EmprestimoRepositoryImpl(
+            context.read<AppDatabase>(),
+            context.read<EmprestimoItemRepository>(),
+          ),
+        ),
+        
         ChangeNotifierProvider<UsuarioListViewmodel>(
           create: (context) =>
               UsuarioListViewmodel(
@@ -124,13 +140,24 @@ void main() {
         ),
 
 
+        
+        // ==========================
+        // VIEWMODELS
+        // ==========================
+        
         ChangeNotifierProvider<DispositivoListViewmodel>(
           create: (context) =>
               DispositivoListViewmodel(
                 context.read<DispositivoRepository>(),
               ),
+              DispositivoListViewmodel(context.read<DispositivoRepository>()),
         ),
-
+        
+        ChangeNotifierProvider<DispositivoProblemaListViewmodel>(
+          create: ((context) => DispositivoProblemaListViewmodel(
+            context.read<ProblemaRepository>(),
+          )),
+        ),
 
         ChangeNotifierProvider<ProblemaListViewmodel>(
           create: (context) =>
@@ -139,14 +166,12 @@ void main() {
               ),
         ),
 
-
         ChangeNotifierProvider<DispositivoProblemaListViewmodel>(
           create: (context) =>
               DispositivoProblemaListViewmodel(
                 context.read<ProblemaRepository>(),
               ),
         ),
-
 
         ChangeNotifierProvider<UsuarioFormViewmodel>(
           create: (context) =>
@@ -155,14 +180,12 @@ void main() {
               ),
         ),
 
-
         ChangeNotifierProvider<ProblemaFormViewmodel>(
           create: (context) =>
               ProblemaFormViewmodel(
                 context.read<ProblemaRepository>(),
               ),
         ),
-
 
         ChangeNotifierProvider<DispositivoFormViewmodel>(
           create: (context) =>
@@ -171,6 +194,10 @@ void main() {
               ),
         ),
 
+        ChangeNotifierProvider<EmprestimoListViewmodel>(
+          create: ((context) =>
+              EmprestimoListViewmodel(context.read<EmprestimoRepository>())),
+        ),
       ],
 
       child: const MyApp(),

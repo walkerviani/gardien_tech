@@ -1,5 +1,7 @@
+import 'package:drift/drift.dart';
 import 'package:gardien_tech/data/database.dart';
 import 'package:gardien_tech/data/datasources/emprestimo_datasource.dart';
+import 'package:gardien_tech/data/dto/emprestimo_com_detalhes_dto.dart';
 import 'package:gardien_tech/domain/entities/emprestimo.dart';
 import 'package:gardien_tech/domain/enum/emprestimo_status.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_item_repository.dart';
@@ -9,10 +11,7 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
   final AppDatabase _database;
   final EmprestimoItemRepository _emprestimoItemRepository;
 
-  EmprestimoRepositoryImpl(
-    this._database,
-    this._emprestimoItemRepository,
-  );
+  EmprestimoRepositoryImpl(this._database, this._emprestimoItemRepository);
 
   @override
   Future<List<Emprestimo>> buscarTodos() async {
@@ -23,17 +22,18 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
 
   @override
   Future<List<Emprestimo>> buscarTodosAtivos() async {
-    final emprestimos = await (_database.select(_database.emprestimos)
-        ..where((emprestimo) => emprestimo.idStatus.equals(1)))
-      .get();
+    final emprestimos = await (_database.select(
+      _database.emprestimos,
+    )..where((emprestimo) => emprestimo.idStatus.equals(1))).get();
 
     return emprestimos.map((emprestimo) => emprestimo.toEntity()).toList();
   }
 
   @override
   Future<Emprestimo?> buscarPorId(int id) async {
-    final emprestimo = await (_database.select(_database.emprestimos)
-        ..where((emprestimo) => emprestimo.id.equals(id))).getSingleOrNull();
+    final emprestimo = await (_database.select(
+      _database.emprestimos,
+    )..where((emprestimo) => emprestimo.id.equals(id))).getSingleOrNull();
 
     return emprestimo?.toEntity();
   }
@@ -43,21 +43,24 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
     return await _database.into(_database.emprestimos).insert(emprestimo.toCompanion());
   }
 
-    @override
+  @override
   Future<void> atualizar(Emprestimo emprestimo) async {
     if (emprestimo.id == null) {
       throw ArgumentError('Não é possível atualizar um empréstimo sem id');
     }
 
-    await (_database.update(_database.emprestimos)..where((e) => e.id.equals(emprestimo.id!)))
-      .write(emprestimo.toCompanion());
+    await (_database.update(_database.emprestimos)
+          ..where((e) => e.id.equals(emprestimo.id!)))
+        .write(emprestimo.toCompanion());
   }
 
   @override
   Future<void> deletar(int id) async {
-    await (_database.delete(_database.emprestimos)..where((e) => e.id.equals(id))).go();
+    await (_database.delete(
+      _database.emprestimos,
+    )..where((e) => e.id.equals(id))).go();
   }
-  
+
   @override
   Future<void> concluir(int id) async {
     final emprestimo = await buscarPorId(id);
@@ -73,5 +76,50 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
     emprestimo.dataHoraConcluido = DateTime.now();
     emprestimo.idStatus = EmprestimoStatus.concluido.id;
     await atualizar(emprestimo);
+  }
+
+  @override
+  Future<List<EmprestimoComDetalhesDTO>> buscarPorDiaComDetalhes(
+    DateTime data,
+  ) async {
+    return (_database.select(_database.emprestimos).join([
+      innerJoin(
+        _database.usuarios,
+        _database.emprestimos.idResponsavel.equalsExp(_database.usuarios.id),
+      ),
+      innerJoin(
+        _database.emprestimoItens,
+        _database.emprestimoItens.idEmprestimo.equalsExp(
+          _database.emprestimos.id,
+        ),
+      ),
+    ])).get().then(
+      (rows) => rows
+          .where((row) {
+            final dataEmprestimo = row
+                .readTable(_database.emprestimos)
+                .dataHoraEfetuado;
+            return dataEmprestimo.day == data.day &&
+                dataEmprestimo.month == data.month &&
+                dataEmprestimo.year == data.year;
+          })
+          .map((row) {
+            final emprestimo = row.readTable(_database.emprestimos);
+            final usuario = row.readTable(_database.usuarios);
+            final emprestimoItem = row.readTable(_database.emprestimoItens);
+
+            return EmprestimoComDetalhesDTO(
+              idEmprestimo: emprestimo.id,
+              idUsuario: usuario.id,
+              idEmprestimoItem: emprestimoItem.id,
+              idTipoCargo: usuario.idTipoCargo,
+              idStatusEmprestimo: emprestimo.idStatus,
+              qtdSolicitada: emprestimoItem.qtdSolicitada,
+              dataHoraEfetuado: emprestimo.dataHoraEfetuado,
+              nomeUsuario: usuario.nome,
+            );
+          })
+          .toList(),
+    );
   }
 }
