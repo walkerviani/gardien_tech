@@ -208,14 +208,20 @@ class EmprestimoFormViewModel extends ChangeNotifier {
         final tipoDisp = TipoDispositivo.values.firstWhere(
           (t) => t.nomeTipo == item.tipoDisp,
         );
-        final emprestimoItem = EmprestimoItem(
-          null,
-          idEmprestimo,
-          tipoDisp.id,
-          int.parse(item.quantidade.text), // quantidade informada
-          true, // ehQuantitativo
-        );
-        await emprestimoItemRepository.criar(emprestimoItem);
+        final qtd = int.parse(item.quantidade.text);
+        
+        // Cria um EmprestimoItem pra cada unidade
+        for (int i = 0; i < qtd; i++) {
+          final emprestimoItem = EmprestimoItem(
+            null,
+            idEmprestimo,
+            tipoDisp.id,
+            1, // quantidade = 1
+            false, // por unidade
+            estaResolvido: false,
+          );
+          await emprestimoItemRepository.criar(emprestimoItem);
+        }
       }
     } else {
       for (final item in itensUnidade) {

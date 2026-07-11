@@ -147,7 +147,7 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
                       }
                       await viewModel.confirmar();
                       if (context.mounted) Navigator.pop(context);
-                        },
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF4CAf50),
                       foregroundColor: Colors.white,
