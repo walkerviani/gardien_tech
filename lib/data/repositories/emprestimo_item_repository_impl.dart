@@ -1,6 +1,7 @@
 import 'package:gardien_tech/data/database.dart';
 import 'package:gardien_tech/data/datasources/emprestimo_item_datasource.dart';
 import 'package:gardien_tech/data/dto/emprestimo_item_com_dispositivo_dto.dart';
+import 'package:gardien_tech/domain/entities/dispositivo.dart';
 import 'package:gardien_tech/domain/entities/emprestimo_dispositivo.dart';
 import 'package:gardien_tech/domain/entities/emprestimo_item.dart';
 import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
@@ -116,10 +117,17 @@ class EmprestimoItemRepositoryImpl implements EmprestimoItemRepository {
   @override
   Future<List<EmprestimoItemComDispositivoDTO>> buscarEmprestimoItemComDispositivo(int idEmprestimo) async{
     final itens = await buscarPorEmprestimo(idEmprestimo);
+
     return Future.wait(itens.map(
       (item) async {
-        final dispositivos = await _edRepository.buscarPorEmprestimoItem(item.id!);
-        return EmprestimoItemComDispositivoDTO(item, dispositivos);
+        final dispositivosVinculados = await _edRepository.buscarPorEmprestimoItem(item.id!);
+        final dispositivosObj = await Future.wait(
+        dispositivosVinculados
+            .where((emprDisp) => emprDisp.idDispositivo != null)
+            .map((emprDisp) => _dispositivoRepository.buscarPorId(emprDisp.idDispositivo!)),
+      );
+
+        return EmprestimoItemComDispositivoDTO(item, dispositivosVinculados, dispositivosObj.whereType<Dispositivo>().toList());
       }
     ));
   }
