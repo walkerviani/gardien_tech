@@ -83,14 +83,6 @@ class EmprestimoItemRepositoryImpl implements EmprestimoItemRepository {
     );
 
     await _dispositivoRepository.marcarEmUso(idDispositivo);
-
-    // Busca todo os itens vinculados e adiciona como item de empréstimo
-    final vinculados = await _edRepository.buscarPorEmprestimoItem(idEmprestimoItem);
-    final qtdVinculada = vinculados.where((ed) => ed.idDispositivo != null).length;
-    if (qtdVinculada >= emprestimoItem.qtdSolicitada) {
-      emprestimoItem.estaResolvido = true;
-      await atualizar(emprestimoItem);
-    }
   } 
 
   //  Desfazer essa associação. Usado quando o dispositivo errado foi associado
