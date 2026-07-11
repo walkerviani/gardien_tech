@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gardien_tech/domain/enum/tipo_cargo.dart';
+import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
+import 'package:gardien_tech/domain/repositories/emprestimo_item_repository.dart';
+import 'package:gardien_tech/presentation/viewmodels/emprestimo_detalhe_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/emprestimo_list_viewmodel.dart';
+import 'package:gardien_tech/presentation/views/emprestimo_detalhe_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -125,7 +129,10 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
             ],
           ),
           const SizedBox(height: 10),
-          
+
+          /*
+            Container de informação sobre os status do empréstimo
+          */
           Container(
             decoration: BoxDecoration(
               border: Border.all(color: Colors.grey),
@@ -134,70 +141,99 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
             padding: EdgeInsets.all(4),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Entenda a cor de cada cartão: '),
-              IconButton(
-              onPressed: () => showDialog(
-                context: context,
-                builder: (_) => AlertDialog(
-                  title: const Text('Status do Empréstimo'),
-                  content: RichText(
-                    text: TextSpan(
-                      text: 'O status é apresentado através da cor do cartão:\n\n',
-                      style: TextStyle(color: Colors.black, fontSize: 17), 
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: 'Ativo ',
-                          style: TextStyle(color: _colorStatus(1), fontSize: 17, fontWeight: FontWeight.bold),
-                        ),
-                        TextSpan(
-                          text: '- O empréstimo está em aberto\n',
+              children: [
+                Text('Entenda a cor de cada cartão: '),
+                IconButton(
+                  onPressed: () => showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      title: const Text('Status do Empréstimo'),
+                      content: RichText(
+                        text: TextSpan(
+                          text:
+                              'O status é apresentado através da cor do cartão:\n\n',
                           style: TextStyle(color: Colors.black, fontSize: 17),
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: 'Ativo ',
+                              style: TextStyle(
+                                color: _colorStatus(1),
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '- O empréstimo está em aberto\n',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 17,
+                              ),
+                            ),
+                            TextSpan(
+                              text: 'Em Observação ',
+                              style: TextStyle(
+                                color: _colorStatus(2),
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '- O empréstimo já passou de um dia\n',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 17,
+                              ),
+                            ),
+                            TextSpan(
+                              text: 'Concluído ',
+                              style: TextStyle(
+                                color: _colorStatus(3),
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '- O empréstimo foi finalizado\n',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 17,
+                              ),
+                            ),
+                            TextSpan(
+                              text: 'Erro ',
+                              style: TextStyle(
+                                color: _colorStatus(0),
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '- Algo deu errado\n',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 17,
+                              ),
+                            ),
+                          ],
                         ),
-                        TextSpan(
-                          text: 'Em Observação ',
-                          style: TextStyle(color: _colorStatus(2), fontSize: 17, fontWeight: FontWeight.bold),
-                        ),
-                        TextSpan(
-                          text: '- O empréstimo já passou de um dia\n',
-                          style: TextStyle(color: Colors.black, fontSize: 17),
-                        ),
-                        TextSpan(
-                          text: 'Concluído ',
-                          style: TextStyle(color: _colorStatus(3), fontSize: 17, fontWeight: FontWeight.bold),
-                        ),
-                        TextSpan(
-                          text: '- O empréstimo foi finalizado\n',
-                          style: TextStyle(color: Colors.black, fontSize: 17),
-                        ),
-                        TextSpan(
-                          text: 'Erro ',
-                          style: TextStyle(color: _colorStatus(0), fontSize: 17, fontWeight: FontWeight.bold),
-                        ),
-                        TextSpan(
-                          text: '- Algo deu errado\n',
-                          style: TextStyle(color: Colors.black, fontSize: 17),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text(
+                            'Entendi',
+                            style: TextStyle(color: Color(0xFF000000)),
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text(
-                        'Entendi',
-                        style: TextStyle(color: Color(0xFF000000)),
-                      ),
-                    ),
-                  ],
+                  icon: Icon(Icons.help_outline),
                 ),
-              ),
-              icon: Icon(Icons.help_outline),
+              ],
             ),
-            ],
           ),
-          ),
-          
+
           const SizedBox(height: 10),
           Expanded(
             child: Consumer<EmprestimoListViewmodel>(
@@ -263,7 +299,29 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                             ),
                             Center(
                               child: TextButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => ChangeNotifierProvider(
+                                        create: (context) =>
+                                            EmprestimoDetalheViewmodel(
+                                              context.read<EmprestimoItemRepository>(),
+                                              context.read<DispositivoRepository>(),
+                                            ),
+                                        child: EmprestimoDetalheScreen(
+                                          idEmprestimo: emprestimo.idEmprestimo,
+                                          dataHoraEfetuado:
+                                              emprestimo.dataHoraEfetuado,
+                                          nomeResponsavel:
+                                              emprestimo.nomeUsuario,
+                                          idStatus:
+                                              emprestimo.idStatusEmprestimo,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
                                 child: Text(
                                   'Clique aqui para mais detalhes',
                                   style: TextStyle(
