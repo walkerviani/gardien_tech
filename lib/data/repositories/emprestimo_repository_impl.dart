@@ -40,7 +40,9 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
 
   @override
   Future<int> criar(Emprestimo emprestimo) async {
-    return await _database.into(_database.emprestimos).insert(emprestimo.toCompanion());
+    return await _database
+        .into(_database.emprestimos)
+        .insert(emprestimo.toCompanion());
   }
 
   @override
@@ -82,7 +84,7 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
   Future<List<EmprestimoComDetalhesDTO>> buscarPorDiaComDetalhes(
     DateTime data,
   ) async {
-    return (_database.select(_database.emprestimos).join([
+    final rows = await (_database.select(_database.emprestimos).join([
       innerJoin(
         _database.usuarios,
         _database.emprestimos.idResponsavel.equalsExp(_database.usuarios.id),
@@ -93,33 +95,35 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
           _database.emprestimos.id,
         ),
       ),
-    ])).get().then(
-      (rows) => rows
-          .where((row) {
-            final dataEmprestimo = row
-                .readTable(_database.emprestimos)
-                .dataHoraEfetuado;
-            return dataEmprestimo.day == data.day &&
-                dataEmprestimo.month == data.month &&
-                dataEmprestimo.year == data.year;
-          })
-          .map((row) {
-            final emprestimo = row.readTable(_database.emprestimos);
-            final usuario = row.readTable(_database.usuarios);
-            final emprestimoItem = row.readTable(_database.emprestimoItens);
+    ])).get();
+    final Map<int, EmprestimoComDetalhesDTO> mapa = {};
+    for (final row in rows) {
+      final emprestimo = row.readTable(_database.emprestimos);
+      final dataEmprestimo = emprestimo.dataHoraEfetuado;
 
-            return EmprestimoComDetalhesDTO(
-              idEmprestimo: emprestimo.id,
-              idUsuario: usuario.id,
-              idEmprestimoItem: emprestimoItem.id,
-              idTipoCargo: usuario.idTipoCargo,
-              idStatusEmprestimo: emprestimo.idStatus,
-              qtdSolicitada: emprestimoItem.qtdSolicitada,
-              dataHoraEfetuado: emprestimo.dataHoraEfetuado,
-              nomeUsuario: usuario.nome,
-            );
-          })
-          .toList(),
-    );
+      if (dataEmprestimo.day == data.day &&
+          dataEmprestimo.month == data.month &&
+          dataEmprestimo.year == data.year) {
+        final usuario = row.readTable(_database.usuarios);
+        final emprestimoItem = row.readTable(_database.emprestimoItens);
+
+        if (mapa.containsKey(emprestimo.id)) {
+          mapa[emprestimo.id]!.qtdSolicitada += emprestimoItem.qtdSolicitada;
+        } else {
+          mapa[emprestimo.id] = EmprestimoComDetalhesDTO(
+            idEmprestimo: emprestimo.id,
+            idUsuario: usuario.id,
+            idEmprestimoItem: emprestimoItem.id,
+            idTipoCargo: usuario.idTipoCargo,
+            idStatusEmprestimo: emprestimo.idStatus,
+            qtdSolicitada: emprestimoItem.qtdSolicitada,
+            dataHoraEfetuado: emprestimo.dataHoraEfetuado,
+            nomeUsuario: usuario.nome,
+          );
+        }
+      }
+    }
+
+    return mapa.values.toList();
   }
 }
