@@ -28,93 +28,49 @@ import 'package:gardien_tech/presentation/viewmodels/usuario_list_viewmodel.dart
 
 import 'package:gardien_tech/presentation/views/main_screen.dart';
 
-
 void main() {
   final database = AppDatabase();
 
   runApp(
     MultiProvider(
       providers: [
-
         // ==========================
         // DATABASE
         // ==========================
-
         Provider<AppDatabase>(
           create: (_) => database,
           dispose: (_, db) => db.close(),
         ),
 
-
         // ==========================
         // REPOSITÓRIOS BÁSICOS
         // ==========================
-        
         Provider<UsuarioRepository>(
           create: (context) =>
-              UsuarioRepositoryImpl(
-                context.read<AppDatabase>(),
-              ),
+              UsuarioRepositoryImpl(context.read<AppDatabase>()),
         ),
 
         Provider<DispositivoRepository>(
           create: (context) =>
-              DispositivoRepositoryImpl(
-                context.read<AppDatabase>(),
-              ),
+              DispositivoRepositoryImpl(context.read<AppDatabase>()),
         ),
 
         Provider<ProblemaRepository>(
           create: (context) =>
-              ProblemaRepositoryImpl(
-                context.read<AppDatabase>(),
-              ),
+              ProblemaRepositoryImpl(context.read<AppDatabase>()),
         ),
-
 
         // ==========================
         // REPOSITÓRIOS DE EMPRÉSTIMO
         // ==========================
-
         Provider<EmprestimoDispositivoRepository>(
           create: (context) =>
-              EmprestimoDispositivoRepositoryImpl(
-                context.read<AppDatabase>(),
-              ),
+              EmprestimoDispositivoRepositoryImpl(context.read<AppDatabase>()),
         ),
-
 
         // Depende de:
         // EmprestimoDispositivoRepository
         // DispositivoRepository
-
-        Provider<EmprestimoItemRepository>(
-          create: (context) =>
-              EmprestimoItemRepositoryImpl(
-                context.read<AppDatabase>(),
-                context.read<EmprestimoDispositivoRepository>(),
-                context.read<DispositivoRepository>(),
-              ),
-        ),
-
-
-        // Depende de:
-        // EmprestimoItemRepository
-
-        Provider<EmprestimoRepository>(
-          create: (context) =>
-              EmprestimoRepositoryImpl(
-                context.read<AppDatabase>(),
-                context.read<EmprestimoItemRepository>(),
-              ),
-        ),
-        
-        Provider<EmprestimoDispositivoRepository>(
-          create: (context) => EmprestimoDispositivoRepositoryImpl(
-            context.read<AppDatabase>(),
-          ),
-        ),
-        
         Provider<EmprestimoItemRepository>(
           create: (context) => EmprestimoItemRepositoryImpl(
             context.read<AppDatabase>(),
@@ -122,34 +78,29 @@ void main() {
             context.read<DispositivoRepository>(),
           ),
         ),
-        
+
+        // Depende de:
+        // EmprestimoItemRepository
         Provider<EmprestimoRepository>(
           create: (context) => EmprestimoRepositoryImpl(
             context.read<AppDatabase>(),
             context.read<EmprestimoItemRepository>(),
           ),
         ),
-        
-        ChangeNotifierProvider<UsuarioListViewmodel>(
-          create: (context) =>
-              UsuarioListViewmodel(
-                context.read<UsuarioRepository>(),
-              ),
-        ),
 
-
-        
         // ==========================
         // VIEWMODELS
         // ==========================
-        
+        ChangeNotifierProvider<UsuarioListViewmodel>(
+          create: (context) =>
+              UsuarioListViewmodel(context.read<UsuarioRepository>()),
+        ),
+
         ChangeNotifierProvider<DispositivoListViewmodel>(
           create: (context) =>
-              DispositivoListViewmodel(
-                context.read<DispositivoRepository>(),
-              ),
+              DispositivoListViewmodel(context.read<DispositivoRepository>()),
         ),
-        
+
         ChangeNotifierProvider<DispositivoProblemaListViewmodel>(
           create: ((context) => DispositivoProblemaListViewmodel(
             context.read<ProblemaRepository>(),
@@ -158,37 +109,28 @@ void main() {
 
         ChangeNotifierProvider<ProblemaListViewmodel>(
           create: (context) =>
-              ProblemaListViewmodel(
-                context.read<ProblemaRepository>(),
-              ),
+              ProblemaListViewmodel(context.read<ProblemaRepository>()),
         ),
 
         ChangeNotifierProvider<DispositivoProblemaListViewmodel>(
-          create: (context) =>
-              DispositivoProblemaListViewmodel(
-                context.read<ProblemaRepository>(),
-              ),
+          create: (context) => DispositivoProblemaListViewmodel(
+            context.read<ProblemaRepository>(),
+          ),
         ),
 
         ChangeNotifierProvider<UsuarioFormViewmodel>(
           create: (context) =>
-              UsuarioFormViewmodel(
-                context.read<UsuarioRepository>(),
-              ),
+              UsuarioFormViewmodel(context.read<UsuarioRepository>()),
         ),
 
         ChangeNotifierProvider<ProblemaFormViewmodel>(
           create: (context) =>
-              ProblemaFormViewmodel(
-                context.read<ProblemaRepository>(),
-              ),
+              ProblemaFormViewmodel(context.read<ProblemaRepository>()),
         ),
 
         ChangeNotifierProvider<DispositivoFormViewmodel>(
           create: (context) =>
-              DispositivoFormViewmodel(
-                context.read<DispositivoRepository>(),
-              ),
+              DispositivoFormViewmodel(context.read<DispositivoRepository>()),
         ),
 
         ChangeNotifierProvider<EmprestimoListViewmodel>(
@@ -202,21 +144,15 @@ void main() {
   );
 }
 
-
-
 class MyApp extends StatelessWidget {
-
   const MyApp({super.key});
-
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       title: 'Gardien Tech',
       debugShowCheckedModeBanner: false,
       home: const MainScreen(),
     );
-
   }
 }
