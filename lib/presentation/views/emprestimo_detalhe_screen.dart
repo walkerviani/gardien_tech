@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:gardien_tech/data/dto/emprestimo_item_com_dispositivo_dto.dart';
+import 'package:gardien_tech/domain/entities/emprestimo_item.dart';
+import 'package:gardien_tech/domain/enum/dispositivo_status.dart';
 import 'package:gardien_tech/domain/enum/emprestimo_status.dart';
 import 'package:gardien_tech/domain/enum/tipo_dispositivo.dart';
-import 'package:gardien_tech/presentation/extentions/dispositivo_search_formatter.dart';
 import 'package:gardien_tech/presentation/viewmodels/emprestimo_detalhe_viewmodel.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +27,9 @@ class EmprestimoDetalheScreen extends StatefulWidget {
 }
 
 class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
-  late final List<TextEditingController> _controllers = [];
+  late final List<TextEditingController> _numPatrimonioController = [];
+  final Map<String, TextEditingController> _controllerMap = {};
+  final Map<int, bool> _devolucaoMap = {}; // idDispositivo -> devolvido. Usado para setar no final todos os estados de uma vez
 
   @override
   void initState() {
@@ -37,12 +41,24 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
     });
   }
 
-  @override
-  void dispose() {
-    for (var controller in _controllers) {
-      controller.dispose();
+  Future<void> _excluirItemEmprestimo(
+    BuildContext context,
+    EmprestimoItemComDispositivoDTO itemDoDTO,
+    int idEmprestimo,
+    int idDispositivo,
+  ) async {
+    final resultado = await context
+        .read<EmprestimoDetalheViewmodel>()
+        .deletarItem(itemDoDTO.item.id!, widget.idEmprestimo, idDispositivo);
+
+    if (context.mounted && resultado) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Item removido com sucesso'),
+          backgroundColor: Colors.green,
+        ),
+      );
     }
-    super.dispose();
   }
 
   @override
@@ -75,8 +91,8 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
               padding: EdgeInsets.all(4),
               child:
                   /*
-              Informações adicionais do empréstimo selecionado
-              */
+                  Informações adicionais do empréstimo selecionado
+                  */
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -119,215 +135,61 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                     return const Text('Nenhum dispositivo encontrado');
                   }
                   return ListView.builder(
-                    itemCount: viewmodel.itensParaExibir.length,
-                    itemBuilder: ((context, index) {
-                      final itemDoDTO = viewmodel.itensParaExibir[index];
-                      final emprestimoItem = itemDoDTO.item;
-                      final bool ehQuantitativo = emprestimoItem.ehQuantitativo;
-                      final tipoDispositivo =
-                          TipoDispositivo.values
-                              .where(
-                                (tipo) =>
-                                    tipo.id == emprestimoItem.idTipoDispositivo,
-                              )
-                              .firstOrNull
-                              ?.nomeTipo ??
-                          'Tipo não encontrado';
-                      if (_controllers.length <= index) {
-                        _controllers.add(TextEditingController());
+                    itemCount: viewmodel.itensComDispositivos.length + 1,
+                    itemBuilder: (context, index) {
+                      // Último item da lista = botão
+                      if (index == viewmodel.itensComDispositivos.length) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          child: Center(
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              style: TextButton.styleFrom(
+                                backgroundColor: const Color(0xFF2196F3),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                fixedSize: const Size(130, 30),
+                              ),
+                              child: const Text('Adicionar', style: TextStyle(color: Colors.white)),
+                            ),
+                          ),
+                        );
                       }
-                      _controllers[index].text =
-                          !ehQuantitativo &&
-                              itemDoDTO.dispositivosObj.isNotEmpty
-                          ? itemDoDTO.dispositivosObj.first.numPatrimonio
-                          : '';
 
-                      return Card(
-                        child: Container(
-                          padding: EdgeInsets.all(10),
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                height: 50,
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 1,
-                                      child:
-                                          /*
-                                      Campo do número de patrimônio
-                                      */
-                                          TextFormField(
-                                            enabled: ehQuantitativo,
-                                            decoration: const InputDecoration(
-                                              border: OutlineInputBorder(),
-                                            ),
-                                            controller: _controllers[index],
-                                            canRequestFocus: ehQuantitativo,
-                                            readOnly: !ehQuantitativo,
-                                            onChanged: (value) {
-                                              if (ehQuantitativo) {
-                                                context
-                                                    .read<
-                                                      EmprestimoDetalheViewmodel
-                                                    >()
-                                                    .buscarDispositivo(
-                                                      value,
-                                                      emprestimoItem
-                                                          .idTipoDispositivo,
-                                                      index,
-                                                    );
-                                              }
-                                            },
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              color: ehQuantitativo
-                                                  ? Colors.black
-                                                  : const Color(0xFF686767),
-                                            ),
-                                          ),
-                                    ),
-                                    SizedBox(width: 10),
-                                    Expanded(
-                                      flex: 2,
-                                      child:
-                                          /*
-                                      Campo do tipo de dispositivo
-                                      */
-                                          TextField(
-                                            enabled: ehQuantitativo,
-                                            readOnly: true,
-                                            canRequestFocus: false,
-                                            controller: TextEditingController(
-                                              text: tipoDispositivo,
-                                            ),
-                                            decoration: const InputDecoration(
-                                              border: OutlineInputBorder(),
-                                            ),
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              color: ehQuantitativo
-                                                  ? Colors.black
-                                                  : const Color(0xFF686767),
-                                            ),
-                                          ),
-                                    ),
-                                  ],
+                      final itemDoDTO = viewmodel.itensComDispositivos[index];
+                      final emprestimoItem = itemDoDTO.item;
+                      final tipoDispositivo = TipoDispositivo.values
+                          .where((tipo) => tipo.id == emprestimoItem.idTipoDispositivo)
+                          .firstOrNull
+                          ?.nomeTipo ?? 'Tipo não encontrado';
+
+                      if (emprestimoItem.ehQuantitativo) {
+                        return Column(
+                          children: List.generate(emprestimoItem.qtdSolicitada, (indexUnidade) {
+                            return Card(
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: _cardPorQuantidade(
+                                  itemDoDTO,
+                                  emprestimoItem,
+                                  tipoDispositivo,
+                                  indexUnidade,
+                                  viewmodel,
                                 ),
                               ),
-                              /*
-                              Dropdown dos resultados da pesquisa
-                              */
-                              Consumer<EmprestimoDetalheViewmodel>(
-                                builder: (context, viewmodel, _) {
-                                  if (viewmodel.dispositivosPesquisa.isEmpty ||
-                                      viewmodel.indexEmPesquisa != index) {
-                                    return SizedBox.shrink();
-                                  }
-                                  return Material(
-                                    elevation: 3,
-                                    child: ConstrainedBox(
-                                      constraints: const BoxConstraints(
-                                        maxHeight: 150,
-                                      ),
-                                      child: ListView.builder(
-                                        shrinkWrap: true,
-                                        itemCount: viewmodel
-                                            .dispositivosPesquisa
-                                            .length,
-                                        itemBuilder: (context, index) {
-                                          final dispositivo = viewmodel
-                                              .dispositivosPesquisa[index];
-                                          return ListTile(
-                                            title: Text(
-                                              dispositivo.descricaoBusca,
-                                            ),
-                                            onTap: () {
-                                              if (dispositivo.tipo.id !=
-                                                  emprestimoItem
-                                                      .idTipoDispositivo) {
-                                                ScaffoldMessenger.of(
-                                                  context,
-                                                ).showSnackBar(
-                                                  const SnackBar(
-                                                    content: Text(
-                                                      'O dispositivo precisa ser do mesmo tipo',
-                                                    ),
-                                                    backgroundColor: Color(
-                                                      0xFFB00303,
-                                                    ),
-                                                  ),
-                                                );
-                                                return;
-                                              }
+                            );
+                          }),
+                        );
+                      }
 
-                                              viewmodel.selecionarDispositivo(
-                                                dispositivo,
-                                                itemDoDTO.item.id!,
-                                                widget.idEmprestimo,
-                                              );
-
-                                              ScaffoldMessenger.of(
-                                                context,
-                                              ).showSnackBar(
-                                                SnackBar(
-                                                  content: Text(
-                                                    '${dispositivo.descricaoBusca} adicionado!',
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-
-                              /*
-                              Checkbox de devolvido
-                              */
-                              SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text('Devolvido: '),
-                                  Checkbox(
-                                    checkColor: Colors.white,
-                                    activeColor: const Color(0xFF006dc4),
-                                    value: emprestimoItem.estaResolvido,
-                                    onChanged: (bool? value) {
-                                      setState(() {
-                                        emprestimoItem.estaResolvido = value!;
-                                      });
-                                    },
-                                  ),
-                                  SizedBox(width: 50),
-                                  /*
-                                  Botão de remover
-                                  */
-                                  TextButton(
-                                    onPressed: () {},
-                                    style: TextButton.styleFrom(
-                                      backgroundColor: const Color(0xFFB00303),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      fixedSize: const Size(130, 30),
-                                    ),
-                                    child: Text(
-                                      'Remover',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                      return Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: _cardPorUnidade(itemDoDTO, emprestimoItem, tipoDispositivo),
                         ),
                       );
-                    }),
+                    },
                   );
                 }),
               ),
@@ -335,6 +197,282 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
           ],
         ),
       ),
+      bottomNavigationBar: SafeArea(child: Container(
+        padding: EdgeInsets.all(10),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ElevatedButton(
+              onPressed: () {},
+              style: TextButton.styleFrom(
+                backgroundColor: const Color(0xFFe7af06),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                fixedSize: const Size(300, 50),
+              ),
+              child: Text('Salvar', style: TextStyle(color: Colors.white)),
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {},
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.green,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                fixedSize: const Size(300, 50),
+              ),
+              child: Text('Finalizar', style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        ),
+      ),)
     );
+  }
+
+  Widget _cardPorUnidade(
+    EmprestimoItemComDispositivoDTO itemDoDTO,
+    EmprestimoItem emprestimoItem,
+    String tipoDispositivo,
+  ) {
+    return Column(
+      children: [
+        SizedBox(
+          height: 50,
+          child: Row(
+            children: [
+              Expanded(
+                flex: 1,
+                /*
+                Campo do número de patrimônio
+                */
+                child: TextField(
+                  enabled: false,
+                  readOnly: true,
+                  canRequestFocus: false,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                  ),
+                  controller: TextEditingController(
+                    text: itemDoDTO.dispositivosObj.isNotEmpty
+                        ? itemDoDTO.dispositivosObj.first.numPatrimonio
+                        : '',
+                  ),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Color(0xFF686767),
+                  ),
+                ),
+              ),
+              SizedBox(width: 10),
+              Expanded(
+                flex: 2,
+                child:
+                    /*
+                    Campo do tipo de dispositivo
+                    */
+                    TextField(
+                      enabled: false,
+                      readOnly: true,
+                      canRequestFocus: false,
+                      controller: TextEditingController(text: tipoDispositivo),
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                      ),
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: const Color(0xFF686767),
+                      ),
+                    ),
+              ),
+            ],
+          ),
+        ),
+        /*
+        Checkbox de devolvido
+        */
+        SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Devolvido: '),
+            Checkbox(
+              checkColor: Colors.white,
+              activeColor: const Color(0xFF006dc4),
+              value: itemDoDTO.dispositivosObj.isNotEmpty && itemDoDTO.dispositivosObj.first.idStatus == DispositivoStatus.disponivel.id,
+              onChanged: (bool? value) {
+                final dispositivo = itemDoDTO.dispositivosObj.firstOrNull;
+                if (dispositivo?.id != null) {
+                  context.read<EmprestimoDetalheViewmodel>().alternarDevolucao(
+                    dispositivo!.id!,
+                    value!,
+                    widget.idEmprestimo,
+                  );
+                }
+              },
+            ),
+            SizedBox(width: 50),
+            /*
+            Botão de remover
+            */
+            TextButton(
+              onPressed: () async {
+                final dispositivo = itemDoDTO.dispositivos.firstOrNull;
+                if (dispositivo != null) {
+                  await _excluirItemEmprestimo(
+                    context,
+                    itemDoDTO,
+                    widget.idEmprestimo,
+                    dispositivo.idDispositivo!,
+                  );
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFB00303),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                fixedSize: const Size(130, 30),
+              ),
+              child: Text('Remover', style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _cardPorQuantidade(
+    EmprestimoItemComDispositivoDTO itemDoDTO,
+    EmprestimoItem emprestimoItem,
+    String tipoDispositivo,
+    int indexUnidade,
+    EmprestimoDetalheViewmodel viewmodel,
+  ) {
+    final dispositivoVinculado = indexUnidade < itemDoDTO.dispositivosObj.length
+        ? itemDoDTO.dispositivosObj[indexUnidade]
+        : null;
+
+    final controllerKey = '${emprestimoItem.id}_$indexUnidade';
+    if (!_controllerMap.containsKey(controllerKey)) {
+      _controllerMap[controllerKey] = TextEditingController(
+        text: dispositivoVinculado?.numPatrimonio ?? '',
+      );
+    }
+    final controller = _controllerMap[controllerKey]!;
+
+    return Column(
+      children: [
+        SizedBox(
+          height: 50,
+          child: Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: GestureDetector(
+                  onTap: dispositivoVinculado == null
+                      ? () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Clicou no patrimônio vazio')),
+                          );
+                        }
+                      : null,
+                  child: TextField(
+                    enabled: false,
+                    readOnly: true,
+                    canRequestFocus: false,
+                    controller: controller,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                    ),
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Color(0xFF686767),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: 10),
+              Expanded(
+                flex: 2,
+                child: TextField(
+                  enabled: false,
+                  readOnly: true,
+                  canRequestFocus: false,
+                  controller: TextEditingController(text: tipoDispositivo),
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                  ),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Color(0xFF686767),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Devolvido: '),
+            Checkbox(
+              checkColor: Colors.white,
+              activeColor: const Color(0xFF006dc4),
+              value: dispositivoVinculado != null && dispositivoVinculado.idStatus == DispositivoStatus.disponivel.id,
+              onChanged: (bool? value) {
+                setState(() {
+                  if (dispositivoVinculado?.id != null) {
+                    context.read<EmprestimoDetalheViewmodel>().alternarDevolucao(
+                      dispositivoVinculado!.id!,
+                      value!,
+                      widget.idEmprestimo,
+                    );
+                  }
+                });
+              },
+            ),
+            SizedBox(width: 50),
+            TextButton(
+              onPressed: () async {
+                final ed = itemDoDTO.dispositivos.length > indexUnidade
+                    ? itemDoDTO.dispositivos[indexUnidade]
+                    : null;
+                if (ed?.id != null) {
+                  await context
+                      .read<EmprestimoDetalheViewmodel>()
+                      .desvincularDispositivoDoEmprestimo(
+                        ed!.id!,
+                        widget.idEmprestimo,
+                      );
+                  _controllerMap.remove(controllerKey);
+                }
+              },
+              style: TextButton.styleFrom(
+                backgroundColor: const Color(0xFFB00303),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                fixedSize: const Size(130, 30),
+              ),
+              child: Text('Remover', style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  @override
+  void dispose() {
+    for (var controller in _numPatrimonioController) {
+      controller.dispose();
+    }
+    for (var controller in _controllerMap.values) {
+      controller.dispose();
+    }
+    super.dispose();
   }
 }

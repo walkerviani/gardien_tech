@@ -68,13 +68,6 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
     final emprestimo = await buscarPorId(id);
     if (emprestimo == null) throw ArgumentError('Empréstimo não encontrado');
 
-    final itens = await _emprestimoItemRepository.buscarPorEmprestimo(id);
-    final pendentes = itens.where((item) => !item.estaResolvido);
-
-    if (pendentes.isNotEmpty) {
-      throw StateError('Existem itens sem dispositivos vinculados');
-    }
-
     emprestimo.dataHoraConcluido = DateTime.now();
     emprestimo.idStatus = EmprestimoStatus.concluido.id;
     await atualizar(emprestimo);
@@ -120,7 +113,7 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
             dataHoraEfetuado: emprestimo.dataHoraEfetuado,
             nomeUsuario: usuario.nome,
           );
-        }
+        } 
       }
     }
 

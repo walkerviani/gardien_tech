@@ -208,20 +208,14 @@ class EmprestimoFormViewModel extends ChangeNotifier {
         final tipoDisp = TipoDispositivo.values.firstWhere(
           (t) => t.nomeTipo == item.tipoDisp,
         );
-        final qtd = int.parse(item.quantidade.text);
-        
-        // Cria um EmprestimoItem pra cada unidade
-        for (int i = 0; i < qtd; i++) {
-          final emprestimoItem = EmprestimoItem(
-            null,
-            idEmprestimo,
-            tipoDisp.id,
-            1, // quantidade = 1
-            false, // por unidade
-            estaResolvido: false,
-          );
-          await emprestimoItemRepository.criar(emprestimoItem);
-        }
+        final emprestimoItem = EmprestimoItem(
+          null,
+          idEmprestimo,
+          tipoDisp.id,
+          int.parse(item.quantidade.text), // qtdSolicitada = quantidade total
+          true,
+        );
+        await emprestimoItemRepository.criar(emprestimoItem); // sem loop
       }
     } else {
       for (final item in itensUnidade) {
@@ -234,7 +228,6 @@ class EmprestimoFormViewModel extends ChangeNotifier {
           tipoDisp.id,
           1,
           false, // ehQuantitativo
-          estaResolvido: false,
         );
         final idItem = await emprestimoItemRepository.criar(emprestimoItem);
 

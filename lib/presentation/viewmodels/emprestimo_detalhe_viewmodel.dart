@@ -236,6 +236,19 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
     }
   }
 
+  Future<void> alternarDevolucao(
+    int idDispositivo,
+    bool devolvido,
+    int idEmprestimo,
+  ) async {
+    if (devolvido) {
+      await _dispositivoRepository.marcarDisponivel(idDispositivo);
+    } else {
+      await _dispositivoRepository.marcarEmUso(idDispositivo);
+    }
+    await carregarItensDoEmprestimo(idEmprestimo); // seta isLoading = true e reconstrói toda a lista com o CircularProgressIndicator, "reseta" a lista visualmente
+  }
+
   @override
   void dispose() {
     _debounce?.cancel();

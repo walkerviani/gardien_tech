@@ -92,18 +92,12 @@ class EmprestimoItemRepositoryImpl implements EmprestimoItemRepository {
     final ed = await _edRepository.buscarPorId(idEmprestimoDispositivo);
     if (ed == null) throw ArgumentError('Dispositivo não encontrado');
 
-    // Busca o dispositivo e remove a associação
+    // Marca o dispositivo como disponível ao desvincular
     if (ed.idDispositivo != null) {
       await _dispositivoRepository.marcarDisponivel(ed.idDispositivo!);
     }
     await _edRepository.deletar(idEmprestimoDispositivo);
     
-    // Reavalia o estaResolvido do item, liberando-o
-    final item = await buscarPorId(ed.idEmprestimoItem);
-    if (item != null && item.estaResolvido) {
-      item.estaResolvido = false;
-      await atualizar(item);
-    }
   }
 
   @override

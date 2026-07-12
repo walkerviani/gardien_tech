@@ -5,7 +5,6 @@ class EmprestimoItem {
   final int _idTipoDispositivo;
   int qtdSolicitada;
   int qtdDevolvida;
-  bool estaResolvido;
   bool ehQuantitativo; // true -> quantitativo; false -> qualitativo
 
   // Construtor
@@ -15,9 +14,8 @@ class EmprestimoItem {
     this._idTipoDispositivo,
     this.qtdSolicitada,
     this.ehQuantitativo,
-    {this.qtdDevolvida = 0,
-    this.estaResolvido = false
-  });
+    {this.qtdDevolvida = 0,}
+  );
 
   // Getters
   int? get id => _id;

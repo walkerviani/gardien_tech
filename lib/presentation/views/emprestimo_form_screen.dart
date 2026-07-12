@@ -288,7 +288,6 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             ),
             label: Text('Adicionar'),
-            icon: Icon(Icons.add),
           ),
         ),
       ],
