@@ -29,7 +29,6 @@ class EmprestimoDetalheScreen extends StatefulWidget {
 class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
   late final List<TextEditingController> _numPatrimonioController = [];
   final Map<String, TextEditingController> _controllerMap = {};
-  final Map<int, bool> _devolucaoMap = {}; // idDispositivo -> devolvido. Usado para setar no final todos os estados de uma vez
 
   @override
   void initState() {
