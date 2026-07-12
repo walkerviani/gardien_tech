@@ -84,7 +84,6 @@ void main() {
         Provider<EmprestimoRepository>(
           create: (context) => EmprestimoRepositoryImpl(
             context.read<AppDatabase>(),
-            context.read<EmprestimoItemRepository>(),
           ),
         ),
 

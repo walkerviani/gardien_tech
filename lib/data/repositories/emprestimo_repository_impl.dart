@@ -4,14 +4,12 @@ import 'package:gardien_tech/data/datasources/emprestimo_datasource.dart';
 import 'package:gardien_tech/data/dto/emprestimo_com_detalhes_dto.dart';
 import 'package:gardien_tech/domain/entities/emprestimo.dart';
 import 'package:gardien_tech/domain/enum/emprestimo_status.dart';
-import 'package:gardien_tech/domain/repositories/emprestimo_item_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_repository.dart';
 
 class EmprestimoRepositoryImpl implements EmprestimoRepository {
   final AppDatabase _database;
-  final EmprestimoItemRepository _emprestimoItemRepository;
 
-  EmprestimoRepositoryImpl(this._database, this._emprestimoItemRepository);
+  EmprestimoRepositoryImpl(this._database);
 
   @override
   Future<List<Emprestimo>> buscarTodos() async {
