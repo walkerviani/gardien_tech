@@ -80,7 +80,7 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
         _database.usuarios,
         _database.emprestimos.idResponsavel.equalsExp(_database.usuarios.id),
       ),
-      innerJoin(
+      leftOuterJoin(
         _database.emprestimoItens,
         _database.emprestimoItens.idEmprestimo.equalsExp(
           _database.emprestimos.id,
@@ -96,15 +96,15 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
           dataEmprestimo.month == data.month &&
           dataEmprestimo.year == data.year) {
         final usuario = row.readTable(_database.usuarios);
-        final emprestimoItem = row.readTable(_database.emprestimoItens);
+        final emprestimoItem = row.readTableOrNull(_database.emprestimoItens);
 
         if (mapa.containsKey(emprestimo.id)) {
-          mapa[emprestimo.id]!.qtdSolicitada += emprestimoItem.qtdSolicitada;
+          mapa[emprestimo.id]!.qtdSolicitada += emprestimoItem!.qtdSolicitada;
         } else {
           mapa[emprestimo.id] = EmprestimoComDetalhesDTO(
             idEmprestimo: emprestimo.id,
             idUsuario: usuario.id,
-            idEmprestimoItem: emprestimoItem.id,
+            idEmprestimoItem: emprestimoItem!.id,
             idTipoCargo: usuario.idTipoCargo,
             idStatusEmprestimo: emprestimo.idStatus,
             qtdSolicitada: emprestimoItem.qtdSolicitada,

@@ -182,10 +182,21 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                         );
                       }
 
-                      return Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: _cardPorUnidade(itemDoDTO, emprestimoItem, tipoDispositivo),
+                      return Column(
+                        children: List.generate(
+                          itemDoDTO.dispositivosObj.length,
+                          (indexUnidade) {
+                            return Card(
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: _cardPorUnidade(
+                                  itemDoDTO,
+                                  emprestimoItem,
+                                  tipoDispositivo,
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       );
                     },

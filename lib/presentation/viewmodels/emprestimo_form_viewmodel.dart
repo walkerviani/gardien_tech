@@ -203,34 +203,57 @@ class EmprestimoFormViewModel extends ChangeNotifier {
     final emprestimo = Emprestimo(null, responsavelSelecionado!.id!);
     final idEmprestimo = await emprestimoRepository.criar(emprestimo);
 
-    if (opcaoView == OpcaoEmprestimo.quantidade) {
-      for (final item in itensQuantidade) {
-        final tipoDisp = TipoDispositivo.values.firstWhere(
-          (t) => t.nomeTipo == item.tipoDisp,
-        );
-        final emprestimoItem = EmprestimoItem(
-          null,
-          idEmprestimo,
-          tipoDisp.id,
-          int.parse(item.quantidade.text), // qtdSolicitada = quantidade total
-          true,
-        );
-        await emprestimoItemRepository.criar(emprestimoItem); // sem loop
+    try {
+      if (opcaoView == OpcaoEmprestimo.quantidade) {
+        await _criarItensQuantidade(idEmprestimo);
+      } else {
+        await _criarItensUnidade(idEmprestimo);
       }
-    } else {
-      for (final item in itensUnidade) {
-        final tipoDisp = TipoDispositivo.values.firstWhere(
-          (t) => t.nomeTipo == item.tipoDisp,
-        );
-        final emprestimoItem = EmprestimoItem(
-          null,
-          idEmprestimo,
-          tipoDisp.id,
-          1,
-          false, // ehQuantitativo
-        );
-        final idItem = await emprestimoItemRepository.criar(emprestimoItem);
+    } catch (e) {
+      // Se algo falhar, deleta o empréstimo inteiro
+      await emprestimoRepository.deletar(idEmprestimo);
+      rethrow;
+    }
+  }
 
+  Future<void> _criarItensQuantidade(int idEmprestimo) async {
+    for (final item in itensQuantidade) {
+      final tipoDisp = TipoDispositivo.values.firstWhere(
+        (t) => t.nomeTipo == item.tipoDisp,
+      );
+      final emprestimoItem = EmprestimoItem(
+        null,
+        idEmprestimo,
+        tipoDisp.id,
+        int.parse(item.quantidade.text),
+        true, // ehQuantitativo
+        estaResolvido: false,
+      );
+      await emprestimoItemRepository.criar(emprestimoItem);
+    }
+  }
+
+  Future<void> _criarItensUnidade(int idEmprestimo) async {
+    final porTipo = <String, List<ItemUnidade>>{};
+    for (final item in itensUnidade) {
+      porTipo.putIfAbsent(item.tipoDisp!, () => []).add(item);
+    }
+
+    for (final entry in porTipo.entries) {
+      final tipoDisp = TipoDispositivo.values.firstWhere(
+        (t) => t.nomeTipo == entry.key,
+      );
+      final emprestimoItem = EmprestimoItem(
+        null,
+        idEmprestimo,
+        tipoDisp.id,
+        entry.value.length,
+        false, // ehQuantitativo
+        estaResolvido: false,
+      );
+      final idItem = await emprestimoItemRepository.criar(emprestimoItem);
+
+      for (final item in entry.value) {
         final dispositivo = await dispositivoRepository.buscarPorPatrimonio(
           item.numPatrimonio!,
         );

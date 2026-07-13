@@ -11,6 +11,7 @@ class EmprestimoItens extends Table {
   IntColumn get qtdSolicitada => integer()();
   IntColumn get qtdDevolvida => integer()();
   BoolColumn get ehQuantitativo => boolean()();
+  BoolColumn get estaResolvido => boolean()();
 }
 
 extension EmprestimoItemMapper on EmprestimoItemData {
@@ -22,6 +23,7 @@ extension EmprestimoItemMapper on EmprestimoItemData {
       qtdSolicitada,
       ehQuantitativo,
       qtdDevolvida: qtdDevolvida,
+      estaResolvido: estaResolvido,
     );
   }
 }
@@ -35,6 +37,7 @@ extension EmprestimoItemCompanionMapper on EmprestimoItem {
       qtdSolicitada: qtdSolicitada,
       qtdDevolvida: qtdDevolvida,
       ehQuantitativo: ehQuantitativo,
+      estaResolvido: estaResolvido,
     );
   }
 }

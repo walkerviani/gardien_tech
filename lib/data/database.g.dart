@@ -1083,6 +1083,20 @@ class $EmprestimoItensTable extends EmprestimoItens
       'CHECK ("eh_quantitativo" IN (0, 1))',
     ),
   );
+  static const VerificationMeta _estaResolvidoMeta = const VerificationMeta(
+    'estaResolvido',
+  );
+  @override
+  late final GeneratedColumn<bool> estaResolvido = GeneratedColumn<bool>(
+    'esta_resolvido',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("esta_resolvido" IN (0, 1))',
+    ),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -1091,6 +1105,7 @@ class $EmprestimoItensTable extends EmprestimoItens
     qtdSolicitada,
     qtdDevolvida,
     ehQuantitativo,
+    estaResolvido,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1162,6 +1177,17 @@ class $EmprestimoItensTable extends EmprestimoItens
     } else if (isInserting) {
       context.missing(_ehQuantitativoMeta);
     }
+    if (data.containsKey('esta_resolvido')) {
+      context.handle(
+        _estaResolvidoMeta,
+        estaResolvido.isAcceptableOrUnknown(
+          data['esta_resolvido']!,
+          _estaResolvidoMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_estaResolvidoMeta);
+    }
     return context;
   }
 
@@ -1195,6 +1221,10 @@ class $EmprestimoItensTable extends EmprestimoItens
         DriftSqlType.bool,
         data['${effectivePrefix}eh_quantitativo'],
       )!,
+      estaResolvido: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}esta_resolvido'],
+      )!,
     );
   }
 
@@ -1212,6 +1242,7 @@ class EmprestimoItemData extends DataClass
   final int qtdSolicitada;
   final int qtdDevolvida;
   final bool ehQuantitativo;
+  final bool estaResolvido;
   const EmprestimoItemData({
     required this.id,
     required this.idEmprestimo,
@@ -1219,6 +1250,7 @@ class EmprestimoItemData extends DataClass
     required this.qtdSolicitada,
     required this.qtdDevolvida,
     required this.ehQuantitativo,
+    required this.estaResolvido,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1229,6 +1261,7 @@ class EmprestimoItemData extends DataClass
     map['qtd_solicitada'] = Variable<int>(qtdSolicitada);
     map['qtd_devolvida'] = Variable<int>(qtdDevolvida);
     map['eh_quantitativo'] = Variable<bool>(ehQuantitativo);
+    map['esta_resolvido'] = Variable<bool>(estaResolvido);
     return map;
   }
 
@@ -1240,6 +1273,7 @@ class EmprestimoItemData extends DataClass
       qtdSolicitada: Value(qtdSolicitada),
       qtdDevolvida: Value(qtdDevolvida),
       ehQuantitativo: Value(ehQuantitativo),
+      estaResolvido: Value(estaResolvido),
     );
   }
 
@@ -1255,6 +1289,7 @@ class EmprestimoItemData extends DataClass
       qtdSolicitada: serializer.fromJson<int>(json['qtdSolicitada']),
       qtdDevolvida: serializer.fromJson<int>(json['qtdDevolvida']),
       ehQuantitativo: serializer.fromJson<bool>(json['ehQuantitativo']),
+      estaResolvido: serializer.fromJson<bool>(json['estaResolvido']),
     );
   }
   @override
@@ -1267,6 +1302,7 @@ class EmprestimoItemData extends DataClass
       'qtdSolicitada': serializer.toJson<int>(qtdSolicitada),
       'qtdDevolvida': serializer.toJson<int>(qtdDevolvida),
       'ehQuantitativo': serializer.toJson<bool>(ehQuantitativo),
+      'estaResolvido': serializer.toJson<bool>(estaResolvido),
     };
   }
 
@@ -1277,6 +1313,7 @@ class EmprestimoItemData extends DataClass
     int? qtdSolicitada,
     int? qtdDevolvida,
     bool? ehQuantitativo,
+    bool? estaResolvido,
   }) => EmprestimoItemData(
     id: id ?? this.id,
     idEmprestimo: idEmprestimo ?? this.idEmprestimo,
@@ -1284,6 +1321,7 @@ class EmprestimoItemData extends DataClass
     qtdSolicitada: qtdSolicitada ?? this.qtdSolicitada,
     qtdDevolvida: qtdDevolvida ?? this.qtdDevolvida,
     ehQuantitativo: ehQuantitativo ?? this.ehQuantitativo,
+    estaResolvido: estaResolvido ?? this.estaResolvido,
   );
   EmprestimoItemData copyWithCompanion(EmprestimoItensCompanion data) {
     return EmprestimoItemData(
@@ -1303,6 +1341,9 @@ class EmprestimoItemData extends DataClass
       ehQuantitativo: data.ehQuantitativo.present
           ? data.ehQuantitativo.value
           : this.ehQuantitativo,
+      estaResolvido: data.estaResolvido.present
+          ? data.estaResolvido.value
+          : this.estaResolvido,
     );
   }
 
@@ -1314,7 +1355,8 @@ class EmprestimoItemData extends DataClass
           ..write('idTipoDispositivo: $idTipoDispositivo, ')
           ..write('qtdSolicitada: $qtdSolicitada, ')
           ..write('qtdDevolvida: $qtdDevolvida, ')
-          ..write('ehQuantitativo: $ehQuantitativo')
+          ..write('ehQuantitativo: $ehQuantitativo, ')
+          ..write('estaResolvido: $estaResolvido')
           ..write(')'))
         .toString();
   }
@@ -1327,6 +1369,7 @@ class EmprestimoItemData extends DataClass
     qtdSolicitada,
     qtdDevolvida,
     ehQuantitativo,
+    estaResolvido,
   );
   @override
   bool operator ==(Object other) =>
@@ -1337,7 +1380,8 @@ class EmprestimoItemData extends DataClass
           other.idTipoDispositivo == this.idTipoDispositivo &&
           other.qtdSolicitada == this.qtdSolicitada &&
           other.qtdDevolvida == this.qtdDevolvida &&
-          other.ehQuantitativo == this.ehQuantitativo);
+          other.ehQuantitativo == this.ehQuantitativo &&
+          other.estaResolvido == this.estaResolvido);
 }
 
 class EmprestimoItensCompanion extends UpdateCompanion<EmprestimoItemData> {
@@ -1347,6 +1391,7 @@ class EmprestimoItensCompanion extends UpdateCompanion<EmprestimoItemData> {
   final Value<int> qtdSolicitada;
   final Value<int> qtdDevolvida;
   final Value<bool> ehQuantitativo;
+  final Value<bool> estaResolvido;
   const EmprestimoItensCompanion({
     this.id = const Value.absent(),
     this.idEmprestimo = const Value.absent(),
@@ -1354,6 +1399,7 @@ class EmprestimoItensCompanion extends UpdateCompanion<EmprestimoItemData> {
     this.qtdSolicitada = const Value.absent(),
     this.qtdDevolvida = const Value.absent(),
     this.ehQuantitativo = const Value.absent(),
+    this.estaResolvido = const Value.absent(),
   });
   EmprestimoItensCompanion.insert({
     this.id = const Value.absent(),
@@ -1362,11 +1408,13 @@ class EmprestimoItensCompanion extends UpdateCompanion<EmprestimoItemData> {
     required int qtdSolicitada,
     required int qtdDevolvida,
     required bool ehQuantitativo,
+    required bool estaResolvido,
   }) : idEmprestimo = Value(idEmprestimo),
        idTipoDispositivo = Value(idTipoDispositivo),
        qtdSolicitada = Value(qtdSolicitada),
        qtdDevolvida = Value(qtdDevolvida),
-       ehQuantitativo = Value(ehQuantitativo);
+       ehQuantitativo = Value(ehQuantitativo),
+       estaResolvido = Value(estaResolvido);
   static Insertable<EmprestimoItemData> custom({
     Expression<int>? id,
     Expression<int>? idEmprestimo,
@@ -1374,6 +1422,7 @@ class EmprestimoItensCompanion extends UpdateCompanion<EmprestimoItemData> {
     Expression<int>? qtdSolicitada,
     Expression<int>? qtdDevolvida,
     Expression<bool>? ehQuantitativo,
+    Expression<bool>? estaResolvido,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1382,6 +1431,7 @@ class EmprestimoItensCompanion extends UpdateCompanion<EmprestimoItemData> {
       if (qtdSolicitada != null) 'qtd_solicitada': qtdSolicitada,
       if (qtdDevolvida != null) 'qtd_devolvida': qtdDevolvida,
       if (ehQuantitativo != null) 'eh_quantitativo': ehQuantitativo,
+      if (estaResolvido != null) 'esta_resolvido': estaResolvido,
     });
   }
 
@@ -1392,6 +1442,7 @@ class EmprestimoItensCompanion extends UpdateCompanion<EmprestimoItemData> {
     Value<int>? qtdSolicitada,
     Value<int>? qtdDevolvida,
     Value<bool>? ehQuantitativo,
+    Value<bool>? estaResolvido,
   }) {
     return EmprestimoItensCompanion(
       id: id ?? this.id,
@@ -1400,6 +1451,7 @@ class EmprestimoItensCompanion extends UpdateCompanion<EmprestimoItemData> {
       qtdSolicitada: qtdSolicitada ?? this.qtdSolicitada,
       qtdDevolvida: qtdDevolvida ?? this.qtdDevolvida,
       ehQuantitativo: ehQuantitativo ?? this.ehQuantitativo,
+      estaResolvido: estaResolvido ?? this.estaResolvido,
     );
   }
 
@@ -1424,6 +1476,9 @@ class EmprestimoItensCompanion extends UpdateCompanion<EmprestimoItemData> {
     if (ehQuantitativo.present) {
       map['eh_quantitativo'] = Variable<bool>(ehQuantitativo.value);
     }
+    if (estaResolvido.present) {
+      map['esta_resolvido'] = Variable<bool>(estaResolvido.value);
+    }
     return map;
   }
 
@@ -1435,7 +1490,8 @@ class EmprestimoItensCompanion extends UpdateCompanion<EmprestimoItemData> {
           ..write('idTipoDispositivo: $idTipoDispositivo, ')
           ..write('qtdSolicitada: $qtdSolicitada, ')
           ..write('qtdDevolvida: $qtdDevolvida, ')
-          ..write('ehQuantitativo: $ehQuantitativo')
+          ..write('ehQuantitativo: $ehQuantitativo, ')
+          ..write('estaResolvido: $estaResolvido')
           ..write(')'))
         .toString();
   }
@@ -3095,6 +3151,7 @@ typedef $$EmprestimoItensTableCreateCompanionBuilder =
       required int qtdSolicitada,
       required int qtdDevolvida,
       required bool ehQuantitativo,
+      required bool estaResolvido,
     });
 typedef $$EmprestimoItensTableUpdateCompanionBuilder =
     EmprestimoItensCompanion Function({
@@ -3104,6 +3161,7 @@ typedef $$EmprestimoItensTableUpdateCompanionBuilder =
       Value<int> qtdSolicitada,
       Value<int> qtdDevolvida,
       Value<bool> ehQuantitativo,
+      Value<bool> estaResolvido,
     });
 
 final class $$EmprestimoItensTableReferences
@@ -3198,6 +3256,11 @@ class $$EmprestimoItensTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<bool> get estaResolvido => $composableBuilder(
+    column: $table.estaResolvido,
+    builder: (column) => ColumnFilters(column),
+  );
+
   $$EmprestimosTableFilterComposer get idEmprestimo {
     final $$EmprestimosTableFilterComposer composer = $composerBuilder(
       composer: this,
@@ -3282,6 +3345,11 @@ class $$EmprestimoItensTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<bool> get estaResolvido => $composableBuilder(
+    column: $table.estaResolvido,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$EmprestimosTableOrderingComposer get idEmprestimo {
     final $$EmprestimosTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -3335,6 +3403,11 @@ class $$EmprestimoItensTableAnnotationComposer
 
   GeneratedColumn<bool> get ehQuantitativo => $composableBuilder(
     column: $table.ehQuantitativo,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get estaResolvido => $composableBuilder(
+    column: $table.estaResolvido,
     builder: (column) => column,
   );
 
@@ -3427,6 +3500,7 @@ class $$EmprestimoItensTableTableManager
                 Value<int> qtdSolicitada = const Value.absent(),
                 Value<int> qtdDevolvida = const Value.absent(),
                 Value<bool> ehQuantitativo = const Value.absent(),
+                Value<bool> estaResolvido = const Value.absent(),
               }) => EmprestimoItensCompanion(
                 id: id,
                 idEmprestimo: idEmprestimo,
@@ -3434,6 +3508,7 @@ class $$EmprestimoItensTableTableManager
                 qtdSolicitada: qtdSolicitada,
                 qtdDevolvida: qtdDevolvida,
                 ehQuantitativo: ehQuantitativo,
+                estaResolvido: estaResolvido,
               ),
           createCompanionCallback:
               ({
@@ -3443,6 +3518,7 @@ class $$EmprestimoItensTableTableManager
                 required int qtdSolicitada,
                 required int qtdDevolvida,
                 required bool ehQuantitativo,
+                required bool estaResolvido,
               }) => EmprestimoItensCompanion.insert(
                 id: id,
                 idEmprestimo: idEmprestimo,
@@ -3450,6 +3526,7 @@ class $$EmprestimoItensTableTableManager
                 qtdSolicitada: qtdSolicitada,
                 qtdDevolvida: qtdDevolvida,
                 ehQuantitativo: ehQuantitativo,
+                estaResolvido: estaResolvido,
               ),
           withReferenceMapper: (p0) => p0
               .map(
