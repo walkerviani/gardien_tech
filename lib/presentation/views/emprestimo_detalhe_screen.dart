@@ -42,13 +42,12 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
 
   Future<void> _excluirItemEmprestimo(
     BuildContext context,
-    EmprestimoItemComDispositivoDTO itemDoDTO,
+    int idEmprestimoDispositivo,
     int idEmprestimo,
-    int idDispositivo,
   ) async {
     final resultado = await context
         .read<EmprestimoDetalheViewmodel>()
-        .deletarItem(itemDoDTO.item.id!, widget.idEmprestimo, idDispositivo);
+        .desvincularDispositivoDoEmprestimo(idEmprestimoDispositivo, idEmprestimo);
 
     if (context.mounted && resultado) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -328,13 +327,12 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
             */
             TextButton(
               onPressed: () async {
-                final dispositivo = itemDoDTO.dispositivos.firstOrNull;
-                if (dispositivo != null) {
+                final emprestimoDispositivo = itemDoDTO.dispositivos.firstOrNull;
+                if (emprestimoDispositivo != null) {
                   await _excluirItemEmprestimo(
                     context,
-                    itemDoDTO,
+                    emprestimoDispositivo.id!,
                     widget.idEmprestimo,
-                    dispositivo.idDispositivo!,
                   );
                 }
               },
