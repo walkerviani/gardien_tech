@@ -2,9 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gardien_tech/domain/enum/tipo_cargo.dart';
 import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
-import 'package:gardien_tech/domain/repositories/emprestimo_dispositivo_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_item_repository.dart';
-import 'package:gardien_tech/domain/repositories/emprestimo_repository.dart';
 import 'package:gardien_tech/presentation/viewmodels/emprestimo_detalhe_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/emprestimo_list_viewmodel.dart';
 import 'package:gardien_tech/presentation/views/emprestimo_detalhe_screen.dart';
@@ -310,8 +308,6 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                                             EmprestimoDetalheViewmodel(
                                               context.read<EmprestimoItemRepository>(),
                                               context.read<DispositivoRepository>(),
-                                              context.read<EmprestimoDispositivoRepository>(),
-                                              context.read<EmprestimoRepository>(),
                                             ),
                                         child: EmprestimoDetalheScreen(
                                           idEmprestimo: emprestimo.idEmprestimo,

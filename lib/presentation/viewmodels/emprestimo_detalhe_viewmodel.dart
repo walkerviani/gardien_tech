@@ -2,24 +2,18 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:gardien_tech/data/dto/emprestimo_item_com_dispositivo_dto.dart';
-import 'package:gardien_tech/domain/entities/dispositivo.dart';
 import 'package:gardien_tech/domain/entities/emprestimo_item.dart';
 import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
-import 'package:gardien_tech/domain/repositories/emprestimo_dispositivo_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_item_repository.dart';
-import 'package:gardien_tech/domain/repositories/emprestimo_repository.dart';
 
 class EmprestimoDetalheViewmodel extends ChangeNotifier {
-  final EmprestimoRepository _emprestimoRepository;
   final EmprestimoItemRepository _empItemRepository;
   final DispositivoRepository _dispositivoRepository;
-  final EmprestimoDispositivoRepository _emprDispRepository;
+
 
   EmprestimoDetalheViewmodel(
     this._empItemRepository,
     this._dispositivoRepository,
-    this._emprDispRepository,
-    this._emprestimoRepository,
   );
 
   bool isLoading = false;
