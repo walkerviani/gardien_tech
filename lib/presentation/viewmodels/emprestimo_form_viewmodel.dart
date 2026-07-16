@@ -243,15 +243,16 @@ class EmprestimoFormViewModel extends ChangeNotifier {
       final tipoDisp = TipoDispositivo.values.firstWhere(
         (t) => t.nomeTipo == entry.key,
       );
-      final emprestimoItem = EmprestimoItem(
-        null,
-        idEmprestimo,
-        tipoDisp.id,
-        entry.value.length,
-        false, // ehQuantitativo
-        estaResolvido: false,
+      await emprestimoItemRepository.criar(
+        EmprestimoItem(
+          null,
+          idEmprestimo,
+          tipoDisp.id,
+          entry.value.length,
+          false,
+          estaResolvido: false,
+        ),
       );
-      final idItem = await emprestimoItemRepository.criar(emprestimoItem);
 
       for (final item in entry.value) {
         final dispositivo = await dispositivoRepository.buscarPorPatrimonio(
@@ -259,7 +260,7 @@ class EmprestimoFormViewModel extends ChangeNotifier {
         );
         if (dispositivo != null) {
           await emprestimoItemRepository.vincularDispositivo(
-            idItem,
+            idEmprestimo,
             dispositivo.id!,
           );
         }

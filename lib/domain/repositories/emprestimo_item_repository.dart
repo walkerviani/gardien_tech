@@ -10,6 +10,6 @@ abstract class EmprestimoItemRepository {
   Future<void> deletar(int id);
   Future<void> adicionarQuantidade(int idEmprestimoItem, int qtd);
   Future<void> registrarDevolucao(int idEmprestimoItem, int qtd);
-  Future<void> vincularDispositivo(int idEmprestimoItem, int idDispositivo);
+  Future<void> vincularDispositivo(int idEmprestimo, int idDispositivo);
   Future<void> desvincularDispositivo(int idEmprestimoDispositivo);
 }

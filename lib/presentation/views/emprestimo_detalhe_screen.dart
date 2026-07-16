@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gardien_tech/data/dto/emprestimo_item_com_dispositivo_dto.dart';
+import 'package:gardien_tech/domain/entities/dispositivo.dart';
+import 'package:gardien_tech/domain/entities/emprestimo_dispositivo.dart';
 import 'package:gardien_tech/domain/entities/emprestimo_item.dart';
 import 'package:gardien_tech/domain/enum/dispositivo_status.dart';
 import 'package:gardien_tech/domain/enum/emprestimo_status.dart';
@@ -185,6 +187,8 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                         children: List.generate(
                           itemDoDTO.dispositivosObj.length,
                           (indexUnidade) {
+                            final dispositivo = itemDoDTO.dispositivosObj[indexUnidade];
+                            final emprDisp = itemDoDTO.dispositivos[indexUnidade];
                             return Card(
                               child: Padding(
                                 padding: const EdgeInsets.all(10),
@@ -192,6 +196,8 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                                   itemDoDTO,
                                   emprestimoItem,
                                   tipoDispositivo,
+                                  dispositivo,
+                                  emprDisp,
                                 ),
                               ),
                             );
@@ -244,94 +250,67 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
     EmprestimoItemComDispositivoDTO itemDoDTO,
     EmprestimoItem emprestimoItem,
     String tipoDispositivo,
+    Dispositivo dispositivo,
+    EmprestimoDispositivo empDispositivo,
   ) {
     return Column(
       children: [
-        SizedBox(
+        SizedBox( 
           height: 50,
           child: Row(
             children: [
-              Expanded(
+              Expanded( // Campo do número de patrimônio
                 flex: 1,
-                /*
-                Campo do número de patrimônio
-                */
                 child: TextField(
                   enabled: false,
                   readOnly: true,
                   canRequestFocus: false,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                  ),
-                  controller: TextEditingController(
-                    text: itemDoDTO.dispositivosObj.isNotEmpty
-                        ? itemDoDTO.dispositivosObj.first.numPatrimonio
-                        : '',
-                  ),
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Color(0xFF686767),
-                  ),
+                  decoration: const InputDecoration(border: OutlineInputBorder()),
+                  controller: TextEditingController(text: dispositivo.numPatrimonio),
+                  style: const TextStyle(fontSize: 14, color: Color(0xFF686767)),
                 ),
               ),
               SizedBox(width: 10),
-              Expanded(
+              Expanded( // Campo do tipo de dispositivo
                 flex: 2,
-                child:
-                    /*
-                    Campo do tipo de dispositivo
-                    */
-                    TextField(
-                      enabled: false,
-                      readOnly: true,
-                      canRequestFocus: false,
-                      controller: TextEditingController(text: tipoDispositivo),
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                      ),
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: const Color(0xFF686767),
-                      ),
-                    ),
+                child: TextField(
+                  enabled: false,
+                  readOnly: true,
+                  canRequestFocus: false,
+                  controller: TextEditingController(text: tipoDispositivo),
+                  decoration: const InputDecoration(border: OutlineInputBorder()),
+                  style: const TextStyle(fontSize: 14, color: Color(0xFF686767)),
+                ),
               ),
             ],
           ),
         ),
-        /*
-        Checkbox de devolvido
-        */
         SizedBox(height: 10),
-        Row(
+        Row( // Checkbox de devolvido
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text('Devolvido: '),
             Checkbox(
               checkColor: Colors.white,
               activeColor: const Color(0xFF006dc4),
-              value: itemDoDTO.dispositivosObj.isNotEmpty && itemDoDTO.dispositivosObj.first.idStatus == DispositivoStatus.disponivel.id,
-              onChanged: (bool? value) {
-                final dispositivo = itemDoDTO.dispositivosObj.firstOrNull;
-                if (dispositivo?.id != null) {
-                  context.read<EmprestimoDetalheViewmodel>().alternarDevolucao(
-                    dispositivo!.id!,
-                    value!,
-                    widget.idEmprestimo,
-                  );
-                }
-              },
+              value: dispositivo.idStatus == DispositivoStatus.disponivel.id,
+              onChanged: dispositivo.id != null
+                  ? (bool? value) {
+                      context.read<EmprestimoDetalheViewmodel>().alternarDevolucao(
+                        dispositivo.id!,
+                        value!,
+                        widget.idEmprestimo,
+                      );
+                    }
+                  : null,
             ),
             SizedBox(width: 50),
-            /*
-            Botão de remover
-            */
             TextButton(
               onPressed: () async {
-                final emprestimoDispositivo = itemDoDTO.dispositivos.firstOrNull;
-                if (emprestimoDispositivo != null) {
+                if (empDispositivo.id != null) {
                   await _excluirItemEmprestimo(
                     context,
-                    emprestimoDispositivo.id!,
+                    empDispositivo.id!,
                     widget.idEmprestimo,
                   );
                 }
@@ -343,7 +322,10 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                 ),
                 fixedSize: const Size(130, 30),
               ),
-              child: Text('Remover', style: TextStyle(color: Colors.white)),
+              child: const Text(
+                'Remover',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ],
         ),
