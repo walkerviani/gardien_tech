@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gardien_tech/domain/enum/tipo_cargo.dart';
 import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
+import 'package:gardien_tech/domain/repositories/emprestimo_dispositivo_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_item_repository.dart';
+import 'package:gardien_tech/domain/repositories/emprestimo_repository.dart';
 import 'package:gardien_tech/presentation/viewmodels/emprestimo_detalhe_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/emprestimo_list_viewmodel.dart';
 import 'package:gardien_tech/presentation/views/emprestimo_detalhe_screen.dart';
@@ -64,7 +66,6 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(width: 10),
-
               /*
               Botão da data selecionada
               */
@@ -129,7 +130,6 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
             ],
           ),
           const SizedBox(height: 10),
-
           /*
             Container de informação sobre os status do empréstimo
           */
@@ -233,7 +233,6 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
               ],
             ),
           ),
-
           const SizedBox(height: 10),
           Expanded(
             child: Consumer<EmprestimoListViewmodel>(
@@ -241,7 +240,6 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                 if (viewmodel.isLoading) {
                   return const Center(child: CircularProgressIndicator());
                 }
-
                 if (viewmodel.emprestimos.isEmpty) {
                   return const Text('Nenhum empréstimo encontrado');
                 }
@@ -263,7 +261,6 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                     String nomeCortado = emprestimo.nomeUsuario.length > 15
                         ? '${emprestimo.nomeUsuario.substring(0, 12)}...'
                         : emprestimo.nomeUsuario;
-
                     return Card(
                       color: _colorStatus(emprestimo.idStatusEmprestimo),
                       child: Padding(
@@ -279,7 +276,6 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                                   children: [
                                     Text(
                                       '${_dataFormatada(emprestimo.dataHoraEfetuado)} - $nomeCortado',
-
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
@@ -308,19 +304,25 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                                             EmprestimoDetalheViewmodel(
                                               context.read<EmprestimoItemRepository>(),
                                               context.read<DispositivoRepository>(),
+                                              context.read<EmprestimoDispositivoRepository>(),
+                                              context.read<EmprestimoRepository>(),
                                             ),
                                         child: EmprestimoDetalheScreen(
                                           idEmprestimo: emprestimo.idEmprestimo,
-                                          dataHoraEfetuado:
-                                              emprestimo.dataHoraEfetuado,
-                                          nomeResponsavel:
-                                              emprestimo.nomeUsuario,
-                                          idStatus:
-                                              emprestimo.idStatusEmprestimo,
+                                          dataHoraEfetuado: emprestimo.dataHoraEfetuado,
+                                          nomeResponsavel: emprestimo.nomeUsuario,
+                                          idStatus: emprestimo.idStatusEmprestimo,
                                         ),
                                       ),
                                     ),
-                                  );
+                                  ).then((_) {
+                                    // Executado quando o usuário volta da tela de detalhes (Navigator.pop)
+                                    if (context.mounted) {
+                                      context.read<EmprestimoListViewmodel>().carregarEmprestimosDoDia(
+                                        _dataController,
+                                      );
+                                    }
+                                  });
                                 },
                                 child: Text(
                                   'Clique aqui para mais detalhes',

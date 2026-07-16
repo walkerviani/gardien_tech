@@ -44,13 +44,13 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
 
   Future<void> _excluirItemEmprestimo(
     BuildContext context,
-    int idEmprestimoDispositivo,
+    int idEmprestimoItem,
     int idEmprestimo,
+    int idDispositivo,
   ) async {
     final resultado = await context
         .read<EmprestimoDetalheViewmodel>()
-        .desvincularDispositivoDoEmprestimo(idEmprestimoDispositivo, idEmprestimo);
-
+        .deletarItem(idEmprestimoItem, idEmprestimo, idDispositivo);
     if (context.mounted && resultado) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -72,7 +72,6 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
             .firstOrNull
             ?.nomeStatus ??
         'Status não encontrado';
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Detalhes do empréstimo'),
@@ -156,14 +155,12 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                           ),
                         );
                       }
-
                       final itemDoDTO = viewmodel.itensComDispositivos[index];
                       final emprestimoItem = itemDoDTO.item;
                       final tipoDispositivo = TipoDispositivo.values
                           .where((tipo) => tipo.id == emprestimoItem.idTipoDispositivo)
                           .firstOrNull
                           ?.nomeTipo ?? 'Tipo não encontrado';
-
                       if (emprestimoItem.ehQuantitativo) {
                         return Column(
                           children: List.generate(emprestimoItem.qtdSolicitada, (indexUnidade) {
@@ -182,7 +179,6 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                           }),
                         );
                       }
-
                       return Column(
                         children: List.generate(
                           itemDoDTO.dispositivosObj.length,
@@ -255,7 +251,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
   ) {
     return Column(
       children: [
-        SizedBox( 
+        SizedBox(
           height: 50,
           child: Row(
             children: [
@@ -307,11 +303,12 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
             SizedBox(width: 50),
             TextButton(
               onPressed: () async {
-                if (empDispositivo.id != null) {
+                if (dispositivo.id != null) {
                   await _excluirItemEmprestimo(
                     context,
-                    empDispositivo.id!,
+                    emprestimoItem.id!,
                     widget.idEmprestimo,
+                    dispositivo.id!,
                   );
                 }
               },
@@ -343,7 +340,6 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
     final dispositivoVinculado = indexUnidade < itemDoDTO.dispositivosObj.length
         ? itemDoDTO.dispositivosObj[indexUnidade]
         : null;
-
     final controllerKey = '${emprestimoItem.id}_$indexUnidade';
     if (!_controllerMap.containsKey(controllerKey)) {
       _controllerMap[controllerKey] = TextEditingController(
@@ -351,7 +347,6 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
       );
     }
     final controller = _controllerMap[controllerKey]!;
-
     return Column(
       children: [
         SizedBox(
