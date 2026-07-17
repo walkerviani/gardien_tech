@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gardien_tech/presentation/viewmodels/selecionar_dispositivo_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 import 'package:gardien_tech/data/database.dart';
@@ -82,9 +83,8 @@ void main() {
         // Depende de:
         // EmprestimoItemRepository
         Provider<EmprestimoRepository>(
-          create: (context) => EmprestimoRepositoryImpl(
-            context.read<AppDatabase>(),
-          ),
+          create: (context) =>
+              EmprestimoRepositoryImpl(context.read<AppDatabase>()),
         ),
 
         // ==========================
@@ -135,6 +135,12 @@ void main() {
         ChangeNotifierProvider<EmprestimoListViewmodel>(
           create: ((context) =>
               EmprestimoListViewmodel(context.read<EmprestimoRepository>())),
+        ),
+
+        ChangeNotifierProvider<SelecionarDispositivoViewmodel>(
+          create: ((context) => SelecionarDispositivoViewmodel(
+            context.read<DispositivoRepository>(),
+          )),
         ),
       ],
 
