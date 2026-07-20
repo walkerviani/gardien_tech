@@ -79,11 +79,6 @@ class _SelecionarDispositivoScreenState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              'Selecione um dos dispositivos abaixo: ',
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 15),
             Expanded(
               child: Consumer<SelecionarDispositivoViewmodel>(
                 builder: (context, viewmodel, child) {
@@ -91,8 +86,14 @@ class _SelecionarDispositivoScreenState
                     return const Center(child: CircularProgressIndicator());
                   }
                   if (viewmodel.dispositivos.isEmpty) {
-                    return const Text('Nenhum dispositivo encontrado');
+                    return Center(
+                      child: const Text(
+                        'Nenhum dispositivo encontrado',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    );
                   }
+
                   return ListView.builder(
                     itemCount: viewmodel.dispositivos.length,
                     itemBuilder: (context, index) {
@@ -100,10 +101,7 @@ class _SelecionarDispositivoScreenState
                       final idTipo = dispositivo.idTipoDispositivo;
                       final tipoDispositivoStr =
                           TipoDispositivo.values
-                              .where(
-                                (tipo) =>
-                                    tipo.id == idTipo,
-                              )
+                              .where((tipo) => tipo.id == idTipo)
                               .firstOrNull
                               ?.nomeTipo ??
                           'Tipo não encontrado';
@@ -113,22 +111,34 @@ class _SelecionarDispositivoScreenState
                           padding: EdgeInsets.all(5),
                           child: ListTile(
                             leading: Icon(_selecionarIcone(idTipo)),
-                            title: Text('Patrimônio N° ${dispositivo.numPatrimonio}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-                            subtitle: Text('$tipoDispositivoStr\nN° Serial: ${dispositivo.numSerie}'),
-                            trailing: IconButton(onPressed: () {
-                              Navigator.pop(context, {
-                                'idDispositivo': dispositivo.id,
-                                'numPatrimonio': dispositivo.numPatrimonio,
-                                'tipo': dispositivo.idTipoDispositivo,
-                              });
-                            },
-                            style: IconButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadiusGeometry.circular(5)
-                              )
+                            title: Text(
+                              'Patrimônio N° ${dispositivo.numPatrimonio}',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                            icon: Icon(Icons.add,color: Colors.white,)),
+                            subtitle: Text(
+                              '$tipoDispositivoStr\nN° Serial: ${dispositivo.numSerie}',
+                            ),
+                            trailing: IconButton(
+                              onPressed: () {
+                                Navigator.pop(context, {
+                                  'idDispositivo': dispositivo.id,
+                                  'numPatrimonio': dispositivo.numPatrimonio,
+                                  'tipo': dispositivo.idTipoDispositivo,
+                                });
+                              },
+                              style: IconButton.styleFrom(
+                                backgroundColor: Colors.green,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadiusGeometry.circular(
+                                    5,
+                                  ),
+                                ),
+                              ),
+                              icon: Icon(Icons.add, color: Colors.white),
+                            ),
                           ),
                         ),
                       );
