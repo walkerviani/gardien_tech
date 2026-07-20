@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:gardien_tech/data/database.dart';
 import 'package:gardien_tech/data/datasources/emprestimo_item_datasource.dart';
 import 'package:gardien_tech/data/dto/emprestimo_item_com_dispositivo_dto.dart';
@@ -24,7 +25,6 @@ class EmprestimoItemRepositoryImpl implements EmprestimoItemRepository {
     final emprestimoItem = await (_database.select(_database.emprestimoItens)
           ..where((ei) => ei.id.equals(id)))
         .getSingleOrNull();
-
     return emprestimoItem?.toEntity();
   }
 
@@ -33,7 +33,6 @@ class EmprestimoItemRepositoryImpl implements EmprestimoItemRepository {
     final emprestimoItens = await (_database.select(_database.emprestimoItens)
           ..where((ei) => ei.idEmprestimo.equals(idEmprestimo)))
         .get();
-
     return emprestimoItens.map((ei) => ei.toEntity()).toList();
   }
 
@@ -51,7 +50,6 @@ class EmprestimoItemRepositoryImpl implements EmprestimoItemRepository {
         'Não é possível atualizar um item de empréstimo sem id',
       );
     }
-
     await (_database.update(_database.emprestimoItens)
           ..where((ei) => ei.id.equals(item.id!)))
         .write(item.toCompanion());
@@ -68,7 +66,6 @@ class EmprestimoItemRepositoryImpl implements EmprestimoItemRepository {
   Future<void> adicionarQuantidade(int idEmprestimoItem, int qtd) async {
     final item = await buscarPorId(idEmprestimoItem);
     if (item == null) throw ArgumentError('Item não encontrado');
-
     item.qtdSolicitada += qtd;
     await atualizar(item);
   }
@@ -77,7 +74,6 @@ class EmprestimoItemRepositoryImpl implements EmprestimoItemRepository {
   Future<void> registrarDevolucao(int idEmprestimoItem, int qtd) async {
     final item = await buscarPorId(idEmprestimoItem);
     if (item == null) throw ArgumentError('Item não encontrado');
-
     item.qtdDevolvida += qtd;
     await atualizar(item);
   }
@@ -88,59 +84,43 @@ class EmprestimoItemRepositoryImpl implements EmprestimoItemRepository {
     int idEmprestimo,
     int idDispositivo,
   ) async {
-    // Busca o dispositivo para saber o tipo
-    final dispositivo =
-        await _dispositivoRepository.buscarPorId(idDispositivo);
-
+    final dispositivo = await _dispositivoRepository.buscarPorId(idDispositivo);
     if (dispositivo == null) {
       throw ArgumentError('Dispositivo não encontrado');
     }
-
-    // Verifica se o dispositivo já está vinculado
     if (dispositivo.idStatus == 3) {
-      throw ArgumentError(
-        'Este dispositivo já está vinculado a um empréstimo',
-      );
+      throw ArgumentError('Este dispositivo já está vinculado a um empréstimo');
     }
-
-    // Busca o EmprestimoItem do mesmo tipo dentro do empréstimo
+    
     final itens = await buscarPorEmprestimo(idEmprestimo);
-
-    final item = itens.firstWhere(
+    var item = itens.firstWhereOrNull(
       (i) => i.idTipoDispositivo == dispositivo.idTipoDispositivo,
-      orElse: () => throw ArgumentError(
-        'Não há nenhum item do tipo ${dispositivo.tipo.nomeTipo} neste empréstimo',
-      ),
     );
 
-    final vinculados =
-        await _edRepository.buscarPorEmprestimoItem(item.id!);
-
-    // Impede de criar mais vínculos que a quantidade solicitada
-    if (vinculados.length >= item.qtdSolicitada) {
-      throw ArgumentError(
-        'Todos os dispositivos deste item já foram vinculados.',
+    if (item == null) {
+      final novoItemId = await criar(
+        EmprestimoItem(
+          null,
+          idEmprestimo,
+          dispositivo.idTipoDispositivo,
+          1,
+          true,
+          qtdDevolvida: 0,
+          estaResolvido: false,
+        ),
       );
+      item = await buscarPorId(novoItemId);
     }
 
-    // Vincula o dispositivo ao item correto
+    // Apenas vincula, sem validar quantidade
     await _edRepository.criar(
       EmprestimoDispositivo(
         null,
-        item.id!,
+        item!.id!,
         idDispositivo: idDispositivo,
       ),
     );
-
     await _dispositivoRepository.marcarEmUso(idDispositivo);
-
-    final vinculadosAtualizados =
-        await _edRepository.buscarPorEmprestimoItem(item.id!);
-
-    item.estaResolvido =
-        vinculadosAtualizados.length >= item.qtdSolicitada;
-
-    await atualizar(item);
   }
 
   //  Desfazer essa associação. Usado quando o dispositivo errado foi associado
@@ -151,28 +131,21 @@ class EmprestimoItemRepositoryImpl implements EmprestimoItemRepository {
   ) async {
     final ed =
         await _edRepository.buscarPorId(idEmprestimoDispositivo);
-
     if (ed == null) {
       throw ArgumentError('Dispositivo não encontrado');
     }
-
     if (ed.idDispositivo != null) {
       await _dispositivoRepository
           .marcarDisponivel(ed.idDispositivo!);
     }
-
     await _edRepository.deletar(idEmprestimoDispositivo);
-
     // Reavalia estaResolvido do item
     final item = await buscarPorId(ed.idEmprestimoItem);
-
     if (item != null) {
       final vinculadosRestantes =
           await _edRepository.buscarPorEmprestimoItem(item.id!);
-
       item.estaResolvido =
           vinculadosRestantes.length >= item.qtdSolicitada;
-
       await atualizar(item);
     }
   }
@@ -181,12 +154,10 @@ class EmprestimoItemRepositoryImpl implements EmprestimoItemRepository {
   Future<List<EmprestimoItemComDispositivoDTO>>
       buscarEmprestimoItemComDispositivo(int idEmprestimo) async {
     final itens = await buscarPorEmprestimo(idEmprestimo);
-
     return Future.wait(
       itens.map((item) async {
         final dispositivosVinculados =
             await _edRepository.buscarPorEmprestimoItem(item.id!);
-
         final dispositivosObj = await Future.wait(
           dispositivosVinculados
               .where((emprDisp) => emprDisp.idDispositivo != null)
@@ -196,7 +167,6 @@ class EmprestimoItemRepositoryImpl implements EmprestimoItemRepository {
                 ),
               ),
         );
-
         return EmprestimoItemComDispositivoDTO(
           item,
           dispositivosVinculados,

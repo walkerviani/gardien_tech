@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:collection/collection.dart';
 import 'package:gardien_tech/data/dto/emprestimo_item_com_dispositivo_dto.dart';
 import 'package:gardien_tech/domain/entities/dispositivo.dart';
 import 'package:gardien_tech/domain/entities/emprestimo_item.dart';
@@ -64,7 +65,6 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
       return;
     }
     await vincularDispositivoNoEmprestimo(
-      idEmprestimoItem,
       dispositivo.id!,
       idEmprestimo,
     );
@@ -91,22 +91,35 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
 
   // Cria um novo emprestimo_dispositivo e adiciona no emprestimo_item
   Future<bool> vincularDispositivoNoEmprestimo(
-    int idEmprestimoItem,
     int idDispositivo,
     int idEmprestimo,
-  ) async {
+    ) async {
     isLoading = true;
     errorMessage = null;
     notifyListeners();
     try {
       await _empItemRepository.vincularDispositivo(
-        idEmprestimoItem,
+        idEmprestimo,
         idDispositivo,
       );
+      // Após vincular, aumenta qtdSolicitada
+      final itens = await _empItemRepository.buscarPorEmprestimo(idEmprestimo);
+      final dispositivo = await _dispositivoRepository.buscarPorId(idDispositivo);
+      
+      if (dispositivo != null) {
+        final item = itens.firstWhereOrNull(
+          (i) => i.idTipoDispositivo == dispositivo.idTipoDispositivo,
+        );
+        if (item != null) {
+          item.qtdSolicitada++;
+          await _empItemRepository.atualizar(item);
+        }
+      }
+      
       await carregarItensDoEmprestimo(idEmprestimo);
       return true;
     } catch (e) {
-      errorMessage = 'Erro ao vincular o dispositivo';
+      errorMessage = 'Erro ao vincular o dispositivo: $e';
       return false;
     } finally {
       isLoading = false;
@@ -234,6 +247,39 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
     }
     // seta isLoading = true e reconstrói toda a lista com o CircularProgressIndicator, "reseta" a lista visualmente
     await carregarItensDoEmprestimo(idEmprestimo);
+  }
+
+  Future<bool> removerUnidade(
+    int idEmprestimoItem,
+    int idEmprestimo,
+    int? idEmprestimoDispositivo,
+  ) async {
+    isLoading = true;
+    errorMessage = null;
+    notifyListeners();
+    try {
+      // Desvínculas o dispositivo
+      if (idEmprestimoDispositivo != null) {
+        await _empItemRepository.desvincularDispositivo(idEmprestimoDispositivo);
+      }
+      
+      // Reduz a quantidade solicitada
+      final item = await _empItemRepository.buscarPorId(idEmprestimoItem);
+      if (item != null) {
+        item.qtdSolicitada--;
+        await _empItemRepository.atualizar(item);
+      }
+      
+      await carregarItensDoEmprestimo(idEmprestimo);
+      return true;
+    } catch (e) {
+      errorMessage = 'Erro ao remover unidade: $e';
+      print('DEBUG: Erro removerUnidade = $e');
+      return false;
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
   }
 
   @override

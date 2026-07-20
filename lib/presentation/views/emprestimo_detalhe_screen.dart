@@ -137,14 +137,17 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                   return ListView.builder(
                     itemCount: viewmodel.itensComDispositivos.length + 1,
                     itemBuilder: (context, index) {
-                      // Último item da lista = botão
                       if (index == viewmodel.itensComDispositivos.length) {
                         return Padding(
+                          // Botão adicionar
                           padding: const EdgeInsets.symmetric(vertical: 20),
                           child: Center(
                             child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
+                              onPressed: () async {
+                                // Salva referência antes do await
+                                final viewmodel = context.read<EmprestimoDetalheViewmodel>();
+                                
+                                final resultado = await Navigator.push<Map<String, dynamic>>(
                                   context,
                                   MaterialPageRoute(
                                     builder: (_) => SelecionarDispositivoScreen(
@@ -153,6 +156,17 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                                     ),
                                   ),
                                 );
+                                
+                                if (!mounted) return;
+                                
+                                if (resultado != null) {
+                                  final idDispositivo = resultado['idDispositivo'] as int;
+                                  _controllerMap.clear();
+                                  await viewmodel.vincularDispositivoNoEmprestimo( 
+                                    idDispositivo,
+                                    widget.idEmprestimo,
+                                  );
+                                }
                               },
                               style: TextButton.styleFrom(
                                 backgroundColor: const Color(0xFF2196F3),
@@ -172,57 +186,55 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                       final itemDoDTO = viewmodel.itensComDispositivos[index];
                       final emprestimoItem = itemDoDTO.item;
                       final tipoDispositivo =
-                          TipoDispositivo.values
-                              .where(
-                                (tipo) =>
-                                    tipo.id == emprestimoItem.idTipoDispositivo,
-                              )
-                              .firstOrNull
-                              ?.nomeTipo ??
-                          'Tipo não encontrado';
+                        TipoDispositivo.values
+                            .where(
+                              (tipo) =>
+                                  tipo.id == emprestimoItem.idTipoDispositivo,
+                            )
+                            .firstOrNull
+                            ?.nomeTipo ??
+                        'Tipo não encontrado';
                       if (emprestimoItem.ehQuantitativo) {
-                        return Column(
-                          children: List.generate(
-                            emprestimoItem.qtdSolicitada,
-                            (indexUnidade) {
-                              return Card(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10),
-                                  child: _cardPorQuantidade(
-                                    itemDoDTO,
-                                    emprestimoItem,
-                                    tipoDispositivo,
-                                    indexUnidade,
-                                    viewmodel,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        );
-                      }
-                      return Column(
-                        children: List.generate(
-                          itemDoDTO.dispositivosObj.length,
-                          (indexUnidade) {
-                            final dispositivo =
-                                itemDoDTO.dispositivosObj[indexUnidade];
-                            final emprDisp =
-                                itemDoDTO.dispositivos[indexUnidade];
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: emprestimoItem.qtdSolicitada,
+                          itemBuilder: (context, indexUnidade) {
                             return Card(
                               child: Padding(
                                 padding: const EdgeInsets.all(10),
-                                child: _cardPorUnidade(
+                                child: _cardPorQuantidade(
                                   itemDoDTO,
                                   emprestimoItem,
                                   tipoDispositivo,
-                                  dispositivo,
-                                  emprDisp,
+                                  indexUnidade,
+                                  viewmodel,
                                 ),
                               ),
                             );
                           },
-                        ),
+                        );
+                      }
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: itemDoDTO.dispositivosObj.length,
+                        itemBuilder: (context, indexUnidade) {
+                          final dispositivo = itemDoDTO.dispositivosObj[indexUnidade];
+                          final emprDisp = itemDoDTO.dispositivos[indexUnidade];
+                          return Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: _cardPorUnidade(
+                                itemDoDTO,
+                                emprestimoItem,
+                                tipoDispositivo,
+                                dispositivo,
+                                emprDisp,
+                              ),
+                            ),
+                          );
+                        },
                       );
                     },
                   );
@@ -383,13 +395,11 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
     final dispositivoVinculado = indexUnidade < itemDoDTO.dispositivosObj.length
         ? itemDoDTO.dispositivosObj[indexUnidade]
         : null;
-    final controllerKey = '${emprestimoItem.id}_$indexUnidade';
-    if (!_controllerMap.containsKey(controllerKey)) {
-      _controllerMap[controllerKey] = TextEditingController(
-        text: dispositivoVinculado?.numPatrimonio ?? '',
-      );
-    }
-    final controller = _controllerMap[controllerKey]!;
+
+    final emprDispId = itemDoDTO.dispositivos.length > indexUnidade
+        ? itemDoDTO.dispositivos[indexUnidade].id
+        : null;
+
     return Column(
       children: [
         SizedBox(
@@ -397,24 +407,39 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
           child: Row(
             children: [
               Expanded(
+                // Campo do número de patrimônio
                 flex: 1,
                 child: GestureDetector(
-                  onTap: dispositivoVinculado == null
-                      ? () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Clicou no patrimônio vazio'),
-                            ),
-                          );
-                        }
-                      : null,
+                  onTap: () async {
+                    final viewmodel = context.read<EmprestimoDetalheViewmodel>();
+                    
+                    final resultado = await Navigator.push<Map<String, dynamic>>(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => SelecionarDispositivoScreen(
+                          emprestimoItem.idTipoDispositivo,
+                          widget.idEmprestimo,
+                        ),
+                      ),
+                    );
+                    if (resultado != null && mounted) {
+                      final idDispositivo = resultado['idDispositivo'] as int;
+                      _controllerMap.clear();
+                      await viewmodel.vincularDispositivoNoEmprestimo(
+                        idDispositivo,
+                        widget.idEmprestimo,
+                      );
+                    }
+                  },
                   child: TextField(
                     enabled: false,
                     readOnly: true,
                     canRequestFocus: false,
-                    controller: controller,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
+                    ),
+                    controller: TextEditingController(
+                      text: dispositivoVinculado?.numPatrimonio ?? '',
                     ),
                     style: const TextStyle(
                       fontSize: 14,
@@ -425,6 +450,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
               ),
               SizedBox(width: 10),
               Expanded(
+                // Campo do tipo de dispositivo
                 flex: 2,
                 child: TextField(
                   enabled: false,
@@ -445,6 +471,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
         ),
         SizedBox(height: 10),
         Row(
+          // Checkbox de devolvido
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text('Devolvido: '),
@@ -456,33 +483,27 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                   dispositivoVinculado.idStatus ==
                       DispositivoStatus.disponivel.id,
               onChanged: (bool? value) {
-                setState(() {
-                  if (dispositivoVinculado?.id != null) {
-                    context
-                        .read<EmprestimoDetalheViewmodel>()
-                        .alternarDevolucao(
-                          dispositivoVinculado!.id!,
-                          value!,
-                          widget.idEmprestimo,
-                        );
-                  }
-                });
+                if (dispositivoVinculado?.id != null) {
+                  context
+                      .read<EmprestimoDetalheViewmodel>()
+                      .alternarDevolucao(
+                        dispositivoVinculado!.id!,
+                        value!,
+                        widget.idEmprestimo,
+                      );
+                }
               },
             ),
             SizedBox(width: 50),
             TextButton(
               onPressed: () async {
-                final ed = itemDoDTO.dispositivos.length > indexUnidade
-                    ? itemDoDTO.dispositivos[indexUnidade]
-                    : null;
-                if (ed?.id != null) {
-                  await context
-                      .read<EmprestimoDetalheViewmodel>()
-                      .desvincularDispositivoDoEmprestimo(
-                        ed!.id!,
-                        widget.idEmprestimo,
-                      );
-                  _controllerMap.remove(controllerKey);
+                if (emprestimoItem.id != null) {
+                  _controllerMap.clear();
+                  await viewmodel.removerUnidade(
+                    emprestimoItem.id!,
+                    widget.idEmprestimo,
+                    emprDispId,
+                  );
                 }
               },
               style: TextButton.styleFrom(
