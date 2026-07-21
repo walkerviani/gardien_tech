@@ -145,27 +145,32 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                             child: ElevatedButton(
                               onPressed: () async {
                                 // Salva referência antes do await
-                                final viewmodel = context.read<EmprestimoDetalheViewmodel>();
-                                
-                                final resultado = await Navigator.push<Map<String, dynamic>>(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => SelecionarDispositivoScreen(
-                                      null,
-                                      widget.idEmprestimo,
-                                    ),
-                                  ),
-                                );
-                                
+                                final viewmodel = context
+                                    .read<EmprestimoDetalheViewmodel>();
+
+                                final resultado =
+                                    await Navigator.push<Map<String, dynamic>>(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) =>
+                                            SelecionarDispositivoScreen(
+                                              null,
+                                              widget.idEmprestimo,
+                                            ),
+                                      ),
+                                    );
+
                                 if (!mounted) return;
-                                
+
                                 if (resultado != null) {
-                                  final idDispositivo = resultado['idDispositivo'] as int;
+                                  final idDispositivo =
+                                      resultado['idDispositivo'] as int;
                                   _controllerMap.clear();
-                                  await viewmodel.vincularDispositivoNoEmprestimo( 
-                                    idDispositivo,
-                                    widget.idEmprestimo,
-                                  );
+                                  await viewmodel
+                                      .vincularDispositivoNoEmprestimo(
+                                        idDispositivo,
+                                        widget.idEmprestimo,
+                                      );
                                 }
                               },
                               style: TextButton.styleFrom(
@@ -186,14 +191,14 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                       final itemDoDTO = viewmodel.itensComDispositivos[index];
                       final emprestimoItem = itemDoDTO.item;
                       final tipoDispositivo =
-                        TipoDispositivo.values
-                            .where(
-                              (tipo) =>
-                                  tipo.id == emprestimoItem.idTipoDispositivo,
-                            )
-                            .firstOrNull
-                            ?.nomeTipo ??
-                        'Tipo não encontrado';
+                          TipoDispositivo.values
+                              .where(
+                                (tipo) =>
+                                    tipo.id == emprestimoItem.idTipoDispositivo,
+                              )
+                              .firstOrNull
+                              ?.nomeTipo ??
+                          'Tipo não encontrado';
                       if (emprestimoItem.ehQuantitativo) {
                         return ListView.builder(
                           shrinkWrap: true,
@@ -220,7 +225,8 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                         physics: NeverScrollableScrollPhysics(),
                         itemCount: itemDoDTO.dispositivosObj.length,
                         itemBuilder: (context, indexUnidade) {
-                          final dispositivo = itemDoDTO.dispositivosObj[indexUnidade];
+                          final dispositivo =
+                              itemDoDTO.dispositivosObj[indexUnidade];
                           final emprDisp = itemDoDTO.dispositivos[indexUnidade];
                           return Card(
                             child: Padding(
@@ -253,13 +259,16 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
               ElevatedButton(
                 onPressed: () {},
                 style: TextButton.styleFrom(
-                  backgroundColor: const Color(0xFFe7af06),
+                  backgroundColor: const Color(0xFFB00303),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
                   fixedSize: const Size(300, 50),
                 ),
-                child: Text('Salvar', style: TextStyle(color: Colors.white)),
+                child: Text(
+                  'Excluir empréstimo',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
               SizedBox(height: 10),
               ElevatedButton(
@@ -411,17 +420,19 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                 flex: 1,
                 child: GestureDetector(
                   onTap: () async {
-                    final viewmodel = context.read<EmprestimoDetalheViewmodel>();
-                    
-                    final resultado = await Navigator.push<Map<String, dynamic>>(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => SelecionarDispositivoScreen(
-                          emprestimoItem.idTipoDispositivo,
-                          widget.idEmprestimo,
-                        ),
-                      ),
-                    );
+                    final viewmodel = context
+                        .read<EmprestimoDetalheViewmodel>();
+
+                    final resultado =
+                        await Navigator.push<Map<String, dynamic>>(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => SelecionarDispositivoScreen(
+                              emprestimoItem.idTipoDispositivo,
+                              widget.idEmprestimo,
+                            ),
+                          ),
+                        );
                     if (resultado != null && mounted) {
                       final idDispositivo = resultado['idDispositivo'] as int;
                       _controllerMap.clear();
@@ -484,13 +495,11 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                       DispositivoStatus.disponivel.id,
               onChanged: (bool? value) {
                 if (dispositivoVinculado?.id != null) {
-                  context
-                      .read<EmprestimoDetalheViewmodel>()
-                      .alternarDevolucao(
-                        dispositivoVinculado!.id!,
-                        value!,
-                        widget.idEmprestimo,
-                      );
+                  context.read<EmprestimoDetalheViewmodel>().alternarDevolucao(
+                    dispositivoVinculado!.id!,
+                    value!,
+                    widget.idEmprestimo,
+                  );
                 }
               },
             ),
