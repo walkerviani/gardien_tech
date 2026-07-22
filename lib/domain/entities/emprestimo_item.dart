@@ -5,7 +5,6 @@ class EmprestimoItem {
   final int _idTipoDispositivo;
   int qtdSolicitada;
   int qtdDevolvida;
-  bool ehQuantitativo; // true -> quantitativo; false -> qualitativo
   bool estaResolvido; // estaResolvido rastreia se o EmprestimoItem tem todos os dispositivos necessários já vinculados
 
   // Construtor
@@ -14,7 +13,6 @@ class EmprestimoItem {
     this._idEmprestimo,
     this._idTipoDispositivo,
     this.qtdSolicitada,
-    this.ehQuantitativo,
     {this.qtdDevolvida = 0, this.estaResolvido = false}
   );
 

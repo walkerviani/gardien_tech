@@ -104,7 +104,6 @@ class EmprestimoItemRepositoryImpl implements EmprestimoItemRepository {
           idEmprestimo,
           dispositivo.idTipoDispositivo,
           1,
-          true,
           qtdDevolvida: 0,
           estaResolvido: false,
         ),
