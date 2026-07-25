@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
-import 'package:collection/collection.dart';
 import 'package:gardien_tech/data/dto/emprestimo_item_com_dispositivo_dto.dart';
 import 'package:gardien_tech/domain/entities/dispositivo.dart';
+import 'package:gardien_tech/domain/entities/emprestimo.dart';
+import 'package:gardien_tech/domain/entities/emprestimo_dispositivo.dart';
 import 'package:gardien_tech/domain/entities/emprestimo_item.dart';
 import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_dispositivo_repository.dart';
@@ -24,274 +25,175 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
 
   bool isLoading = false;
   String? errorMessage;
-  List<EmprestimoItemComDispositivoDTO> itensComDispositivos = [];
-  List<Dispositivo> dispositivosPesquisa = [];
-  Timer? _debounce;
-  int?
-  indexEmPesquisa; // Utiliza o index do Card para abrir a pesquisa em apenas um Card
+  List<EmprestimoItemComDispositivoDTO> dispositivosDoEmprestimo =
+      []; // Lista dos dispositivos presente no emprestimo
+  List<EmprestimoItem> empItens =
+      []; // Lista usada para verificar a devolução dos dispositivos de cada emprestimo_item
+  bool empFinalizado =
+      false; // Usado para controlar a visualização da lista na tela (entre edição e leitura)
 
-  void buscarDispositivo(String value, int idTipo, int indexCard) {
-    _debounce?.cancel();
-    indexEmPesquisa = indexCard;
-    if (value.trim().isEmpty) {
-      dispositivosPesquisa = [];
-      notifyListeners();
-      return;
-    }
-    _debounce = Timer(const Duration(milliseconds: 200), () async {
-      final resultado = await _dispositivoRepository.buscarDescricao(value);
-      dispositivosPesquisa = resultado
-          .where((d) => d.tipo.id == idTipo)
-          .toList(); // Apresenta apenas dispositivos que são do mesmo tipo do emprestimo_item
-      notifyListeners();
-    });
-  }
-
-  Future<void> selecionarDispositivo(
-    Dispositivo dispositivo,
-    int idEmprestimoItem,
-    int idEmprestimo,
-  ) async {
-    final itensComDispositivos = await _empItemRepository
-        .buscarEmprestimoItemComDispositivo(idEmprestimo);
-    final jaAdicionado = itensComDispositivos.any((itemDTO) {
-      return itemDTO.dispositivos.any(
-        (empDisp) => empDisp.idDispositivo == dispositivo.id,
-      );
-    });
-    if (jaAdicionado) {
-      errorMessage = 'Este dispositivo já foi adicionado à lista.';
-      notifyListeners();
-      return;
-    }
-    await vincularDispositivoNoEmprestimo(
-      dispositivo.id!,
-      idEmprestimo,
-    );
-    dispositivosPesquisa = [];
-    errorMessage = null;
-    notifyListeners();
-  }
-
-  Future<void> carregarItensDoEmprestimo(int idEmprestimo) async {
+  // Lista todos os dispositivos do emprestimo informado
+  Future<void> carregarDispositivosDoEmprestimo(int idEmprestimo) async {
     isLoading = true;
     errorMessage = null;
     notifyListeners();
+
     try {
-      itensComDispositivos = await _empItemRepository
+      dispositivosDoEmprestimo = await _empItemRepository
           .buscarEmprestimoItemComDispositivo(idEmprestimo);
+      await verificarStatusEmprestimo(idEmprestimo);
     } catch (e) {
-      errorMessage = 'Erro ao carregar os itens do empréstimos selecionado';
-      itensComDispositivos = [];
+      errorMessage = "Erro ao carregar o empréstimo";
+      dispositivosDoEmprestimo = [];
     } finally {
       isLoading = false;
       notifyListeners();
     }
   }
 
-  // Cria um novo emprestimo_dispositivo e adiciona no emprestimo_item
-  Future<bool> vincularDispositivoNoEmprestimo(
-    int idDispositivo,
-    int idEmprestimo,
-    ) async {
-    isLoading = true;
-    notifyListeners();
+  // Verifica se o empréstimo está finalizado, se está define a var para true
+  Future<bool> verificarStatusEmprestimo(int idEmprestimo) async {
+    Emprestimo? emprestimo = await _emprestimoRepository.buscarPorId(
+      idEmprestimo,
+    );
+    if (emprestimo!.idStatus == 3) {
+      // Status finalizado
+      empFinalizado = true;
+    } else {
+      empFinalizado = false;
+    }
+    return false;
+  }
+
+  // Adiciona um novo emprestimo_dispositivo com um objeto dispositivo já vinculado ao emprestimo_item
+  Future<bool> adicionarDispositivo(int idEmprestimo, int idDispositivo) async {
+    errorMessage = null;
+
     try {
-      await _empItemRepository.vincularDispositivo(
+      await _empItemRepository.adicionarDispositivoAoEmprestimo(
         idEmprestimo,
         idDispositivo,
       );
-      // Após vincular, aumenta qtdSolicitada
-      final itens = await _empItemRepository.buscarPorEmprestimo(idEmprestimo);
-      final dispositivo = await _dispositivoRepository.buscarPorId(idDispositivo);
-      
-      if (dispositivo != null) {
-        final item = itens.firstWhereOrNull(
-          (i) => i.idTipoDispositivo == dispositivo.idTipoDispositivo,
-        );
-        if (item != null) {
-          item.qtdSolicitada++;
-          await _empItemRepository.atualizar(item);
-        }
-      }
-      
-      await carregarItensDoEmprestimo(idEmprestimo);
       return true;
     } catch (e) {
-      throw ArgumentError('Erro ao vincular o dispositivo: $e');
-    } finally {
-      isLoading = false;
-      notifyListeners();
+      errorMessage = "Erro ao adicionar o dispositivo";
+      return false;
     }
   }
 
-  
-
-  Future<bool> desvincularDispositivoDoEmprestimo(
+  // Vincula um dispositivo em um emprestimo_dispositivo vazio
+  Future<bool> vincularDispositivo(
     int idEmprestimoDispositivo,
-    int idEmprestimo,
-  ) async {
-    isLoading = true;
-    notifyListeners();
-    try {
-      await _empItemRepository.desvincularDispositivo(idEmprestimoDispositivo);
-      await carregarItensDoEmprestimo(idEmprestimo);
-      return true;
-    } catch (e) {
-      errorMessage = 'Erro ao desvincular o dispositivo';
-      return false;
-    } finally {
-      isLoading = false;
-      notifyListeners();
-    }
-  }
-
-  // Registra a devolução = aumenta o valor de qntDevolvida do emprestimo_item
-  Future<bool> registrarDevolucao(
-    int idEmprestimoItem,
-    int qtd,
-    int idEmprestimo,
-  ) async {
-    isLoading = true;
-    errorMessage = null;
-    notifyListeners();
-    try {
-      await _empItemRepository.registrarDevolucao(idEmprestimoItem, qtd);
-      await carregarItensDoEmprestimo(idEmprestimo);
-      return true;
-    } catch (e) {
-      errorMessage = 'Erro ao registrar a devolução';
-      return false;
-    } finally {
-      isLoading = false;
-      notifyListeners();
-    }
-  }
-
-  Future<bool> atualizar(EmprestimoItem item, int idEmprestimo) async {
-    isLoading = true;
-    errorMessage = null;
-    notifyListeners();
-    try {
-      await _empItemRepository.atualizar(item);
-      await carregarItensDoEmprestimo(idEmprestimo);
-      return true;
-    } catch (e) {
-      errorMessage = 'Erro ao atualizar';
-      return false;
-    } finally {
-      isLoading = false;
-      notifyListeners();
-    }
-  }
-
-  Future<bool> deletarItem(
-    int idEmprestimoItem,
-    int idEmprestimo,
     int idDispositivo,
   ) async {
-    isLoading = true;
     errorMessage = null;
-    notifyListeners();
+
     try {
-      final emprDisp = await _empDispositivoRepository.buscarPorEmprestimoItem(
-        idEmprestimoItem,
+      await _empDispositivoRepository.vincularDispositivo(
+        idEmprestimoDispositivo,
+        idDispositivo,
       );
-      final emprItem = await _empItemRepository.buscarPorId(idEmprestimoItem);
-      final itemParaExcluir = emprDisp.where(
-        (ed) => ed.idDispositivo == idDispositivo,
+      return true;
+    } catch (e) {
+      errorMessage = "Erro ao vincular o dispositivo";
+      return false;
+    }
+  }
+
+  // Remove o emprestimo_dispositivo do emprestimo_item
+  Future<bool> removerDispositivo(int idEmprestimoDispositivo) async {
+    errorMessage = null;
+
+    try {
+      await _empDispositivoRepository.desvincularDispositivo(
+        idEmprestimoDispositivo,
       );
-      if (itemParaExcluir.isEmpty) {
-        errorMessage = 'Dispositivo não encontrado';
+      return true;
+    } catch (e) {
+      errorMessage = "Erro ao remover o dispositivo";
+      return false;
+    }
+  }
+
+  // Trocar o dispositivo do emprestimo_dispositivo
+  Future<bool> trocarDispositivo(
+    int idEmprestimoDispositivo,
+    int idDispositivo,
+  ) async {
+    errorMessage = null;
+
+    try {
+      EmprestimoDispositivo? emprestimoDispositivo =
+          await _empDispositivoRepository.buscarPorId(idEmprestimoDispositivo);
+
+      if (emprestimoDispositivo == null) {
+        errorMessage = "O item não existe";
         return false;
       }
-      if (emprDisp.isNotEmpty && emprItem?.idEmprestimo == idEmprestimo) {
-        for (var item in itemParaExcluir) {
-          await _dispositivoRepository.marcarDisponivel(idDispositivo); // libera o dispositivo removido
-          await _empDispositivoRepository.deletar(item.id!);
-          emprItem!.qtdSolicitada--;
-          if (emprItem.qtdSolicitada == 0) {
-            await _empItemRepository.deletar(emprItem.id!);
-          } else {
-            await _empItemRepository.atualizar(emprItem);
-          }
-        }
+
+      if (emprestimoDispositivo.idDispositivo == null) {
+        errorMessage = "O item não possui dispositivo vinculado";
+        return false;
       }
-      final itensRestantes = await _empItemRepository.buscarPorEmprestimo(
-        idEmprestimo,
+
+      // Busca cada dispositivo
+      int idDispositivoAntigo = emprestimoDispositivo.idDispositivo!;
+      Dispositivo? dispositivoAntigo = await _dispositivoRepository.buscarPorId(
+        idDispositivoAntigo,
       );
-      if (itensRestantes.isEmpty) {
-        await _emprestimoRepository.deletar(idEmprestimo);
+      Dispositivo? dispositivoNovo = await _dispositivoRepository.buscarPorId(
+        idDispositivo,
+      );
+      if (dispositivoNovo == null) {
+        errorMessage = "O dispositivo não existe";
+        return false;
       }
-      await carregarItensDoEmprestimo(idEmprestimo);
+
+      // Verifica se os dispositivos são do mesmo tipo
+      if (dispositivoAntigo?.idTipoDispositivo !=
+          dispositivoNovo.idTipoDispositivo) {
+        errorMessage = "O dispositivo precisa ter o mesmo tipo";
+        return false;
+      }
+      EmprestimoDispositivo novoEmpDisp = EmprestimoDispositivo(
+        emprestimoDispositivo.id,
+        emprestimoDispositivo.idEmprestimoItem,
+        idDispositivo: dispositivoNovo.id,
+      );
+
+      // Atualiza o item
+      await _empDispositivoRepository.atualizar(novoEmpDisp);
       return true;
     } catch (e) {
-      errorMessage = 'Erro ao deletar item';
+      errorMessage = "Erro ao trocar o dispositivo";
       return false;
-    } finally {
-      isLoading = false;
-      notifyListeners();
     }
   }
 
-  Future<void> alternarDevolucao(
-    int idDispositivo,
-    bool devolvido,
-    int idEmprestimo,
-  ) async {
-    if (devolvido) {
-      await _dispositivoRepository.marcarDisponivel(idDispositivo);
-    } else {
-      await _dispositivoRepository.marcarEmUso(idDispositivo);
-    }
-    // Seta isLoading = true e reconstrói toda a lista com o CircularProgressIndicator, "reseta" a lista visualmente
-    await carregarItensDoEmprestimo(idEmprestimo);
-  }
-
-  Future<bool> removerItemEmprestimo(
-    int idEmprestimoItem,
-    int idEmprestimo,
-    int? idEmprestimoDispositivo,
-    {bool deletarItemSeVazio = false,
-  }) async {
+  // Verifica se ocorreu a devolução completa de cada emprestimo_item
+  Future<bool> finalizarEmprestimo(int idEmprestimo) async {
     isLoading = true;
     errorMessage = null;
     notifyListeners();
+
     try {
-      // Desvincula o dispositivo
-      if (idEmprestimoDispositivo != null) {
-        await _empItemRepository.desvincularDispositivo(idEmprestimoDispositivo);
-      }
-      
-      // Reduz a quantidade solicitada
-      final item = await _empItemRepository.buscarPorId(idEmprestimoItem);
-      if (item != null) {
-        item.qtdSolicitada--;
-        if (deletarItemSeVazio && item.qtdSolicitada <= 0) {
-          await _empItemRepository.deletar(idEmprestimoItem);
-          final itensRestantes = await _empItemRepository.buscarPorEmprestimo(idEmprestimo);
-          if (itensRestantes.isEmpty) {
-            await _emprestimoRepository.deletar(idEmprestimo);
-          }
-        } else {
-          await _empItemRepository.atualizar(item);
+      empItens = await _empItemRepository.buscarPorEmprestimo(idEmprestimo);
+
+      for (EmprestimoItem empItem in empItens) {
+        bool sucesso = await _empItemRepository.verificarDevolucao(empItem.id!);
+        if (!sucesso) {
+          errorMessage = "Ainda há dispositivos a serem devolvidos";
+          return false;
         }
       }
-      
-      await carregarItensDoEmprestimo(idEmprestimo);
+      await _emprestimoRepository.concluir(idEmprestimo);
       return true;
     } catch (e) {
-      errorMessage = 'Erro ao remover unidade: $e';
+      errorMessage = "Erro ao finalizar o empréstimo";
       return false;
     } finally {
       isLoading = false;
       notifyListeners();
     }
-  }
-
-  @override
-  void dispose() {
-    _debounce?.cancel();
-    super.dispose();
   }
 }
