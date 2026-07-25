@@ -54,10 +54,7 @@ class EmprestimoFormViewModel extends ChangeNotifier {
 
   void adicionarItemQuantidade() {
     itensQuantidade.add(
-      ItemQuantidade(
-        tipoDisp: '',
-        quantidade: TextEditingController(),
-      ),
+      ItemQuantidade(tipoDisp: '', quantidade: TextEditingController()),
     );
     notifyListeners();
   }
@@ -74,7 +71,8 @@ class EmprestimoFormViewModel extends ChangeNotifier {
   }
 
   void atualizarTipoDispositivo(int index, String? novoTipo) {
-    itensQuantidade[index].tipoDisp = novoTipo ?? itensQuantidade[index].tipoDisp;
+    itensQuantidade[index].tipoDisp =
+        novoTipo ?? itensQuantidade[index].tipoDisp;
     notifyListeners();
   }
 
@@ -86,7 +84,8 @@ class EmprestimoFormViewModel extends ChangeNotifier {
   void buscarResponsavel(String value) {
     _debounceResponsavel?.cancel();
 
-    if (responsavelSelecionado != null && value != responsavelSelecionado!.nome) {
+    if (responsavelSelecionado != null &&
+        value != responsavelSelecionado!.nome) {
       responsavelSelecionado = null;
     }
 
@@ -169,7 +168,8 @@ class EmprestimoFormViewModel extends ChangeNotifier {
 
       for (int i = 0; i < itensQuantidade.length; i++) {
         final item = itensQuantidade[i];
-        if (item.quantidade.text.trim().isEmpty || item.quantidade.text == '0') {
+        if (item.quantidade.text.trim().isEmpty ||
+            item.quantidade.text == '0') {
           erros.add('Item ${i + 1}: informe a quantidade');
         }
         if (item.tipoDisp == null || item.tipoDisp!.isEmpty) {
@@ -257,7 +257,7 @@ class EmprestimoFormViewModel extends ChangeNotifier {
           item.numPatrimonio!,
         );
         if (dispositivo != null) {
-          await emprestimoItemRepository.vincularDispositivo(
+          await emprestimoDispositivoRepository.vincularDispositivo(
             idEmprestimo,
             dispositivo.id!,
           );
