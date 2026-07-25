@@ -24,7 +24,9 @@ class EmprestimoServiceImpl implements EmprestimoService {
   //  ou quando o dispositivo é devolvido e precisa ser liberado
   @override
   Future<void> desvincularDispositivo(int idEmprestimoDispositivo) async {
-    final empDispositivo = await _emprestimoDispRepository.buscarPorId(idEmprestimoDispositivo);
+    final empDispositivo = await _emprestimoDispRepository.buscarPorId(
+      idEmprestimoDispositivo,
+    );
     if (empDispositivo == null) {
       throw ArgumentError('Dispositivo não encontrado');
     }
@@ -48,7 +50,9 @@ class EmprestimoServiceImpl implements EmprestimoService {
     int idDispositivo,
   ) async {
     final dispositivo = await _dispositivoRepository.buscarPorId(idDispositivo);
-    final emprestimoDispositivo = await _emprestimoDispRepository.buscarPorId(idEmprestimoDispositivo);
+    final emprestimoDispositivo = await _emprestimoDispRepository.buscarPorId(
+      idEmprestimoDispositivo,
+    );
     final idEmprestimoItem = emprestimoDispositivo?.idEmprestimoItem;
 
     if (dispositivo == null) {
@@ -85,19 +89,21 @@ class EmprestimoServiceImpl implements EmprestimoService {
     }
 
     // Procura se já há um emprestimo_item com o tipo do dispositivo
-    final empItens = await _emprestimoItemRepository.buscarPorEmprestimo(idEmprestimo);
-    var empItem = empItens.firstWhereOrNull(
+    final empItens = await _emprestimoItemRepository.buscarPorEmprestimo(
+      idEmprestimo,
+    );
+    EmprestimoItem? empItem = empItens.firstWhereOrNull(
       (i) => i.idTipoDispositivo == dispositivo.idTipoDispositivo,
     );
 
     if (empItem == null) {
-      // Se já não houver um emprestimo_item com o tipo do dispositivo, crie um novo emprestimo_item com o tipo
+      // Se já não houver um emprestimo_item com o tipo do dispositivo, crie um novo emprestimo_item com quantidade inicial 0
       final novoEmpItemId = await _emprestimoItemRepository.criar(
         EmprestimoItem(
           null,
           idEmprestimo,
           dispositivo.idTipoDispositivo,
-          1,
+          0,
           qtdDevolvida: 0,
           estaResolvido: false,
         ),
@@ -105,9 +111,10 @@ class EmprestimoServiceImpl implements EmprestimoService {
       empItem = await _emprestimoItemRepository.buscarPorId(novoEmpItemId);
     }
 
+    await _emprestimoItemRepository.aumentarQntSolicitada(empItem!.id!, 1);
     // Vincula o dispositivo ao emprestimo dispositivo
     await _emprestimoDispRepository.criar(
-      EmprestimoDispositivo(null, empItem!.id!, idDispositivo: idDispositivo),
+      EmprestimoDispositivo(null, empItem.id!, idDispositivo: idDispositivo),
     );
     // Marca o dispositivo em uso
     await _dispositivoRepository.marcarEmUso(idDispositivo);
@@ -124,18 +131,20 @@ class EmprestimoServiceImpl implements EmprestimoService {
     int idTipoDispositivo,
   ) async {
     // Procura se já há um emprestimo_item com o tipo do dispositivo
-    final empItens = await _emprestimoItemRepository.buscarPorEmprestimo(idEmprestimo);
+    final empItens = await _emprestimoItemRepository.buscarPorEmprestimo(
+      idEmprestimo,
+    );
     var empItem = empItens.firstWhereOrNull(
       (i) => i.idTipoDispositivo == idTipoDispositivo,
     );
     if (empItem == null) {
-      // Se já não houver um emprestimo_item com o tipo do dispositivo, crie um novo emprestimo_item com o tipo
+      // Se já não houver um emprestimo_item com o tipo do dispositivo, crie um novo emprestimo_item com quantidade inicial 0
       final novoEmpItemId = await _emprestimoItemRepository.criar(
         EmprestimoItem(
           null,
           idEmprestimo,
           idTipoDispositivo,
-          qntDispositivo,
+          0,
           qtdDevolvida: 0,
           estaResolvido: false,
         ),
@@ -143,7 +152,10 @@ class EmprestimoServiceImpl implements EmprestimoService {
       empItem = await _emprestimoItemRepository.buscarPorId(novoEmpItemId);
     }
 
-    await _emprestimoItemRepository.aumentarQntSolicitada(empItem!.id!, qntDispositivo);
+    await _emprestimoItemRepository.aumentarQntSolicitada(
+      empItem!.id!,
+      qntDispositivo,
+    );
 
     for (int i = 0; i < qntDispositivo; i++) {
       // Cria um emprestimo_dispositivo para cada quantidade mas deixa a vinculação para depois
