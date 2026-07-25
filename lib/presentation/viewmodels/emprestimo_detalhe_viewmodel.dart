@@ -9,18 +9,21 @@ import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_dispositivo_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_item_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_repository.dart';
+import 'package:gardien_tech/domain/services/emprestimo_service.dart';
 
 class EmprestimoDetalheViewmodel extends ChangeNotifier {
   final EmprestimoRepository _emprestimoRepository;
   final EmprestimoItemRepository _empItemRepository;
   final DispositivoRepository _dispositivoRepository;
   final EmprestimoDispositivoRepository _empDispositivoRepository;
+  final EmprestimoService _emprestimoService;
 
   EmprestimoDetalheViewmodel(
     this._empItemRepository,
     this._dispositivoRepository,
     this._empDispositivoRepository,
     this._emprestimoRepository,
+    this._emprestimoService,
   );
 
   bool isLoading = false;
@@ -70,7 +73,7 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
     errorMessage = null;
 
     try {
-      await _empItemRepository.adicionarDispositivoAoEmprestimo(
+      await _emprestimoService.adicionarDispositivoAoEmprestimo(
         idEmprestimo,
         idDispositivo,
       );
@@ -89,7 +92,7 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
     errorMessage = null;
 
     try {
-      await _empDispositivoRepository.vincularDispositivo(
+      await _emprestimoService.vincularDispositivo(
         idEmprestimoDispositivo,
         idDispositivo,
       );
@@ -105,7 +108,7 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
     errorMessage = null;
 
     try {
-      await _empDispositivoRepository.desvincularDispositivo(
+      await _emprestimoService.desvincularDispositivo(
         idEmprestimoDispositivo,
       );
       return true;

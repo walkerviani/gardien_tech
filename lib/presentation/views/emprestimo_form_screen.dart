@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
-import 'package:gardien_tech/domain/repositories/emprestimo_dispositivo_repository.dart';
-import 'package:gardien_tech/domain/repositories/emprestimo_item_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_repository.dart';
 import 'package:gardien_tech/domain/repositories/usuario_repository.dart';
+import 'package:gardien_tech/domain/services/emprestimo_service.dart';
 import 'package:gardien_tech/presentation/extentions/dispositivo_search_formatter.dart';
 import 'package:gardien_tech/presentation/viewmodels/emprestimo_form_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -40,8 +39,7 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
           dispositivoRepository: context.read<DispositivoRepository>(),
           usuarioRepository: context.read<UsuarioRepository>(),
           emprestimoRepository: context.read<EmprestimoRepository>(),
-          emprestimoItemRepository: context.read<EmprestimoItemRepository>(),
-          emprestimoDispositivoRepository: context.read<EmprestimoDispositivoRepository>(),
+          emprestimoService: context.read<EmprestimoService>(),
         ),
         child: Consumer<EmprestimoFormViewModel>(
           builder: (context, viewModel, _) {

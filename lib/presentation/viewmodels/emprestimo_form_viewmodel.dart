@@ -2,14 +2,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gardien_tech/domain/entities/dispositivo.dart';
 import 'package:gardien_tech/domain/entities/emprestimo.dart';
-import 'package:gardien_tech/domain/entities/emprestimo_item.dart';
 import 'package:gardien_tech/domain/entities/usuario.dart';
 import 'package:gardien_tech/domain/enum/tipo_dispositivo.dart';
 import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
-import 'package:gardien_tech/domain/repositories/emprestimo_dispositivo_repository.dart';
-import 'package:gardien_tech/domain/repositories/emprestimo_item_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_repository.dart';
 import 'package:gardien_tech/domain/repositories/usuario_repository.dart';
+import 'package:gardien_tech/domain/services/emprestimo_service.dart';
 
 enum OpcaoEmprestimo { quantidade, unidade }
 
@@ -33,18 +31,16 @@ class EmprestimoFormViewModel extends ChangeNotifier {
   Timer? _debounce;
   Timer? _debounceResponsavel;
 
-  final DispositivoRepository dispositivoRepository;
-  final UsuarioRepository usuarioRepository;
-  final EmprestimoRepository emprestimoRepository;
-  final EmprestimoItemRepository emprestimoItemRepository;
-  final EmprestimoDispositivoRepository emprestimoDispositivoRepository;
+  final DispositivoRepository _dispositivoRepository;
+  final UsuarioRepository _usuarioRepository;
+  final EmprestimoRepository _emprestimoRepository;
+  final EmprestimoService _emprestimoService;
 
   EmprestimoFormViewModel({
-    required this.dispositivoRepository,
-    required this.usuarioRepository,
-    required this.emprestimoRepository,
-    required this.emprestimoItemRepository,
-    required this.emprestimoDispositivoRepository,
+    required this._dispositivoRepository,
+    required this._usuarioRepository,
+    required this._emprestimoRepository,
+    required this._emprestimoService,
   });
 
   void alternarOpcao(OpcaoEmprestimo novaOpcao) {
@@ -96,7 +92,7 @@ class EmprestimoFormViewModel extends ChangeNotifier {
     }
 
     _debounceResponsavel = Timer(const Duration(milliseconds: 200), () async {
-      final resultado = await usuarioRepository.buscarNome(value);
+      final resultado = await _usuarioRepository.buscarNome(value);
       opcoesResponsavel = resultado;
       notifyListeners();
     });
@@ -123,7 +119,7 @@ class EmprestimoFormViewModel extends ChangeNotifier {
     }
 
     _debounce = Timer(const Duration(milliseconds: 200), () async {
-      final resultado = await dispositivoRepository.buscarDescricao(value);
+      final resultado = await _dispositivoRepository.buscarDescricao(value);
       opcoesUnidade = resultado;
       notifyListeners();
     });
@@ -201,7 +197,7 @@ class EmprestimoFormViewModel extends ChangeNotifier {
 
   Future<void> confirmar() async {
     final emprestimo = Emprestimo(null, responsavelSelecionado!.id!);
-    final idEmprestimo = await emprestimoRepository.criar(emprestimo);
+    final idEmprestimo = await _emprestimoRepository.criar(emprestimo);
 
     try {
       if (opcaoView == OpcaoEmprestimo.quantidade) {
@@ -211,58 +207,40 @@ class EmprestimoFormViewModel extends ChangeNotifier {
       }
     } catch (e) {
       // Se algo falhar, deleta o empréstimo inteiro
-      await emprestimoRepository.deletar(idEmprestimo);
+      await _emprestimoRepository.deletar(idEmprestimo);
       rethrow;
     }
   }
 
   Future<void> _criarItensQuantidade(int idEmprestimo) async {
     for (final item in itensQuantidade) {
-      final tipoDisp = TipoDispositivo.values.firstWhere(
+      final tipo = TipoDispositivo.values.firstWhere(
         (t) => t.nomeTipo == item.tipoDisp,
       );
-      final emprestimoItem = EmprestimoItem(
-        null,
+
+      await _emprestimoService.criarEmprestimoItemSemVinculo(
         idEmprestimo,
-        tipoDisp.id,
         int.parse(item.quantidade.text),
-        estaResolvido: false,
+        tipo.id,
       );
-      await emprestimoItemRepository.criar(emprestimoItem);
     }
   }
 
   Future<void> _criarItensUnidade(int idEmprestimo) async {
-    final porTipo = <String, List<ItemUnidade>>{};
     for (final item in itensUnidade) {
-      porTipo.putIfAbsent(item.tipoDisp!, () => []).add(item);
-    }
-
-    for (final entry in porTipo.entries) {
-      final tipoDisp = TipoDispositivo.values.firstWhere(
-        (t) => t.nomeTipo == entry.key,
-      );
-      await emprestimoItemRepository.criar(
-        EmprestimoItem(
-          null,
-          idEmprestimo,
-          tipoDisp.id,
-          entry.value.length,
-          estaResolvido: false,
-        ),
+      // Busca o dispositivo escolhido pelo usuário
+      final dispositivo = await _dispositivoRepository.buscarPorPatrimonio(
+        item.numPatrimonio!,
       );
 
-      for (final item in entry.value) {
-        final dispositivo = await dispositivoRepository.buscarPorPatrimonio(
-          item.numPatrimonio!,
-        );
-        if (dispositivo != null) {
-          await emprestimoDispositivoRepository.vincularDispositivo(
-            idEmprestimo,
-            dispositivo.id!,
-          );
-        }
+      if (dispositivo == null) {
+        throw ArgumentError('Dispositivo não encontrado.');
       }
+
+      await _emprestimoService.adicionarDispositivoAoEmprestimo(
+        idEmprestimo,
+        dispositivo.id!,
+      );
     }
   }
 }

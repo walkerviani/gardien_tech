@@ -13,14 +13,5 @@ abstract class EmprestimoItemRepository {
   Future<void> diminuirQntSolicitada(int idEmprestimoItem, int qtd);
   Future<void> aumentarQntDevolvida(int idEmprestimoItem, int qtd);
   Future<void> diminuirQntDevolvida(int idEmprestimoItem, int qtd);
-  Future<void> adicionarDispositivoAoEmprestimo(
-    int idEmprestimo,
-    int idDispositivo,
-  );
-  Future<void> criarEmprestimoItemSemVinculo(
-    int idEmprestimo,
-    int qntDispositivo,
-    int idTipoDispositivo,
-  );
   Future<bool> verificarDevolucao(int idEmprestimoItem);
 }

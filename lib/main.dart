@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gardien_tech/presentation/viewmodels/selecionar_dispositivo_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 import 'package:gardien_tech/data/database.dart';
@@ -11,6 +10,8 @@ import 'package:gardien_tech/data/repositories/emprestimo_repository_impl.dart';
 import 'package:gardien_tech/data/repositories/problema_repository_impl.dart';
 import 'package:gardien_tech/data/repositories/usuario_repository_impl.dart';
 
+import 'package:gardien_tech/data/services/emprestimo_service_impl.dart';
+
 import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_dispositivo_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_item_repository.dart';
@@ -18,13 +19,16 @@ import 'package:gardien_tech/domain/repositories/emprestimo_repository.dart';
 import 'package:gardien_tech/domain/repositories/problema_repository.dart';
 import 'package:gardien_tech/domain/repositories/usuario_repository.dart';
 
+import 'package:gardien_tech/domain/services/emprestimo_service.dart';
+
 import 'package:gardien_tech/presentation/viewmodels/dispositivo_form_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/dispositivo_list_viewmodel.dart';
+import 'package:gardien_tech/presentation/viewmodels/dispositivo_problema_list_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/emprestimo_list_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/problema_form_viewmodel.dart';
-import 'package:gardien_tech/presentation/viewmodels/usuario_form_viewmodel.dart';
-import 'package:gardien_tech/presentation/viewmodels/dispositivo_problema_list_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/problema_list_viewmodel.dart';
+import 'package:gardien_tech/presentation/viewmodels/selecionar_dispositivo_viewmodel.dart';
+import 'package:gardien_tech/presentation/viewmodels/usuario_form_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/usuario_list_viewmodel.dart';
 
 import 'package:gardien_tech/presentation/views/main_screen.dart';
@@ -65,6 +69,12 @@ void main() {
         // REPOSITÓRIOS DE EMPRÉSTIMO
         // ==========================
 
+        Provider<EmprestimoDispositivoRepository>(
+          create: (context) => EmprestimoDispositivoRepositoryImpl(
+            context.read<AppDatabase>(),
+          ),
+        ),
+
         // Depende de:
         // EmprestimoDispositivoRepository
         // DispositivoRepository
@@ -76,19 +86,22 @@ void main() {
           ),
         ),
 
-        Provider<EmprestimoDispositivoRepository>(
-          create: (context) => EmprestimoDispositivoRepositoryImpl(
-            context.read<AppDatabase>(),
-            context.read<DispositivoRepository>(),
-            context.read<EmprestimoItemRepository>(),
-          ),
-        ),
-
         // Depende de:
         // EmprestimoItemRepository
         Provider<EmprestimoRepository>(
           create: (context) =>
               EmprestimoRepositoryImpl(context.read<AppDatabase>()),
+        ),
+
+        // ==========================
+        // SERVICES
+        // ==========================
+        Provider<EmprestimoService>(
+          create: (context) => EmprestimoServiceImpl(
+            context.read<EmprestimoItemRepository>(),
+            context.read<EmprestimoDispositivoRepository>(),
+            context.read<DispositivoRepository>(),
+          ),
         ),
 
         // ==========================
@@ -105,20 +118,14 @@ void main() {
         ),
 
         ChangeNotifierProvider<DispositivoProblemaListViewmodel>(
-          create: ((context) => DispositivoProblemaListViewmodel(
+          create: (context) => DispositivoProblemaListViewmodel(
             context.read<ProblemaRepository>(),
-          )),
+          ),
         ),
 
         ChangeNotifierProvider<ProblemaListViewmodel>(
           create: (context) =>
               ProblemaListViewmodel(context.read<ProblemaRepository>()),
-        ),
-
-        ChangeNotifierProvider<DispositivoProblemaListViewmodel>(
-          create: (context) => DispositivoProblemaListViewmodel(
-            context.read<ProblemaRepository>(),
-          ),
         ),
 
         ChangeNotifierProvider<UsuarioFormViewmodel>(
@@ -137,17 +144,18 @@ void main() {
         ),
 
         ChangeNotifierProvider<EmprestimoListViewmodel>(
-          create: ((context) =>
-              EmprestimoListViewmodel(context.read<EmprestimoRepository>())),
+          create: (context) =>
+              EmprestimoListViewmodel(
+                context.read<EmprestimoRepository>(),
+              ),
         ),
 
         ChangeNotifierProvider<SelecionarDispositivoViewmodel>(
-          create: ((context) => SelecionarDispositivoViewmodel(
+          create: (context) => SelecionarDispositivoViewmodel(
             context.read<DispositivoRepository>(),
-          )),
+          ),
         ),
       ],
-
       child: const MyApp(),
     ),
   );

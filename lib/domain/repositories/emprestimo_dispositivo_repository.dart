@@ -8,9 +8,4 @@ abstract class EmprestimoDispositivoRepository {
   Future<void> criar(EmprestimoDispositivo ed);
   Future<void> atualizar(EmprestimoDispositivo ed);
   Future<void> deletar(int id);
-  Future<void> vincularDispositivo(
-    int idEmprestimoDispositivo,
-    int idDispositivo,
-  );
-  Future<void> desvincularDispositivo(int idEmprestimoDispositivo);
 }

@@ -5,6 +5,7 @@ import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_dispositivo_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_item_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_repository.dart';
+import 'package:gardien_tech/domain/services/emprestimo_service.dart';
 import 'package:gardien_tech/presentation/viewmodels/emprestimo_detalhe_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/emprestimo_list_viewmodel.dart';
 import 'package:gardien_tech/presentation/views/emprestimo_detalhe_screen.dart';
@@ -306,6 +307,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                                               context.read<DispositivoRepository>(),
                                               context.read<EmprestimoDispositivoRepository>(),
                                               context.read<EmprestimoRepository>(),
+                                              context.read<EmprestimoService>(),
                                             ),
                                         child: EmprestimoDetalheScreen(
                                           idEmprestimo: emprestimo.idEmprestimo,
