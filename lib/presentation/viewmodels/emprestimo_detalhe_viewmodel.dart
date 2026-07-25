@@ -108,9 +108,7 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
     errorMessage = null;
 
     try {
-      await _emprestimoService.desvincularDispositivo(
-        idEmprestimoDispositivo,
-      );
+      await _emprestimoService.desvincularDispositivo(idEmprestimoDispositivo);
       return true;
     } catch (e) {
       errorMessage = "Erro ao remover o dispositivo";
