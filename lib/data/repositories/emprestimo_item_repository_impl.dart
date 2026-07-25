@@ -62,22 +62,6 @@ class EmprestimoItemRepositoryImpl implements EmprestimoItemRepository {
     )..where((ei) => ei.id.equals(id))).go();
   }
 
-  @override
-  Future<void> adicionarQtdItem(int idEmprestimoItem, int qtd) async {
-    final item = await buscarPorId(idEmprestimoItem);
-    if (item == null) throw ArgumentError('Item não encontrado');
-    item.qtdSolicitada += qtd;
-    await atualizar(item);
-  }
-
-  @override
-  Future<void> registrarDevolucao(int idEmprestimoItem, int qtd) async {
-    final item = await buscarPorId(idEmprestimoItem);
-    if (item == null) throw ArgumentError('Item não encontrado');
-    item.qtdDevolvida += qtd;
-    await atualizar(item);
-  }
-
   // Cria um emprestimo_item caso não haja nenhum e já vincula o dispositivo ao emprestimo_dispositivo
   @override
   Future<void> adicionarDispositivoAoEmprestimo(
@@ -152,75 +136,13 @@ class EmprestimoItemRepositoryImpl implements EmprestimoItemRepository {
       empItem = await buscarPorId(novoEmpItemId);
     }
 
-    await adicionarQtdItem(empItem!.id!, qntDispositivo);
+    await aumentarQntSolicitada(empItem!.id!, qntDispositivo);
 
     for (int i = 0; i < qntDispositivo; i++) {
       // Cria um emprestimo_dispositivo para cada quantidade mas deixa a vinculação para depois
       await _edRepository.criar(
         EmprestimoDispositivo(null, empItem.id!, idDispositivo: null),
       );
-    }
-  }
-
-  // Associa um dispositivo a um emprestimo_dispositivo vazio
-  @override
-  Future<void> vincularDispositivo(
-    int idEmprestimoDispositivo,
-    int idDispositivo,
-  ) async {
-    final dispositivo = await _dispositivoRepository.buscarPorId(idDispositivo);
-    final emprestimoDispositivo = await _edRepository.buscarPorId(
-      idEmprestimoDispositivo,
-    );
-    final idEmprestimoItem = emprestimoDispositivo?.idEmprestimoItem;
-
-    if (dispositivo == null) {
-      throw ArgumentError('Dispositivo não encontrado');
-    }
-    if (dispositivo.idStatus == 3) {
-      throw ArgumentError('Este dispositivo já está vinculado a um empréstimo');
-    }
-
-    // Apenas vincula, sem validar quantidade
-    await _edRepository.atualizar(
-      EmprestimoDispositivo(
-        idEmprestimoDispositivo,
-        idEmprestimoItem!,
-        idDispositivo: idDispositivo,
-      ),
-    );
-    await _dispositivoRepository.marcarEmUso(idDispositivo);
-  }
-
-  //  Desfazer a associação. Usado quando o dispositivo errado foi associado
-  //  ou quando o dispositivo é devolvido e precisa ser liberado
-  @override
-  Future<void> desvincularDispositivo(int idEmprestimoDispositivo) async {
-    final empDispositivo = await _edRepository.buscarPorId(
-      idEmprestimoDispositivo,
-    );
-    if (empDispositivo == null) {
-      throw ArgumentError('Dispositivo não encontrado');
-    }
-    // Se tiver um dispositivo, marca como disponível
-    if (empDispositivo.idDispositivo != null) {
-      await _dispositivoRepository.marcarDisponivel(
-        empDispositivo.idDispositivo!,
-      );
-    }
-    await _edRepository.deletar(idEmprestimoDispositivo);
-    // Reavalia estaResolvido do item
-    final empItem = await buscarPorId(empDispositivo.idEmprestimoItem);
-    if (empItem != null) {
-      final vinculadosRestantes = await _edRepository.buscarPorEmprestimoItem(
-        empItem.id!,
-      );
-      // Para prevenir que o emprestimo_item fique resolvido mesmo quando não há emprestimo_dispositivos:
-      // Se a quantidade de vinculados for maior que a solicitada, então é true (está resolvido)
-      // Se for menor, então é false (não está resolvido)
-      empItem.estaResolvido =
-          vinculadosRestantes.length >= empItem.qtdSolicitada;
-      await atualizar(empItem);
     }
   }
 
@@ -248,5 +170,55 @@ class EmprestimoItemRepositoryImpl implements EmprestimoItemRepository {
         );
       }),
     );
+  }
+
+  @override
+  Future<void> aumentarQntDevolvida(int idEmprestimoItem, int qtd) async {
+    final item = await buscarPorId(idEmprestimoItem);
+    if (item == null) throw ArgumentError('Item não encontrado');
+    item.qtdDevolvida += qtd;
+    await atualizar(item);
+  }
+
+  @override
+  Future<void> diminuirQntDevolvida(int idEmprestimoItem, int qtd) async {
+    final item = await buscarPorId(idEmprestimoItem);
+    if (item == null) throw ArgumentError('Item não encontrado');
+    item.qtdDevolvida -= qtd;
+    await atualizar(item);
+  }
+
+  @override
+  Future<void> aumentarQntSolicitada(int idEmprestimoItem, int qtd) async {
+    final item = await buscarPorId(idEmprestimoItem);
+    if (item == null) throw ArgumentError('Item não encontrado');
+    item.qtdSolicitada += qtd;
+    await atualizar(item);
+  }
+
+  @override
+  Future<void> diminuirQntSolicitada(int idEmprestimoItem, int qtd) async {
+    final item = await buscarPorId(idEmprestimoItem);
+    if (item == null) throw ArgumentError('Item não encontrado');
+    item.qtdSolicitada -= qtd;
+    await atualizar(item);
+  }
+
+  @override
+  Future<bool> verificarDevolucao(int idEmprestimoItem) async {
+    EmprestimoItem? emprestimoItem = await buscarPorId(idEmprestimoItem);
+    int qntSolicitada = emprestimoItem!.qtdSolicitada;
+    int qntDevolvida = emprestimoItem.qtdDevolvida;
+
+    if (qntDevolvida > qntSolicitada) {
+      return false; // Se a quantidade devolvida é maior que a solicitada então é erro
+    }
+    if (qntDevolvida < qntSolicitada) {
+      return false; // Não foi devolvido tudo
+    }
+    if (qntDevolvida == qntSolicitada) {
+      return true; // Foi devolvido tudo
+    }
+    return false; // Provavelmente algum erro
   }
 }

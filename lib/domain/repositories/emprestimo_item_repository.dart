@@ -9,8 +9,10 @@ abstract class EmprestimoItemRepository {
   Future<int> criar(EmprestimoItem item);
   Future<void> atualizar(EmprestimoItem item);
   Future<void> deletar(int id);
-  Future<void> adicionarQtdItem(int idEmprestimoItem, int qtd);
-  Future<void> registrarDevolucao(int idEmprestimoItem, int qtd);
+  Future<void> aumentarQntSolicitada(int idEmprestimoItem, int qtd);
+  Future<void> diminuirQntSolicitada(int idEmprestimoItem, int qtd);
+  Future<void> aumentarQntDevolvida(int idEmprestimoItem, int qtd);
+  Future<void> diminuirQntDevolvida(int idEmprestimoItem, int qtd);
   Future<void> adicionarDispositivoAoEmprestimo(
     int idEmprestimo,
     int idDispositivo,
@@ -20,9 +22,5 @@ abstract class EmprestimoItemRepository {
     int qntDispositivo,
     int idTipoDispositivo,
   );
-  Future<void> vincularDispositivo(
-    int idEmprestimoDispositivo,
-    int idDispositivo,
-  );
-  Future<void> desvincularDispositivo(int idEmprestimoDispositivo);
+  Future<bool> verificarDevolucao(int idEmprestimoItem);
 }
