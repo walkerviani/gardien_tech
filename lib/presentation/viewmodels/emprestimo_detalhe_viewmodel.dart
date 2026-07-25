@@ -95,7 +95,6 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
     int idEmprestimo,
     ) async {
     isLoading = true;
-    errorMessage = null;
     notifyListeners();
     try {
       await _empItemRepository.vincularDispositivo(
@@ -119,20 +118,20 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
       await carregarItensDoEmprestimo(idEmprestimo);
       return true;
     } catch (e) {
-      errorMessage = 'Erro ao vincular o dispositivo: $e';
-      return false;
+      throw ArgumentError('Erro ao vincular o dispositivo: $e');
     } finally {
       isLoading = false;
       notifyListeners();
     }
   }
 
+  
+
   Future<bool> desvincularDispositivoDoEmprestimo(
     int idEmprestimoDispositivo,
     int idEmprestimo,
   ) async {
     isLoading = true;
-    errorMessage = null;
     notifyListeners();
     try {
       await _empItemRepository.desvincularDispositivo(idEmprestimoDispositivo);
@@ -245,20 +244,21 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
     } else {
       await _dispositivoRepository.marcarEmUso(idDispositivo);
     }
-    // seta isLoading = true e reconstrói toda a lista com o CircularProgressIndicator, "reseta" a lista visualmente
+    // Seta isLoading = true e reconstrói toda a lista com o CircularProgressIndicator, "reseta" a lista visualmente
     await carregarItensDoEmprestimo(idEmprestimo);
   }
 
-  Future<bool> removerUnidade(
+  Future<bool> removerItemEmprestimo(
     int idEmprestimoItem,
     int idEmprestimo,
     int? idEmprestimoDispositivo,
-  ) async {
+    {bool deletarItemSeVazio = false,
+  }) async {
     isLoading = true;
     errorMessage = null;
     notifyListeners();
     try {
-      // Desvínculas o dispositivo
+      // Desvincula o dispositivo
       if (idEmprestimoDispositivo != null) {
         await _empItemRepository.desvincularDispositivo(idEmprestimoDispositivo);
       }
@@ -267,14 +267,21 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
       final item = await _empItemRepository.buscarPorId(idEmprestimoItem);
       if (item != null) {
         item.qtdSolicitada--;
-        await _empItemRepository.atualizar(item);
+        if (deletarItemSeVazio && item.qtdSolicitada <= 0) {
+          await _empItemRepository.deletar(idEmprestimoItem);
+          final itensRestantes = await _empItemRepository.buscarPorEmprestimo(idEmprestimo);
+          if (itensRestantes.isEmpty) {
+            await _emprestimoRepository.deletar(idEmprestimo);
+          }
+        } else {
+          await _empItemRepository.atualizar(item);
+        }
       }
       
       await carregarItensDoEmprestimo(idEmprestimo);
       return true;
     } catch (e) {
       errorMessage = 'Erro ao remover unidade: $e';
-      print('DEBUG: Erro removerUnidade = $e');
       return false;
     } finally {
       isLoading = false;

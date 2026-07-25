@@ -226,7 +226,6 @@ class EmprestimoFormViewModel extends ChangeNotifier {
         idEmprestimo,
         tipoDisp.id,
         int.parse(item.quantidade.text),
-        true, // ehQuantitativo
         estaResolvido: false,
       );
       await emprestimoItemRepository.criar(emprestimoItem);
@@ -249,7 +248,6 @@ class EmprestimoFormViewModel extends ChangeNotifier {
           idEmprestimo,
           tipoDisp.id,
           entry.value.length,
-          false,
           estaResolvido: false,
         ),
       );
