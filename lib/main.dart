@@ -64,10 +64,6 @@ void main() {
         // ==========================
         // REPOSITÓRIOS DE EMPRÉSTIMO
         // ==========================
-        Provider<EmprestimoDispositivoRepository>(
-          create: (context) =>
-              EmprestimoDispositivoRepositoryImpl(context.read<AppDatabase>()),
-        ),
 
         // Depende de:
         // EmprestimoDispositivoRepository
@@ -77,6 +73,14 @@ void main() {
             context.read<AppDatabase>(),
             context.read<EmprestimoDispositivoRepository>(),
             context.read<DispositivoRepository>(),
+          ),
+        ),
+
+        Provider<EmprestimoDispositivoRepository>(
+          create: (context) => EmprestimoDispositivoRepositoryImpl(
+            context.read<AppDatabase>(),
+            context.read<DispositivoRepository>(),
+            context.read<EmprestimoItemRepository>(),
           ),
         ),
 
