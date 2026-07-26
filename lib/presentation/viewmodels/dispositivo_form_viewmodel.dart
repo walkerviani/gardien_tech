@@ -16,12 +16,38 @@ class DispositivoFormViewmodel extends ChangeNotifier {
     required String numPatrimonio,
     required int idTipoDispositivo,
   }) async {
-    isLoading = true;
     errorMessage = null;
+
+    if (numSerie.length > 50) {
+      errorMessage = 'Precisa ser menor que 50 caracteres';
+      return false;
+    }
+
+    if (numSerie.length < 3) {
+      errorMessage = 'Precisa ser maior que 3 caracteres';
+      return false;
+    }
+
+    if (numPatrimonio.length > 30) {
+      errorMessage = 'Precisa ser menor que 30 caracteres';
+      return false;
+    }
+
+    if (numPatrimonio.length < 3) {
+      errorMessage = 'Precisa ser maior que 3 caracteres';
+      return false;
+    }
+
+    isLoading = true;
     notifyListeners();
 
     try {
-      Dispositivo dispositivo = Dispositivo(id, idTipoDispositivo, numSerie, numPatrimonio);
+      Dispositivo dispositivo = Dispositivo(
+        id,
+        idTipoDispositivo,
+        numSerie,
+        numPatrimonio,
+      );
       if (id != null) {
         await _repository.atualizar(dispositivo);
       } else {
