@@ -54,7 +54,18 @@ class DispositivoFormViewmodel extends ChangeNotifier {
         await _repository.criar(dispositivo);
       }
       return true;
-    } catch (e) {
+    } on Exception catch (e) {
+      final mensagem = e.toString();
+      if (mensagem.contains('UNIQUE') &&
+          mensagem.contains('dispositivos.num_patrimonio')) {
+        errorMessage = 'Número de patrimônio já cadastrado';
+        return false;
+      }
+      if (mensagem.contains('UNIQUE') &&
+          mensagem.contains('dispositivos.num_serie')) {
+        errorMessage = 'Número de série já cadastrado';
+        return false;
+      }
       errorMessage = 'Erro ao salvar o dispositivo';
       return false;
     } finally {
