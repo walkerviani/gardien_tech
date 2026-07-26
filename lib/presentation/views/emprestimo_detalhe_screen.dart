@@ -285,7 +285,57 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      return showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          title: const Text("Excluir Empréstimo"),
+                          content: const Text(
+                            "Tem certeza que deseja excluir o empréstimo?",
+                          ),
+                          actionsAlignment: MainAxisAlignment.spaceEvenly,
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text(
+                                'Cancelar',
+                                style: TextStyle(color: Color(0xFF000000)),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                Navigator.pop(context);
+                                final viewmodel = context.read<EmprestimoDetalheViewmodel>();
+                                final sucesso = await viewmodel.excluirEmprestimo(widget.idEmprestimo);
+                                if (!context.mounted) return;
+                                if (sucesso) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Empréstimo excluído com sucesso'),
+                                      backgroundColor: Colors.blueGrey,
+                                    ),
+                                  );
+                                  Navigator.pop(context, true);
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        viewmodel.errorMessage ?? 'Erro ao excluir o empréstimo',
+                                      ),
+                                      backgroundColor: const Color(0xFFB00303),
+                                    ),
+                                  );
+                                }
+                              },
+                              child: const Text(
+                                'Excluir',
+                                style: TextStyle(color: Color(0xFFB00303)),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFB00303),
                       shape: RoundedRectangleBorder(
@@ -312,7 +362,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                             content: const Text(
                               "Verifique se todos os dispositivos foram devolvidos",
                             ),
-                            backgroundColor: Colors.red,
+                            backgroundColor: const Color(0xFFB00303),
                           ),
                         );
                       } else {
@@ -556,7 +606,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                         },
                         child: const Text(
                           'Excluir',
-                          style: TextStyle(color: Colors.red),
+                          style: TextStyle(color: Color(0xFFB00303)),
                         ),
                       ),
                     ],

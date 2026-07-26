@@ -193,6 +193,36 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
     }
   }
 
+  // Exclui empréstimo não finalizado e libera os dispositivos vinculados
+  Future<bool> excluirEmprestimo(int idEmprestimo) async {
+    isLoading = true;
+    errorMessage = null;
+    notifyListeners();
+
+    try {
+      empItens = await _empItemRepository.buscarPorEmprestimo(idEmprestimo);
+      final emprestimoItensComDispositivos =
+          await _empItemRepository.buscarEmprestimoItemComDispositivo(
+        idEmprestimo,
+      );
+
+      for (final itemDTO in emprestimoItensComDispositivos) {
+        for (final dispositivo in itemDTO.dispositivosObj) {
+          await _dispositivoRepository.marcarDisponivel(dispositivo.id!);
+        }
+      }
+
+      await _emprestimoRepository.deletar(idEmprestimo);
+      return true;
+    } catch (e) {
+      errorMessage = "Erro ao excluir o empréstimo";
+      return false;
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
   Future<bool> alternarDevolucao(
     int idDispositivo,
     bool marcarDevolvido,
