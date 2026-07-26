@@ -54,9 +54,12 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Item removido com sucesso'),
-          backgroundColor: Colors.green,
+          backgroundColor: Colors.blueGrey,
         ),
       );
+      await context
+          .read<EmprestimoDetalheViewmodel>()
+          .carregarDispositivosDoEmprestimo(widget.idEmprestimo);
     }
   }
 
@@ -168,6 +171,11 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                                     widget.idEmprestimo,
                                     idDispositivo,
                                   );
+                                  // Atualiza a tela
+                                  await viewmodel
+                                      .carregarDispositivosDoEmprestimo(
+                                        widget.idEmprestimo,
+                                      );
                                 }
                               },
                               style: TextButton.styleFrom(
@@ -202,15 +210,21 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                         return ListView.builder(
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
-                          itemCount: viewmodel.dispositivosDoEmprestimo.length,
-                          itemBuilder: (context, index) {
+                          itemCount: itemDoDTO.dispositivos.length,
+                          itemBuilder: (context, indexUnidade) {
+                            final emprDisp =
+                                itemDoDTO.dispositivos[indexUnidade];
+                            final dispositivosEncontrados = itemDoDTO
+                                .dispositivosObj
+                                .where((d) => d.id == emprDisp.idDispositivo)
+                                .toList();
                             final dispositivo =
-                                itemDoDTO.dispositivosObj[index];
+                                dispositivosEncontrados.firstOrNull;
                             return Card(
                               child: Padding(
                                 padding: const EdgeInsets.all(10),
                                 child: _cardFinalizado(
-                                  dispositivo,
+                                  dispositivo!,
                                   tipoDispositivo,
                                 ),
                               ),
@@ -221,12 +235,18 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                         return ListView.builder(
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
-                          itemCount: itemDoDTO.dispositivosObj.length,
+                          itemCount: itemDoDTO.dispositivos.length,
                           itemBuilder: (context, indexUnidade) {
-                            final dispositivo =
-                                itemDoDTO.dispositivosObj[indexUnidade];
                             final emprDisp =
                                 itemDoDTO.dispositivos[indexUnidade];
+                            final dispositivosEncontrados = itemDoDTO
+                                .dispositivosObj
+                                .where((d) => d.id == emprDisp.idDispositivo)
+                                .toList();
+                            final dispositivo =
+                                dispositivosEncontrados.isNotEmpty
+                                ? dispositivosEncontrados.first
+                                : null;
                             return Card(
                               child: Padding(
                                 padding: const EdgeInsets.all(10),
@@ -307,7 +327,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
     EmprestimoItemComDispositivoDTO itemDoDTO,
     EmprestimoItem emprestimoItem,
     String tipoDispositivo,
-    Dispositivo dispositivo,
+    Dispositivo? dispositivo,
     EmprestimoDispositivo empDispositivo,
   ) {
     return Column(
@@ -320,19 +340,77 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                 // Campo do número de patrimônio
                 flex: 1,
                 child: TextField(
-                  enabled: false,
                   readOnly: true,
-                  canRequestFocus: false,
+                  canRequestFocus: true,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                   ),
                   controller: TextEditingController(
-                    text: dispositivo.numPatrimonio,
+                    text: dispositivo?.numPatrimonio ?? '',
                   ),
                   style: const TextStyle(
                     fontSize: 14,
                     color: Color(0xFF686767),
                   ),
+                  onTap: dispositivo == null
+                      ? () async {
+                          final resultado = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => SelecionarDispositivoScreen(
+                                emprestimoItem.idTipoDispositivo,
+                                widget.idEmprestimo,
+                              ),
+                            ),
+                          );
+                          if (!mounted) return;
+                          if (resultado != null) {
+                            final idDispositivo =
+                                resultado['idDispositivo'] as int;
+                            final sucesso = await context
+                                .read<EmprestimoDetalheViewmodel>()
+                                .vincularDispositivo(
+                                  empDispositivo.id!,
+                                  idDispositivo,
+                                );
+                            if (mounted && sucesso) {
+                              await context
+                                  .read<EmprestimoDetalheViewmodel>()
+                                  .carregarDispositivosDoEmprestimo(
+                                    widget.idEmprestimo,
+                                  );
+                            }
+                          }
+                        }
+                      : () async {
+                          final resultado = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => SelecionarDispositivoScreen(
+                                emprestimoItem.idTipoDispositivo,
+                                widget.idEmprestimo,
+                              ),
+                            ),
+                          );
+                          if (!mounted) return;
+                          if (resultado != null) {
+                            final idDispositivo =
+                                resultado['idDispositivo'] as int;
+                            final sucesso = await context
+                                .read<EmprestimoDetalheViewmodel>()
+                                .trocarDispositivo(
+                                  empDispositivo.id!,
+                                  idDispositivo,
+                                );
+                            if (mounted && sucesso) {
+                              await context
+                                  .read<EmprestimoDetalheViewmodel>()
+                                  .carregarDispositivosDoEmprestimo(
+                                    widget.idEmprestimo,
+                                  );
+                            }
+                          }
+                        },
                 ),
               ),
               SizedBox(width: 10),
@@ -365,15 +443,15 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
             Checkbox(
               checkColor: Colors.white,
               activeColor: const Color(0xFF006dc4),
-              value: dispositivo.idStatus == DispositivoStatus.disponivel.id,
-              onChanged: dispositivo.id != null ? (bool? value) {} : null,
+              value:
+                  dispositivo != null &&
+                  dispositivo.idStatus == DispositivoStatus.disponivel.id,
+              onChanged: dispositivo != null ? (bool? value) {} : null,
             ),
             SizedBox(width: 50),
             TextButton(
               onPressed: () async {
-                if (dispositivo.id != null) {
-                  await _excluirItemEmprestimo(context, empDispositivo.id!);
-                }
+                await _excluirItemEmprestimo(context, empDispositivo.id!);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFB00303),
