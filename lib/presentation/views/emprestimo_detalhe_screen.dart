@@ -37,9 +37,10 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context
-          .read<EmprestimoDetalheViewmodel>()
-          .carregarDispositivosDoEmprestimo(widget.idEmprestimo);
+      // Carrega o cache de devolvidos quando abre a tela
+      final viewmodel = context.read<EmprestimoDetalheViewmodel>();
+      viewmodel.carregarCacheDevolvidos(widget.idEmprestimo);
+      viewmodel.carregarDispositivosDoEmprestimo(widget.idEmprestimo);
     });
   }
 
@@ -443,10 +444,66 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
             Checkbox(
               checkColor: Colors.white,
               activeColor: const Color(0xFF006dc4),
-              value:
-                  dispositivo != null &&
-                  dispositivo.idStatus == DispositivoStatus.disponivel.id,
-              onChanged: dispositivo != null ? (bool? value) {} : null,
+              // Usa o cache do viewmodel para saber se foi marcado como devolvido
+              value: context.read<EmprestimoDetalheViewmodel>().obterEstadoCache(empDispositivo.id!) ?? false,
+              onChanged: dispositivo != null
+                  ? (bool? value) async {
+                      if (value == null) return;
+
+                      // Bloqueia tentar desmarcar se está em outro empréstimo
+                      if (!value && dispositivo.idStatus == 3) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Este dispositivo está sendo usado em outro empréstimo.',
+                            ),
+                            backgroundColor: const Color(0xFFB00303),
+                          ),
+                        );
+                        return;
+                      }
+
+                      final viewmodel =
+                          context.read<EmprestimoDetalheViewmodel>();
+                      // Passa o novo parâmetro idEmprestimoDispositivo
+                      final sucesso = await viewmodel.alternarDevolucao(
+                        dispositivo.id!,
+                        value,
+                        widget.idEmprestimo,
+                        empDispositivo.id!,
+                      );
+
+                      if (!mounted) return;
+
+                      if (sucesso) {
+                        // Recarrega a lista para refletir alterações
+                        await viewmodel
+                            .carregarDispositivosDoEmprestimo(
+                              widget.idEmprestimo,
+                            );
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              value
+                                  ? 'Dispositivo marcado como disponível'
+                                  : 'Dispositivo marcado como em uso',
+                            ),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              viewmodel.errorMessage ??
+                                  'Erro ao alterar status do dispositivo',
+                            ),
+                            backgroundColor: const Color(0xFFB00303),
+                          ),
+                        );
+                      }
+                    }
+                  : null,
             ),
             SizedBox(width: 50),
             TextButton(

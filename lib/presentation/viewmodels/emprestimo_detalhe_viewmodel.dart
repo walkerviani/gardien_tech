@@ -3,19 +3,26 @@ import 'package:flutter/foundation.dart';
 import 'package:gardien_tech/data/dto/emprestimo_item_com_dispositivo_dto.dart';
 import 'package:gardien_tech/domain/entities/emprestimo.dart';
 import 'package:gardien_tech/domain/entities/emprestimo_item.dart';
+import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_item_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_repository.dart';
 import 'package:gardien_tech/domain/services/emprestimo_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EmprestimoDetalheViewmodel extends ChangeNotifier {
   final EmprestimoRepository _emprestimoRepository;
   final EmprestimoItemRepository _empItemRepository;
   final EmprestimoService _emprestimoService;
+  final DispositivoRepository _dispositivoRepository;
+
+  // Cache para manter o estado dos checkboxes mesmo após sair e voltar da tela
+  Map<int, bool> _dispositivosDevolvidos = {};
 
   EmprestimoDetalheViewmodel(
     this._empItemRepository,
     this._emprestimoRepository,
     this._emprestimoService,
+    this._dispositivoRepository,
   );
 
   bool isLoading = false;
@@ -26,6 +33,38 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
       []; // Lista usada para verificar a devolução dos dispositivos de cada emprestimo_item
   bool empFinalizado =
       false; // Usado para controlar a visualização da lista na tela (entre edição e leitura)
+
+  // Carrega o estado salvo do cache
+  Future<void> carregarCacheDevolvidos(int idEmprestimo) async {
+    final prefs = await SharedPreferences.getInstance();
+    _dispositivosDevolvidos.clear();
+
+    // Busca todas as chaves que começam com "devolvido_emp{idEmprestimo}_"
+    final chaves = prefs.getKeys();
+    for (var chave in chaves) {
+      if (chave.startsWith('devolvido_emp${idEmprestimo}_')) {
+        final idEmpDisp =
+            int.parse(chave.replaceFirst('devolvido_emp${idEmprestimo}_', ''));
+        final valor = prefs.getBool(chave) ?? false;
+        _dispositivosDevolvidos[idEmpDisp] = valor;
+      }
+    }
+    notifyListeners();
+  }
+
+  // Salva o estado no cache quando marca/desmarca
+  Future<void> salvarCacheDevolvido(
+      int idEmprestimo, int idEmpDisp, bool marcado) async {
+    final prefs = await SharedPreferences.getInstance();
+    final chave = 'devolvido_emp${idEmprestimo}_$idEmpDisp';
+    await prefs.setBool(chave, marcado);
+    _dispositivosDevolvidos[idEmpDisp] = marcado;
+  }
+
+  // Retorna o estado do cache (sem consultar banco)
+  bool? obterEstadoCache(int idEmpDisp) {
+    return _dispositivosDevolvidos[idEmpDisp];
+  }
 
   // Lista todos os dispositivos do emprestimo informado
   Future<void> carregarDispositivosDoEmprestimo(int idEmprestimo) async {
@@ -151,6 +190,33 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
     } finally {
       isLoading = false;
       notifyListeners();
+    }
+  }
+
+  Future<bool> alternarDevolucao(
+    int idDispositivo,
+    bool marcarDevolvido,
+    int idEmprestimo,
+    int idEmprestimoDispositivo,
+  ) async {
+    if (marcarDevolvido) {
+      // Marca como disponível no banco
+      await _dispositivoRepository.marcarDisponivel(idDispositivo);
+      // Salva no cache que foi marcado como devolvido neste empréstimo
+      await salvarCacheDevolvido(idEmprestimo, idEmprestimoDispositivo, true);
+      return true;
+    } else {
+      // Verifica se o dispositivo está em uso em outro empréstimo
+      final dispositivo = await _dispositivoRepository.buscarPorId(idDispositivo);
+      if (dispositivo != null && dispositivo.idStatus == 3) { // Status EM_USO
+        errorMessage = 'Este dispositivo está sendo usado em outro empréstimo';
+        notifyListeners();
+        return false;
+      }
+      await _dispositivoRepository.marcarEmUso(idDispositivo);
+      // Salva no cache que foi desmarcado neste empréstimo
+      await salvarCacheDevolvido(idEmprestimo, idEmprestimoDispositivo, false);
+      return true;
     }
   }
 }
