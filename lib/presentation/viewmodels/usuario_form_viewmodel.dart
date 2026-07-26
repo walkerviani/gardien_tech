@@ -63,7 +63,11 @@ class UsuarioFormViewmodel extends ChangeNotifier {
       }
 
       return true;
-    } catch (e) {
+    } on Exception catch (e) {
+      if (e.toString().contains('UNIQUE')) {
+        errorMessage = 'Já existe um usuário com esse nome';
+        return false;
+      }
       errorMessage = 'Erro ao salvar o usuário';
       return false;
     } finally {
