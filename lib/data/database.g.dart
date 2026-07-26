@@ -1033,7 +1033,7 @@ class $EmprestimoItensTable extends EmprestimoItens
     type: DriftSqlType.int,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES emprestimos (id)',
+      'REFERENCES emprestimos (id) ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _idTipoDispositivoMeta = const VerificationMeta(
@@ -1471,7 +1471,7 @@ class $EmprestimoDispositivosTable extends EmprestimoDispositivos
     type: DriftSqlType.int,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES emprestimo_itens (id)',
+      'REFERENCES emprestimo_itens (id) ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _idDispositivoMeta = const VerificationMeta(
@@ -2004,6 +2004,23 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     emprestimoDispositivos,
     problemas,
   ];
+  @override
+  StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'emprestimos',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('emprestimo_itens', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'emprestimo_itens',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('emprestimo_dispositivos', kind: UpdateKind.delete)],
+    ),
+  ]);
 }
 
 typedef $$DispositivosTableCreateCompanionBuilder =

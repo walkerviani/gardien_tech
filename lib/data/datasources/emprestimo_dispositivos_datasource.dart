@@ -7,7 +7,7 @@ import 'package:gardien_tech/domain/entities/emprestimo_dispositivo.dart';
 @DataClassName('EmprestimoDispositivoData') // Evita conflitos de nome entre classe EmprestimoDispositivo no database.g.dart e entidade de domínio EmprestimoDispositivo
 class EmprestimoDispositivos extends Table {
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get idEmprestimoItem => integer().references(EmprestimoItens, #id)();
+  IntColumn get idEmprestimoItem => integer().references(EmprestimoItens, #id, onDelete: KeyAction.cascade)();
   IntColumn get idDispositivo => integer().references(Dispositivos, #id).nullable()();
 }
 
