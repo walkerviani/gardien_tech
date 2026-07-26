@@ -303,26 +303,33 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                                       builder: (_) => ChangeNotifierProvider(
                                         create: (context) =>
                                             EmprestimoDetalheViewmodel(
-                                              context.read<EmprestimoItemRepository>(),
-                                              context.read<DispositivoRepository>(),
-                                              context.read<EmprestimoDispositivoRepository>(),
-                                              context.read<EmprestimoRepository>(),
+                                              context
+                                                  .read<
+                                                    EmprestimoItemRepository
+                                                  >(),
+                                              context
+                                                  .read<EmprestimoRepository>(),
                                               context.read<EmprestimoService>(),
                                             ),
                                         child: EmprestimoDetalheScreen(
                                           idEmprestimo: emprestimo.idEmprestimo,
-                                          dataHoraEfetuado: emprestimo.dataHoraEfetuado,
-                                          nomeResponsavel: emprestimo.nomeUsuario,
-                                          idStatus: emprestimo.idStatusEmprestimo,
+                                          dataHoraEfetuado:
+                                              emprestimo.dataHoraEfetuado,
+                                          nomeResponsavel:
+                                              emprestimo.nomeUsuario,
+                                          idStatus:
+                                              emprestimo.idStatusEmprestimo,
                                         ),
                                       ),
                                     ),
                                   ).then((_) {
                                     // Executado quando o usuário volta da tela de detalhes (Navigator.pop)
                                     if (context.mounted) {
-                                      context.read<EmprestimoListViewmodel>().carregarEmprestimosDoDia(
-                                        _dataController,
-                                      );
+                                      context
+                                          .read<EmprestimoListViewmodel>()
+                                          .carregarEmprestimosDoDia(
+                                            _dataController,
+                                          );
                                     }
                                   });
                                 },
