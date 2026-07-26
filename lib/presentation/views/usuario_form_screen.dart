@@ -38,18 +38,13 @@ class _UsuarioFormScreenState extends State<UsuarioFormScreen> {
     }
   }
 
-  @override
-  void dispose() {
-    _nomeController.dispose();
-    super.dispose();
-  }
-
   Future<void> _salvar() async {
     if (!_formKey.currentState!.validate()) {
       return; // Finaliza se tiver algum campo inválido no Form
     }
     final viewModel = context.read<UsuarioFormViewmodel>();
     final nome = _nomeController.text.trim().toUpperCase();
+
     final sucesso = await viewModel.salvar(
       id: widget.usuarioId,
       nome: nome,
@@ -61,7 +56,10 @@ class _UsuarioFormScreenState extends State<UsuarioFormScreen> {
       Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(viewModel.errorMessage ?? 'Erro desconhecido')),
+        SnackBar(
+          content: Text(viewModel.errorMessage ?? 'Erro desconhecido'),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }
@@ -87,13 +85,30 @@ class _UsuarioFormScreenState extends State<UsuarioFormScreen> {
                 /*
                 Campo do nome
                 */
-
                 child: TextFormField(
                   controller: _nomeController,
+                  maxLength: 50,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
                       return 'O nome é obrigatório';
                     }
+
+                    final nome = value.trim();
+
+                    if (nome.length > 50) {
+                      return 'O nome só pode ter até 50 caracteres';
+                    }
+
+                    if (nome.length < 3) {
+                      return 'O nome precisa ser maior que 3 caracteres';
+                    }
+
+                    // Permite apenas letras (com ou sem acento), espaços, hífen e apóstrofo.
+                    final regex = RegExp(r"^[a-zA-ZÀ-ÿ\s'-]+$");
+                    if (!regex.hasMatch(nome)) {
+                      return 'Apenas letras e espaços';
+                    }
+
                     return null;
                   },
                   decoration: const InputDecoration(
@@ -110,7 +125,6 @@ class _UsuarioFormScreenState extends State<UsuarioFormScreen> {
                   /* 
                   DropdownMenu do cargo
                   */
-
                   child: DropdownMenuFormField<TipoCargo>(
                     label: const Text('Cargo'),
                     menuHeight: 200,
@@ -144,7 +158,6 @@ class _UsuarioFormScreenState extends State<UsuarioFormScreen> {
                 /* 
                 Botão de Salvar
                 */
-
                 child: ElevatedButton(
                   onPressed: viewModel.isLoading ? null : _salvar,
                   style: ElevatedButton.styleFrom(
@@ -170,5 +183,11 @@ class _UsuarioFormScreenState extends State<UsuarioFormScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _nomeController.dispose();
+    super.dispose();
   }
 }
