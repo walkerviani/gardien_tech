@@ -30,12 +30,6 @@ class _ProblemaFormScreenState extends State<ProblemaFormScreen> {
     _descricaoController = TextEditingController(text: widget.descricao ?? '');
   }
 
-  @override
-  void dispose() {
-    _descricaoController.dispose();
-    super.dispose();
-  }
-
   Future<void> _salvar() async {
     if (!_formKey.currentState!.validate()) {
       return; // Finaliza se tiver algum campo inválido no Form
@@ -54,7 +48,10 @@ class _ProblemaFormScreenState extends State<ProblemaFormScreen> {
       Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(viewModel.errorMessage ?? 'Erro desconhecido')),
+        SnackBar(
+          content: Text(viewModel.errorMessage ?? 'Erro desconhecido'),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }
@@ -81,12 +78,15 @@ class _ProblemaFormScreenState extends State<ProblemaFormScreen> {
                     /*
                     Campo da descrição
                     */
-
                     TextFormField(
                       controller: _descricaoController,
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
                           return 'A descrição não pode ser vazia';
+                        }
+
+                        if (value.trim().length < 3) {
+                          return 'Precisa ser maior que 3 caracteres';
                         }
                         return null;
                       },
@@ -104,7 +104,6 @@ class _ProblemaFormScreenState extends State<ProblemaFormScreen> {
                     /* 
                     Botão de Salvar
                     */
-
                     ElevatedButton(
                       onPressed: viewModel.isLoading ? null : _salvar,
                       style: ElevatedButton.styleFrom(
@@ -132,5 +131,11 @@ class _ProblemaFormScreenState extends State<ProblemaFormScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _descricaoController.dispose();
+    super.dispose();
   }
 }

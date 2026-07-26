@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:gardien_tech/domain/entities/problema.dart';
 import 'package:gardien_tech/domain/repositories/problema_repository.dart';
 
-class ProblemaFormViewmodel extends ChangeNotifier{
+class ProblemaFormViewmodel extends ChangeNotifier {
   final ProblemaRepository _repository;
 
   ProblemaFormViewmodel(this._repository);
@@ -15,9 +15,7 @@ class ProblemaFormViewmodel extends ChangeNotifier{
     required int idDispositivo,
     required String descricao,
   }) async {
-    isLoading = true;
     errorMessage = null;
-    notifyListeners();
 
     if (descricao.trim().isEmpty) {
       errorMessage = 'A descrição é obrigatória';
@@ -25,6 +23,14 @@ class ProblemaFormViewmodel extends ChangeNotifier{
       notifyListeners();
       return false;
     }
+
+    if (descricao.trim().length < 3) {
+      errorMessage = 'Precisa ser maior que 3 caracteres';
+      return false;
+    }
+
+    isLoading = true;
+    notifyListeners();
 
     try {
       Problema problema = Problema(id, idDispositivo, descricao);
