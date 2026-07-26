@@ -3,12 +3,15 @@ import 'package:gardien_tech/data/database.dart';
 import 'package:gardien_tech/data/datasources/usuario_datasource.dart';
 import 'package:gardien_tech/domain/entities/emprestimo.dart';
 
-@DataClassName('EmprestimoData') // Evita conflitos de nome entre classe Emprestimo no database.g.dart e entidade de domínio Emprestimo
+@DataClassName(
+  'EmprestimoData',
+) // Evita conflitos de nome entre classe Emprestimo no database.g.dart e entidade de domínio Emprestimo
 class Emprestimos extends Table {
   IntColumn get id => integer().autoIncrement()();
-  DateTimeColumn get dataHoraEfetuado => dateTime()(); 
+  DateTimeColumn get dataHoraEfetuado => dateTime()();
   DateTimeColumn get dataHoraConcluido => dateTime().nullable()();
-  IntColumn get idResponsavel => integer().references(Usuarios, #id)();
+  IntColumn get idResponsavel =>
+      integer().references(Usuarios, #id, onDelete: KeyAction.restrict)();
   IntColumn get idStatus => integer()();
 }
 

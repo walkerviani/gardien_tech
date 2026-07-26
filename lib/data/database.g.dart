@@ -677,7 +677,7 @@ class $EmprestimosTable extends Emprestimos
     type: DriftSqlType.int,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES usuarios (id)',
+      'REFERENCES usuarios (id) ON DELETE RESTRICT',
     ),
   );
   static const VerificationMeta _idStatusMeta = const VerificationMeta(
@@ -1488,7 +1488,7 @@ class $EmprestimoDispositivosTable extends EmprestimoDispositivos
     type: DriftSqlType.int,
     requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES dispositivos (id)',
+      'REFERENCES dispositivos (id) ON DELETE RESTRICT',
     ),
   );
   @override
