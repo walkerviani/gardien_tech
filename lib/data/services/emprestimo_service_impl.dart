@@ -79,8 +79,9 @@ class EmprestimoServiceImpl implements EmprestimoService {
     int idEmprestimoDispositivo,
     int idDispositivo,
   ) async {
-    final emprestimoDispositivo =
-        await _emprestimoDispRepository.buscarPorId(idEmprestimoDispositivo);
+    final emprestimoDispositivo = await _emprestimoDispRepository.buscarPorId(
+      idEmprestimoDispositivo,
+    );
     if (emprestimoDispositivo == null) {
       throw ArgumentError('Item de empréstimo não encontrado');
     }
@@ -88,7 +89,9 @@ class EmprestimoServiceImpl implements EmprestimoService {
       throw ArgumentError('O item não possui dispositivo vinculado');
     }
 
-    final dispositivoNovo = await _dispositivoRepository.buscarPorId(idDispositivo);
+    final dispositivoNovo = await _dispositivoRepository.buscarPorId(
+      idDispositivo,
+    );
     if (dispositivoNovo == null) {
       throw ArgumentError('Dispositivo não encontrado');
     }
