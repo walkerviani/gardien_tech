@@ -43,6 +43,7 @@ class $DispositivosTable extends Dispositivos
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
   );
   static const VerificationMeta _numPatrimonioMeta = const VerificationMeta(
     'numPatrimonio',
@@ -54,6 +55,7 @@ class $DispositivosTable extends Dispositivos
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
   );
   static const VerificationMeta _idStatusMeta = const VerificationMeta(
     'idStatus',
@@ -393,6 +395,7 @@ class $UsuariosTable extends Usuarios
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
   );
   static const VerificationMeta _idTipoCargoMeta = const VerificationMeta(
     'idTipoCargo',
