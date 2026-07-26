@@ -42,7 +42,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
       case 2:
         return Colors.brown;
       case 3:
-        return Colors.cyan;
+        return Colors.blueGrey;
       default:
         return Colors.red;
     }
@@ -108,7 +108,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                             Navigator.pop(context);
                           },
                           child: Text(
-                            'Salvar',
+                            'Selecionar',
                             style: TextStyle(color: Color(0xFF000000)),
                           ),
                         ),
@@ -309,7 +309,10 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                                               context
                                                   .read<EmprestimoRepository>(),
                                               context.read<EmprestimoService>(),
-                                              context.read<DispositivoRepository>(),
+                                              context
+                                                  .read<
+                                                    DispositivoRepository
+                                                  >(),
                                             ),
                                         child: EmprestimoDetalheScreen(
                                           idEmprestimo: emprestimo.idEmprestimo,
