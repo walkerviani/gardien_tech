@@ -33,11 +33,6 @@ class DispositivoFormViewmodel extends ChangeNotifier {
       return false;
     }
 
-    if (numPatrimonio.length < 3) {
-      errorMessage = 'Precisa ser maior que 3 caracteres';
-      return false;
-    }
-
     isLoading = true;
     notifyListeners();
 

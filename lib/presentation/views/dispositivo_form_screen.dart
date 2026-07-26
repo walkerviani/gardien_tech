@@ -173,10 +173,6 @@ class _DispositivoFormScreenState extends State<DispositivoFormScreen> {
                               return 'Precisa ser menor que 30 caracteres';
                             }
 
-                            if (numPatrimonio.length < 3) {
-                              return 'Precisa ser maior que 3 caracteres';
-                            }
-
                             return null;
                           },
                           decoration: const InputDecoration(
