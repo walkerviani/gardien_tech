@@ -464,12 +464,12 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
 
                       final viewmodel =
                           context.read<EmprestimoDetalheViewmodel>();
-                      // Passa o novo parâmetro idEmprestimoDispositivo
                       final sucesso = await viewmodel.alternarDevolucao(
                         dispositivo.id!,
                         value,
                         widget.idEmprestimo,
                         empDispositivo.id!,
+                        emprestimoItem.id!,
                       );
 
                       if (!mounted) return;

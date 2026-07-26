@@ -16,7 +16,7 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
   final DispositivoRepository _dispositivoRepository;
 
   // Cache para manter o estado dos checkboxes mesmo após sair e voltar da tela
-  Map<int, bool> _dispositivosDevolvidos = {};
+  final Map<int, bool> _dispositivosDevolvidos = {};
 
   EmprestimoDetalheViewmodel(
     this._empItemRepository,
@@ -198,10 +198,13 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
     bool marcarDevolvido,
     int idEmprestimo,
     int idEmprestimoDispositivo,
+    int idEmprestimoItem,
   ) async {
     if (marcarDevolvido) {
       // Marca como disponível no banco
       await _dispositivoRepository.marcarDisponivel(idDispositivo);
+      // Aumenta a quantidade devolvida do item
+      await _empItemRepository.aumentarQntDevolvida(idEmprestimoItem, 1);
       // Salva no cache que foi marcado como devolvido neste empréstimo
       await salvarCacheDevolvido(idEmprestimo, idEmprestimoDispositivo, true);
       return true;
@@ -214,6 +217,11 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
         return false;
       }
       await _dispositivoRepository.marcarEmUso(idDispositivo);
+      // Diminui a quantidade devolvida do item
+      final item = await _empItemRepository.buscarPorId(idEmprestimoItem);
+      if (item != null && item.qtdDevolvida > 0) {
+        await _empItemRepository.diminuirQntDevolvida(idEmprestimoItem, 1);
+      }
       // Salva no cache que foi desmarcado neste empréstimo
       await salvarCacheDevolvido(idEmprestimo, idEmprestimoDispositivo, false);
       return true;
