@@ -33,8 +33,13 @@ class UsuarioListViewmodel extends ChangeNotifier {
     try {
       await _repository.deletar(id);
       return true;
-    } catch (e) {
-      errorMessage = 'Erro ao excluir o usuário';
+    } on Exception catch (e) {
+      if (e.toString().contains('constraint failed')) {
+        errorMessage =
+            'Não é possível excluir o usuário, pois ele está associado a outros registros';
+      } else {
+        errorMessage = 'Erro ao excluir o usuário';
+      }
       return false;
     } finally {
       isLoading = false;

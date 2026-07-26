@@ -14,7 +14,6 @@ class UsuarioListScreen extends StatefulWidget {
 }
 
 class _UsuarioListScreenState extends State<UsuarioListScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -70,6 +69,7 @@ class _UsuarioListScreenState extends State<UsuarioListScreen> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(viewModel.errorMessage ?? 'Erro ao excluir'),
+                    backgroundColor: Colors.red,
                   ),
                 );
               }
@@ -139,9 +139,10 @@ class _UsuarioListScreenState extends State<UsuarioListScreen> {
                       return Card(
                         key: ValueKey(usuario.id),
                         child: ListTile(
-                          title: Text(usuario.nome,style: TextStyle(
-                            fontWeight: FontWeight(600),
-                          )),
+                          title: Text(
+                            usuario.nome,
+                            style: TextStyle(fontWeight: FontWeight(600)),
+                          ),
                           subtitle: Text(usuarioCargo),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,

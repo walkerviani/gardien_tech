@@ -37,7 +37,12 @@ class DispositivoListViewmodel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      Dispositivo dispositivo = Dispositivo(id, idTipoDispositivo, numSerie, numPatrimonio);
+      Dispositivo dispositivo = Dispositivo(
+        id,
+        idTipoDispositivo,
+        numSerie,
+        numPatrimonio,
+      );
       if (id != null) {
         await _repository.atualizar(dispositivo);
       } else {
@@ -60,8 +65,13 @@ class DispositivoListViewmodel extends ChangeNotifier {
     try {
       await _repository.deletar(id);
       return true;
-    } catch (e) {
-      errorMessage = 'Erro ao excluir o dispositivo';
+    } on Exception catch (e) {
+      if (e.toString().contains('constraint failed')) {
+        errorMessage =
+            'Não é possível excluir o dispositivo, pois ele está associado a outros registros';
+      } else {
+        errorMessage = 'Erro ao excluir o dispositivo';
+      }
       return false;
     } finally {
       isLoading = false;

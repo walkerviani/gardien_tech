@@ -73,6 +73,7 @@ class _DispositivoListScreenState extends State<DispositivoListScreen> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(viewModel.errorMessage ?? 'Erro ao excluir'),
+                    backgroundColor: Colors.red,
                   ),
                 );
               }
@@ -189,7 +190,8 @@ class _DispositivoListScreenState extends State<DispositivoListScreen> {
                                             ),
                                           ),
                                           TextSpan(
-                                            text: '${dispositivo.numPatrimonio} \n',
+                                            text:
+                                                '${dispositivo.numPatrimonio} \n',
                                             style: TextStyle(fontSize: 13),
                                           ),
                                           TextSpan(
