@@ -3,7 +3,6 @@ import 'package:gardien_tech/data/dto/emprestimo_item_com_dispositivo_dto.dart';
 import 'package:gardien_tech/domain/entities/dispositivo.dart';
 import 'package:gardien_tech/domain/entities/emprestimo_dispositivo.dart';
 import 'package:gardien_tech/domain/entities/emprestimo_item.dart';
-import 'package:gardien_tech/domain/enum/dispositivo_status.dart';
 import 'package:gardien_tech/domain/enum/emprestimo_status.dart';
 import 'package:gardien_tech/domain/enum/tipo_dispositivo.dart';
 import 'package:gardien_tech/presentation/viewmodels/emprestimo_detalhe_viewmodel.dart';
