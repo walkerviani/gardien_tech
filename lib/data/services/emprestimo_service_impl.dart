@@ -1,5 +1,6 @@
 import 'package:gardien_tech/domain/entities/emprestimo_dispositivo.dart';
 import 'package:gardien_tech/domain/entities/emprestimo_item.dart';
+import 'package:gardien_tech/domain/enum/dispositivo_status.dart';
 
 import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_dispositivo_repository.dart';
@@ -58,7 +59,7 @@ class EmprestimoServiceImpl implements EmprestimoService {
     if (dispositivo == null) {
       throw ArgumentError('Dispositivo não encontrado');
     }
-    if (dispositivo.idStatus == 3) {
+    if (dispositivo.idStatus == DispositivoStatus.emUso.id) {
       throw ArgumentError('Este dispositivo já está vinculado a um empréstimo');
     }
 
@@ -71,6 +72,63 @@ class EmprestimoServiceImpl implements EmprestimoService {
       ),
     );
     await _dispositivoRepository.marcarEmUso(idDispositivo);
+  }
+
+  @override
+  Future<void> trocarDispositivo(
+    int idEmprestimoDispositivo,
+    int idDispositivo,
+  ) async {
+    final emprestimoDispositivo =
+        await _emprestimoDispRepository.buscarPorId(idEmprestimoDispositivo);
+    if (emprestimoDispositivo == null) {
+      throw ArgumentError('Item de empréstimo não encontrado');
+    }
+    if (emprestimoDispositivo.idDispositivo == null) {
+      throw ArgumentError('O item não possui dispositivo vinculado');
+    }
+
+    final dispositivoNovo = await _dispositivoRepository.buscarPorId(idDispositivo);
+    if (dispositivoNovo == null) {
+      throw ArgumentError('Dispositivo não encontrado');
+    }
+    if (dispositivoNovo.idStatus == DispositivoStatus.emUso.id) {
+      throw ArgumentError('Este dispositivo já está vinculado a um empréstimo');
+    }
+
+    final dispositivoAntigo = await _dispositivoRepository.buscarPorId(
+      emprestimoDispositivo.idDispositivo!,
+    );
+    if (dispositivoAntigo == null) {
+      throw ArgumentError('Dispositivo antigo não encontrado');
+    }
+
+    if (dispositivoAntigo.idTipoDispositivo !=
+        dispositivoNovo.idTipoDispositivo) {
+      throw ArgumentError('O dispositivo precisa ter o mesmo tipo');
+    }
+
+    if (dispositivoNovo.id == dispositivoAntigo.id) {
+      throw ArgumentError('O dispositivo selecionado é o mesmo');
+    }
+
+    try {
+      await _dispositivoRepository.marcarDisponivel(dispositivoAntigo.id!);
+      await _dispositivoRepository.marcarEmUso(idDispositivo);
+      await _emprestimoDispRepository.atualizar(
+        EmprestimoDispositivo(
+          idEmprestimoDispositivo,
+          emprestimoDispositivo.idEmprestimoItem,
+          idDispositivo: idDispositivo,
+        ),
+      );
+    } catch (e) {
+      if (dispositivoAntigo.id != null) {
+        await _dispositivoRepository.marcarEmUso(dispositivoAntigo.id!);
+      }
+      await _dispositivoRepository.marcarDisponivel(idDispositivo);
+      rethrow;
+    }
   }
 
   // Cria um emprestimo_item caso não haja nenhum e já vincula o dispositivo ao emprestimo_dispositivo

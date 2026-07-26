@@ -6,6 +6,11 @@ abstract class EmprestimoService {
     int idDispositivo,
   );
 
+  Future<void> trocarDispositivo(
+    int idEmprestimoDispositivo,
+    int idDispositivo,
+  );
+
   Future<void> adicionarDispositivoAoEmprestimo(
     int idEmprestimo,
     int idDispositivo,

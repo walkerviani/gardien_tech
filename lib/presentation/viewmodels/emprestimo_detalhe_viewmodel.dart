@@ -124,46 +124,10 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
     errorMessage = null;
 
     try {
-      EmprestimoDispositivo? emprestimoDispositivo =
-          await _empDispositivoRepository.buscarPorId(idEmprestimoDispositivo);
-
-      if (emprestimoDispositivo == null) {
-        errorMessage = "O item não existe";
-        return false;
-      }
-
-      if (emprestimoDispositivo.idDispositivo == null) {
-        errorMessage = "O item não possui dispositivo vinculado";
-        return false;
-      }
-
-      // Busca cada dispositivo
-      int idDispositivoAntigo = emprestimoDispositivo.idDispositivo!;
-      Dispositivo? dispositivoAntigo = await _dispositivoRepository.buscarPorId(
-        idDispositivoAntigo,
-      );
-      Dispositivo? dispositivoNovo = await _dispositivoRepository.buscarPorId(
+      await _emprestimoService.trocarDispositivo(
+        idEmprestimoDispositivo,
         idDispositivo,
       );
-      if (dispositivoNovo == null) {
-        errorMessage = "O dispositivo não existe";
-        return false;
-      }
-
-      // Verifica se os dispositivos são do mesmo tipo
-      if (dispositivoAntigo?.idTipoDispositivo !=
-          dispositivoNovo.idTipoDispositivo) {
-        errorMessage = "O dispositivo precisa ter o mesmo tipo";
-        return false;
-      }
-      EmprestimoDispositivo novoEmpDisp = EmprestimoDispositivo(
-        emprestimoDispositivo.id,
-        emprestimoDispositivo.idEmprestimoItem,
-        idDispositivo: dispositivoNovo.id,
-      );
-
-      // Atualiza o item
-      await _empDispositivoRepository.atualizar(novoEmpDisp);
       return true;
     } catch (e) {
       errorMessage = "Erro ao trocar o dispositivo";
