@@ -286,7 +286,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                 children: [
                   ElevatedButton(
                     onPressed: () {},
-                    style: TextButton.styleFrom(
+                    style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFB00303),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -300,9 +300,28 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                   ),
                   SizedBox(height: 10),
                   ElevatedButton(
-                    onPressed: () =>
-                        viewmodel.finalizarEmprestimo(widget.idEmprestimo),
-                    style: TextButton.styleFrom(
+                    onPressed: () async {
+                      final sucesso = await viewmodel.finalizarEmprestimo(
+                        widget.idEmprestimo,
+                      );
+                      if (!context.mounted) return;
+
+                      if (!sucesso) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: const Text(
+                              "Verifique se todos os dispositivos foram devolvidos",
+                            ),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      } else {
+                        viewmodel.carregarDispositivosDoEmprestimo(
+                          widget.idEmprestimo,
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
