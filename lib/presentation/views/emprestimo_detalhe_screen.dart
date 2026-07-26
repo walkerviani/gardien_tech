@@ -444,7 +444,11 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
               checkColor: Colors.white,
               activeColor: const Color(0xFF006dc4),
               // Usa o cache do viewmodel para saber se foi marcado como devolvido
-              value: context.read<EmprestimoDetalheViewmodel>().obterEstadoCache(empDispositivo.id!) ?? false,
+              value:
+                  context.read<EmprestimoDetalheViewmodel>().obterEstadoCache(
+                    empDispositivo.id!,
+                  ) ??
+                  false,
               onChanged: dispositivo != null
                   ? (bool? value) async {
                       if (value == null) return;
@@ -462,8 +466,8 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                         return;
                       }
 
-                      final viewmodel =
-                          context.read<EmprestimoDetalheViewmodel>();
+                      final viewmodel = context
+                          .read<EmprestimoDetalheViewmodel>();
                       final messenger = ScaffoldMessenger.of(context);
                       final sucesso = await viewmodel.alternarDevolucao(
                         dispositivo.id!,
@@ -477,10 +481,9 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
 
                       if (sucesso) {
                         // Recarrega a lista para refletir alterações
-                        await viewmodel
-                            .carregarDispositivosDoEmprestimo(
-                              widget.idEmprestimo,
-                            );
+                        await viewmodel.carregarDispositivosDoEmprestimo(
+                          widget.idEmprestimo,
+                        );
                         messenger.showSnackBar(
                           SnackBar(
                             content: Text(
@@ -508,7 +511,38 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
             SizedBox(width: 50),
             TextButton(
               onPressed: () async {
-                await _excluirItemEmprestimo(context, empDispositivo.id!);
+                return showDialog(
+                  context: context,
+                  builder: (_) => AlertDialog(
+                    title: const Text("Excluir Item"),
+                    content: const Text(
+                      "Tem certeza que deseja excluir o item?",
+                    ),
+                    actionsAlignment: MainAxisAlignment.spaceEvenly,
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text(
+                          'Cancelar',
+                          style: TextStyle(color: Color(0xFF000000)),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () async {
+                          Navigator.pop(context);
+                          await _excluirItemEmprestimo(
+                            context,
+                            empDispositivo.id!,
+                          );
+                        },
+                        child: const Text(
+                          'Excluir',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFB00303),
