@@ -464,6 +464,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
 
                       final viewmodel =
                           context.read<EmprestimoDetalheViewmodel>();
+                      final messenger = ScaffoldMessenger.of(context);
                       final sucesso = await viewmodel.alternarDevolucao(
                         dispositivo.id!,
                         value,
@@ -480,7 +481,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                             .carregarDispositivosDoEmprestimo(
                               widget.idEmprestimo,
                             );
-                        ScaffoldMessenger.of(context).showSnackBar(
+                        messenger.showSnackBar(
                           SnackBar(
                             content: Text(
                               value
@@ -491,7 +492,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                           ),
                         );
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
+                        messenger.showSnackBar(
                           SnackBar(
                             content: Text(
                               viewmodel.errorMessage ??
