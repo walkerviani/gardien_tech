@@ -20,16 +20,11 @@ class EmprestimoFormViewModel extends ChangeNotifier {
     ),
   ];
   final List<ItemUnidade> itensUnidade = [];
-  List<Dispositivo> opcoesUnidade = [];
-  List<Usuario> opcoesResponsavel = [];
   Usuario? responsavelSelecionado;
   String? erroBusca;
 
   final TextEditingController responsavelController = TextEditingController();
   final TextEditingController pesquisaController = TextEditingController();
-
-  Timer? _debounce;
-  Timer? _debounceResponsavel;
 
   final DispositivoRepository _dispositivoRepository;
   final UsuarioRepository _usuarioRepository;
@@ -77,52 +72,42 @@ class EmprestimoFormViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void buscarResponsavel(String value) {
-    _debounceResponsavel?.cancel();
-
+  Future<List<Usuario>> buscarResponsavel(String value) async {
     if (responsavelSelecionado != null &&
         value != responsavelSelecionado!.nome) {
       responsavelSelecionado = null;
     }
 
     if (value.trim().isEmpty) {
-      opcoesResponsavel = [];
-      notifyListeners();
-      return;
+      return [];
     }
 
-    _debounceResponsavel = Timer(const Duration(milliseconds: 200), () async {
-      final resultado = await _usuarioRepository.buscarNome(value);
-      opcoesResponsavel = resultado;
-      notifyListeners();
-    });
+    return await _usuarioRepository.buscarNome(value);
   }
 
   void selecionarResponsavel(Usuario usuario) {
     responsavelSelecionado = usuario;
     responsavelController.text = usuario.nome;
-    opcoesResponsavel = [];
     notifyListeners();
   }
 
-  void buscarDispositivo(String value) {
-    _debounce?.cancel();
-
+  Future<List<Dispositivo>> buscarDispositivo(String value) async {
     if (erroBusca != null) {
       erroBusca = null;
+      notifyListeners();
     }
 
     if (value.trim().isEmpty) {
-      opcoesUnidade = [];
-      notifyListeners();
-      return;
+      return [];
     }
 
-    _debounce = Timer(const Duration(milliseconds: 200), () async {
-      final resultado = await _dispositivoRepository.buscarDescricao(value);
-      opcoesUnidade = resultado;
-      notifyListeners();
-    });
+    final dispositivos = await _dispositivoRepository.buscarDescricao(value);
+
+    return dispositivos.where((dispositivo) {
+      return !itensUnidade.any(
+        (item) => item.numPatrimonio == dispositivo.numPatrimonio,
+      );
+    }).toList();
   }
 
   void selecionarDispositivo(Dispositivo dispositivo) {
@@ -138,13 +123,13 @@ class EmprestimoFormViewModel extends ChangeNotifier {
 
     itensUnidade.add(
       ItemUnidade(
+        idTipoDispositivo: dispositivo.idTipoDispositivo,
         tipoDisp: dispositivo.tipo.nomeTipo,
         numSerie: dispositivo.numSerie,
         numPatrimonio: dispositivo.numPatrimonio,
       ),
     );
 
-    opcoesUnidade = [];
     erroBusca = null;
     pesquisaController.clear();
     notifyListeners();
@@ -185,8 +170,6 @@ class EmprestimoFormViewModel extends ChangeNotifier {
   void dispose() {
     responsavelController.dispose();
     pesquisaController.dispose();
-    _debounce?.cancel();
-    _debounceResponsavel?.cancel();
 
     for (final item in itensQuantidade) {
       item.quantidade.dispose();
@@ -206,7 +189,6 @@ class EmprestimoFormViewModel extends ChangeNotifier {
         await _criarItensUnidade(idEmprestimo);
       }
     } catch (e) {
-      // Se algo falhar, deleta o empréstimo inteiro
       await _emprestimoRepository.deletar(idEmprestimo);
       rethrow;
     }
@@ -228,7 +210,6 @@ class EmprestimoFormViewModel extends ChangeNotifier {
 
   Future<void> _criarItensUnidade(int idEmprestimo) async {
     for (final item in itensUnidade) {
-      // Busca o dispositivo escolhido pelo usuário
       final dispositivo = await _dispositivoRepository.buscarPorPatrimonio(
         item.numPatrimonio!,
       );
@@ -255,12 +236,14 @@ class ItemQuantidade {
 }
 
 class ItemUnidade {
+  int? idTipoDispositivo;
   String? tipoDisp;
   String? numSerie;
   String? numPatrimonio;
   final Key key = UniqueKey();
 
   ItemUnidade({
+    this.idTipoDispositivo,
     required this.tipoDisp,
     required this.numSerie,
     this.numPatrimonio,

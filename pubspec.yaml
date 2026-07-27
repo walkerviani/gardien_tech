@@ -43,6 +43,7 @@ dependencies:
   path: ^1.9.1
   intl: ^0.20.3
   collection: ^1.19.1
+  searchfield: ^2.0.0
 
 dev_dependencies:
   flutter_test:

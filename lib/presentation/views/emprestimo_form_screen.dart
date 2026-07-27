@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:searchfield/searchfield.dart';
+import 'package:gardien_tech/domain/entities/dispositivo.dart';
+import 'package:gardien_tech/domain/entities/usuario.dart';
 import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_repository.dart';
 import 'package:gardien_tech/domain/repositories/usuario_repository.dart';
 import 'package:gardien_tech/domain/services/emprestimo_service.dart';
-import 'package:gardien_tech/presentation/extentions/dispositivo_search_formatter.dart';
 import 'package:gardien_tech/presentation/viewmodels/emprestimo_form_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:gardien_tech/domain/enum/tipo_dispositivo.dart';
@@ -18,6 +20,43 @@ class EmprestimoFormScreen extends StatefulWidget {
 
 class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
   final ScrollController _scrollController = ScrollController();
+
+  IconData _selecionarIcone(int tipoDispositivo) {
+    switch (tipoDispositivo) {
+      case 1:
+        return Icons.laptop;
+      case 2:
+        return Icons.tablet_android;
+      case 3:
+        return Icons.smartphone;
+      case 4:
+        return Icons.mouse;
+      case 5:
+        return Icons.keyboard;
+      case 6:
+        return Icons.monitor;
+      case 7:
+        return Icons.videocam;
+      case 8:
+        return Icons.camera;
+      case 9:
+        return Icons.headset;
+      case 10:
+        return Icons.cable;
+      case 11:
+        return Icons.usb;
+      case 12:
+        return Icons.router;
+      case 13:
+        return Icons.router;
+      case 14:
+        return Icons.print_rounded;
+      case 15:
+        return Icons.surround_sound;
+      default:
+        return Icons.question_mark;
+    }
+  }
 
   @override
   void didChangeDependencies() {
@@ -53,54 +92,51 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
                 controller: _scrollController,
                 padding: const EdgeInsets.all(15),
                 children: [
-                  // Campo de texto para informar o responsável pelo empréstimo
-                  TextField(
+                  SearchField<Usuario>(
                     controller: viewModel.responsavelController,
-                    decoration: InputDecoration(
+                    suggestions: const [],
+                    animationDuration: Duration.zero,
+                    itemHeight: 80,
+                    searchInputDecoration: SearchInputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Responsável',
                     ),
-                    keyboardType: TextInputType.text,
-                    onChanged: (value) {
-                      viewModel.buscarResponsavel(value);
+                    suggestionsDecoration: SuggestionDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      selectionColor: Theme.of(context).scaffoldBackgroundColor,
+                      hoverColor: Theme.of(context).scaffoldBackgroundColor,
+                      border: Border.all(color: Theme.of(context).scaffoldBackgroundColor,),
+                    ),
+                    onSearchTextChanged: (query) async {
+                      final resultados = await viewModel.buscarResponsavel(query);
+                      return resultados
+                          .map(
+                            (e) => SearchFieldListItem<Usuario>(
+                              e.nome,
+                              item: e,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+                                child: Text(e.nome, overflow: TextOverflow.ellipsis),
+                              ),
+                            ),
+                          )
+                          .toList();
+                    },
+                    onSuggestionTap: (item) {
+                      if (item.item != null) {
+                        viewModel.selecionarResponsavel(item.item!);
+                      }
                     },
                   ),
-                  // Lista de sugestões de responsável
-                  if (viewModel.opcoesResponsavel.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 4),
-                      child: Material(
-                        elevation: 3,
-                        borderRadius: BorderRadius.circular(8),
-                        clipBehavior: Clip.antiAlias,
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxHeight: 200),
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: viewModel.opcoesResponsavel.length,
-                            itemBuilder: (context, index) {
-                              final usuario = viewModel.opcoesResponsavel[index];
-                              return ListTile(
-                                title: Text(usuario.nome),
-                                onTap: () {
-                                  viewModel.selecionarResponsavel(usuario);
-                                },
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  SizedBox(height: 12),
-                  Align(
+                  const SizedBox(height: 12),
+                  const Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
                       'Selecionar equipamentos por:',
                       style: TextStyle(fontSize: 20),
                     ),
                   ),
-                  SizedBox(height: 8),
-                  // Botão segmentado para alternar entre os modos de seleção
+                  const SizedBox(height: 8),
                   SegmentedButton<OpcaoEmprestimo>(
                     style: SegmentedButton.styleFrom(
                       foregroundColor: const Color(0xFF2196F3),
@@ -124,15 +160,13 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
                       viewModel.alternarOpcao(novaSelecao.first);
                     },
                   ),
-                  SizedBox(height: 12),
-                  // Renderiza o formulário correspondente ao modo selecionado
+                  const SizedBox(height: 12),
                   if (viewModel.opcaoView == OpcaoEmprestimo.quantidade)
                     _buildPorQuantidade(context, viewModel)
                   else
                     _buildPorUnidade(context, viewModel),
                 ],
               ),
-              // Botão fixo na parte inferior para confirmar o empréstimo
               bottomNavigationBar: SafeArea(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
@@ -165,7 +199,6 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
     );
   }
 
-  // Constrói o formulário no modo por quantidade
   Widget _buildPorQuantidade(BuildContext context, EmprestimoFormViewModel viewModel) {
     return Column(
       children: [
@@ -179,8 +212,8 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
                 contentPadding: const EdgeInsets.all(12),
                 title: Row(
                   children: [
-                    Text('Tipo de dispositivo:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                    SizedBox(width: 12),
+                    const Text('Tipo de dispositivo:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    const SizedBox(width: 12),
                     Expanded(
                       child: DropdownMenuFormField<TipoDispositivo>(
                         label: const Text('Tipo'),
@@ -202,15 +235,15 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Row(
                       children: [
-                        Text('Informe a quantidade:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                        SizedBox(width: 12),
+                        const Text('Informe a quantidade:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                        const SizedBox(width: 12),
                         Expanded(
                           child: TextFormField(
                             controller: viewModel.itensQuantidade[index].quantidade,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               border: OutlineInputBorder(),
                               labelText: "Quantidade",
                             ),
@@ -257,7 +290,7 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
                   ],
                 ),
                 trailing: IconButton(
-                  icon: Icon(Icons.delete),
+                  icon: const Icon(Icons.delete),
                   onPressed: () {
                     viewModel.removerItemQuantidade(index);
                   },
@@ -266,16 +299,16 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
             ),
           );
         }),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Align(
           alignment: Alignment.center,
           child: ElevatedButton.icon(
             onPressed: () {
               viewModel.adicionarItemQuantidade();
-              Future.delayed(Duration(milliseconds: 100), () {
+              Future.delayed(const Duration(milliseconds: 100), () {
                 _scrollController.animateTo(
                   _scrollController.position.maxScrollExtent,
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   curve: Curves.easeOut,
                 );
               });
@@ -285,79 +318,106 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             ),
-            label: Text('Adicionar'),
+            label: const Text('Adicionar'),
           ),
         ),
       ],
     );
   }
 
-  // Constrói o formulário no modo por unidade
   Widget _buildPorUnidade(BuildContext context, EmprestimoFormViewModel viewModel) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Adicionar equipamento:', style: TextStyle(fontSize: 16)),
-        SizedBox(height: 8),
-        TextField(
+        const Text('Adicionar equipamento:', style: TextStyle(fontSize: 16)),
+        const SizedBox(height: 8),
+        SearchField<Dispositivo>(
           controller: viewModel.pesquisaController,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
+          suggestions: const [],
+          animationDuration: Duration.zero,
+          itemHeight: 80,
+          searchInputDecoration: SearchInputDecoration(
+            border: const OutlineInputBorder(),
             hintText: 'Digite patrimônio ou série',
             errorText: viewModel.erroBusca,
           ),
-          keyboardType: TextInputType.text,
-          onChanged: (value) {
-            viewModel.buscarDispositivo(value);
+          suggestionsDecoration: SuggestionDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            selectionColor: Theme.of(context).scaffoldBackgroundColor,
+            hoverColor: Theme.of(context).scaffoldBackgroundColor,
+            border: Border.all(color: Theme.of(context).scaffoldBackgroundColor,),
+          ),
+          onSearchTextChanged: (query) async {
+            final resultados = await viewModel.buscarDispositivo(query);
+            return resultados
+                .map(
+                  (dispositivo) => SearchFieldListItem<Dispositivo>(
+                    dispositivo.numSerie,
+                    item: dispositivo,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+                      child: Row(
+                        children: [
+                          Icon(_selecionarIcone(dispositivo.idTipoDispositivo)),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  dispositivo.numSerie,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Text(
+                                  dispositivo.numPatrimonio,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+                .toList();
+          },
+          onSuggestionTap: (item) {
+            if (item.item != null) {
+              viewModel.selecionarDispositivo(item.item!);
+            }
           },
         ),
-        if (viewModel.opcoesUnidade.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(top: 4),
-            child: Material(
-              elevation: 3,
-              clipBehavior: Clip.antiAlias,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxHeight: 200),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: viewModel.opcoesUnidade.length,
-                  itemBuilder: (context, index) {
-                    final dispositivo = viewModel.opcoesUnidade[index];
-                    return ListTile(
-                      title: Text(dispositivo.descricaoBusca),
-                      onTap: () => viewModel.selecionarDispositivo(dispositivo),
-                    );
-                  },
-                ),
-              ),
-            ),
-          ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         ...List.generate(viewModel.itensUnidade.length, (index) {
+          final item = viewModel.itensUnidade[index];
           return Padding(
-            key: viewModel.itensUnidade[index].key,
+            key: item.key,
             padding: const EdgeInsets.only(bottom: 8),
             child: Card(
               margin: EdgeInsets.zero,
               child: ListTile(
+                leading: Icon(_selecionarIcone(item.idTipoDispositivo ?? 0)),
                 title: Text(
-                  viewModel.itensUnidade[index].tipoDisp ?? '',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  item.tipoDisp ?? '',
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Número Patrimônio: ${viewModel.itensUnidade[index].numPatrimonio ?? '-'}',
+                      'Número Patrimônio: ${item.numPatrimonio ?? '-'}',
                     ),
                     Text(
-                      'Número Série: ${viewModel.itensUnidade[index].numSerie ?? '-'}',
+                      'Número Série: ${item.numSerie ?? '-'}',
                     ),
                   ],
                 ),
                 trailing: IconButton(
-                  icon: Icon(Icons.delete),
+                  icon: const Icon(Icons.delete),
                   onPressed: () {
                     viewModel.removerItemUnidade(index);
                   },
