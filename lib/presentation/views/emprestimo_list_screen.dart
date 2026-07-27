@@ -25,10 +25,10 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
   void initState() {
     super.initState();
     _dataController = DateTime.now();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<EmprestimoListViewmodel>().carregarEmprestimosDoDia(
-        _dataController,
-      );
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final viewmodel = context.read<EmprestimoListViewmodel>();
+      await viewmodel.definirEmObservacao();
+      await viewmodel.carregarEmprestimosDoDia(_dataController);
     });
   }
 
@@ -117,7 +117,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                   );
                 },
                 style: TextButton.styleFrom(
-                  backgroundColor: Color(0xFF006dc4),
+                  backgroundColor: Colors.blue,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
