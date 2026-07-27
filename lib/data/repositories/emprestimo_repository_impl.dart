@@ -111,10 +111,31 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
             dataHoraEfetuado: emprestimo.dataHoraEfetuado,
             nomeUsuario: usuario.nome,
           );
-        } 
+        }
       }
     }
 
     return mapa.values.toList();
+  }
+
+  @override
+  Future<void> definirEmObservacao() async {
+    DateTime hoje = DateTime.now();
+    DateTime diaAtual = DateTime(
+      hoje.year,
+      hoje.month,
+      hoje.day,
+    ); // Pega somente a data (remove a hora)
+
+    await (_database.update(_database.emprestimos)..where(
+          (emprestimo) =>
+              emprestimo.idStatus.equals(EmprestimoStatus.ativo.id) &
+              emprestimo.dataHoraEfetuado.isSmallerThanValue(diaAtual),
+        ))
+        .write(
+          EmprestimosCompanion(
+            idStatus: Value(EmprestimoStatus.emObservacao.id),
+          ),
+        );
   }
 }

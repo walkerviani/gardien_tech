@@ -10,4 +10,5 @@ abstract class EmprestimoRepository {
   Future<void> atualizar(Emprestimo emprestimo);
   Future<void> deletar(int id);
   Future<void> concluir(int id);
+  Future<void> definirEmObservacao();
 }
