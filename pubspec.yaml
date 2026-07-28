@@ -1,5 +1,7 @@
 name: gardien_tech
 description: "A new Flutter project."
+config_name:
+  name: "Gardien Tech"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -46,6 +48,7 @@ dependencies:
   flutter_launcher_icons: ^0.14.4
   searchfield: ^2.0.0
   flutter_native_splash: ^2.4.8
+  rename_app: ^1.6.6
 
 dev_dependencies:
   flutter_test:
