@@ -40,7 +40,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
       case 1:
         return Colors.green;
       case 2:
-        return Colors.brown;
+        return Colors.deepOrangeAccent;
       case 3:
         return Colors.blueGrey;
       default:
