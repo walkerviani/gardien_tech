@@ -61,6 +61,8 @@ class _SelecionarDispositivoScreenState
         return Icons.print_rounded;
       case 15:
         return Icons.surround_sound;
+      case 16:
+        return Icons.settings_remote_outlined;
       default:
         return Icons.question_mark;
     }

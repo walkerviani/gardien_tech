@@ -44,23 +44,48 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
   }
 
   Future<void> _excluirItemEmprestimo(
-    BuildContext context,
     int idEmprestimoDispositivo,
   ) async {
-    final resultado = await context
-        .read<EmprestimoDetalheViewmodel>()
-        .removerDispositivo(idEmprestimoDispositivo);
-    if (context.mounted && resultado) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Item removido com sucesso'),
-          backgroundColor: Colors.blueGrey,
-        ),
-      );
-      await context
-          .read<EmprestimoDetalheViewmodel>()
-          .carregarDispositivosDoEmprestimo(widget.idEmprestimo);
+    final viewmodel = context.read<EmprestimoDetalheViewmodel>();
+    final resultado = await viewmodel.removerDispositivo(idEmprestimoDispositivo);
+
+    if (!mounted || !resultado) return;
+
+    await viewmodel.carregarDispositivosDoEmprestimo(widget.idEmprestimo);
+
+    if (!mounted) return;
+
+    // Conta o total de dispositivos restantes no empréstimo
+    final totalRestante = viewmodel.dispositivosDoEmprestimo.fold<int>(
+      0,
+      (total, dto) => total + dto.dispositivos.length,
+    );
+
+    if (totalRestante == 0 || viewmodel.dispositivosDoEmprestimo.isEmpty) {
+      // Exclui o empréstimo e volta para a tela principal
+      final excluido = await viewmodel.excluirEmprestimo(widget.idEmprestimo);
+
+      if (!mounted) return;
+
+      if (excluido) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Empréstimo sem itens removido.'),
+            backgroundColor: Colors.blueGrey,
+          ),
+        );
+
+        Navigator.of(context).pop(true);
+        return;
+      }
     }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Item removido com sucesso'),
+        backgroundColor: Colors.blueGrey,
+      ),
+    );
   }
 
   @override
@@ -671,10 +696,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                       TextButton(
                         onPressed: () async {
                           Navigator.pop(context);
-                          await _excluirItemEmprestimo(
-                            context,
-                            empDispositivo.id!,
-                          );
+                          await _excluirItemEmprestimo(empDispositivo.id!);
                         },
                         child: const Text(
                           'Excluir',

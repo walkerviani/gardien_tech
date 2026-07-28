@@ -53,6 +53,8 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
         return Icons.print_rounded;
       case 15:
         return Icons.surround_sound;
+      case 16:
+        return Icons.settings_remote_outlined;
       default:
         return Icons.question_mark;
     }
@@ -96,7 +98,7 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
                     controller: viewModel.responsavelController,
                     suggestions: const [],
                     animationDuration: Duration.zero,
-                    itemHeight: 80,
+                    itemHeight: 50,
                     searchInputDecoration: SearchInputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Responsável',
@@ -116,7 +118,7 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
                               item: e,
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-                                child: Text(e.nome, overflow: TextOverflow.ellipsis),
+                                child: Text(e.nome, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 18),),
                               ),
                             ),
                           )
@@ -335,7 +337,7 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
           controller: viewModel.pesquisaController,
           suggestions: const [],
           animationDuration: Duration.zero,
-          itemHeight: 80,
+          itemHeight: 70,
           searchInputDecoration: SearchInputDecoration(
             border: const OutlineInputBorder(),
             hintText: 'Digite patrimônio ou série',
@@ -355,7 +357,7 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
                     dispositivo.numSerie,
                     item: dispositivo,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                       child: Row(
                         children: [
                           Icon(_selecionarIcone(dispositivo.idTipoDispositivo)),
@@ -366,14 +368,16 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  dispositivo.numSerie,
+                                  'Número Patrimônio: ${dispositivo.numPatrimonio}',
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(fontSize: 18),
                                 ),
                                 Text(
-                                  dispositivo.numPatrimonio,
+                                  'Número Série: ${dispositivo.numSerie}',
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(fontSize: 18),
                                 ),
                               ],
                             ),

@@ -7,14 +7,15 @@ enum TipoDispositivo {
   monitor(6, 'MONITOR'),
   projetor(7, 'PROJETOR'),
   webcam(8, 'WEBCAM'),
-  headset(9, 'HEADSET'),
+  headset(9, 'HEADSET/FONE'),
   caboHdmi(10, 'CABO HDMI'),
   adaptadorUsb(11, 'ADAPTADOR USB'),
   roteador(12, 'ROTEADOR'),
   switch_(13, 'SWITCH'),
   impressora(14, 'IMPRESSORA'),
   caixaDeSom(15, 'CAIXA DE SOM'),
-  outro(16, 'OUTRO');
+  controle(16, 'CONTROLE'),
+  outro(17, 'OUTRO');
 
   final int id;
   final String nomeTipo;

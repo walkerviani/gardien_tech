@@ -1,6 +1,6 @@
 enum TipoCargo {
-  professor(1, 'PROFESSOR'),
-  aluno(2, 'ALUNO'),
+  professor(1, 'PROFESSOR(A)'),
+  aluno(2, 'ALUNO(A)'),
   coordenacao(3, 'COORDENAÇÃO'),
   direcao(4, 'DIREÇÃO'),
   administracao(5, 'ADMINISTRAÇÃO'),

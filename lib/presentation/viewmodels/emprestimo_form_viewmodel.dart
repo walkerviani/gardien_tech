@@ -104,9 +104,15 @@ class EmprestimoFormViewModel extends ChangeNotifier {
     final dispositivos = await _dispositivoRepository.buscarDescricao(value);
 
     return dispositivos.where((dispositivo) {
-      return !itensUnidade.any(
+      // Filtra para remover dispositivos que estão Em Uso
+      final disponivel = dispositivo.idStatus != 3;
+
+      // Filtra para remover dispositivos já adicionados na lista atual
+      final naoAdicionado = !itensUnidade.any(
         (item) => item.numPatrimonio == dispositivo.numPatrimonio,
       );
+
+      return disponivel && naoAdicionado;
     }).toList();
   }
 
