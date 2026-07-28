@@ -135,134 +135,206 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                   if (viewmodel.dispositivosDoEmprestimo.isEmpty) {
                     return const Text('Nenhum dispositivo encontrado');
                   }
-                  return ListView.builder(
-                    itemCount: viewmodel.dispositivosDoEmprestimo.length + 1,
-                    itemBuilder: (context, index) {
-                      if (index == viewmodel.dispositivosDoEmprestimo.length) {
-                        return Padding(
-                          // Botão adicionar
-                          padding: const EdgeInsets.symmetric(vertical: 20),
-                          child: Center(
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                // Salva referência antes do await
-                                final viewmodel = context
-                                    .read<EmprestimoDetalheViewmodel>();
+                  return Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                onPressed: () async {
+                                  await viewmodel.marcarTodos(widget.idEmprestimo);
 
-                                final resultado =
-                                    await Navigator.push<Map<String, dynamic>>(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) =>
-                                            SelecionarDispositivoScreen(
-                                              null,
-                                              widget.idEmprestimo,
-                                            ),
-                                      ),
-                                    );
+                                  if (!context.mounted) return;
 
-                                if (!mounted) return;
-
-                                if (resultado != null) {
-                                  final idDispositivo =
-                                      resultado['idDispositivo'] as int;
-                                  _controllerMap.clear();
-                                  await viewmodel.adicionarDispositivo(
-                                    widget.idEmprestimo,
-                                    idDispositivo,
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Todos os dispositivos foram marcados como devolvidos.'),
+                                      backgroundColor: Colors.green,
+                                    ),
                                   );
-                                  // Atualiza a tela
-                                  await viewmodel
-                                      .carregarDispositivosDoEmprestimo(
-                                        widget.idEmprestimo,
-                                      );
-                                }
-                              },
-                              style: TextButton.styleFrom(
-                                backgroundColor: const Color(0xFF2196F3),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                                },
+                                icon: const Icon(Icons.done_all, color: Colors.white),
+                                label: const Text('Devolver todos', style: TextStyle(color: Colors.white)),
+                                style: TextButton.styleFrom(
+                                  backgroundColor: const Color(0xFF2196F3),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  fixedSize: const Size(130, 30),
                                 ),
-                                fixedSize: const Size(130, 30),
-                              ),
-                              child: const Text(
-                                'Adicionar',
-                                style: TextStyle(color: Colors.white),
                               ),
                             ),
-                          ),
-                        );
-                      }
-                      final itemDoDTO =
-                          viewmodel.dispositivosDoEmprestimo[index];
-                      final emprestimoItem = itemDoDTO.item;
-                      final tipoDispositivo =
-                          TipoDispositivo.values
-                              .where(
-                                (tipo) =>
-                                    tipo.id == emprestimoItem.idTipoDispositivo,
-                              )
-                              .firstOrNull
-                              ?.nomeTipo ??
-                          'Tipo não encontrado';
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                onPressed: () async {
+                                  final sucesso = await viewmodel.desmarcarTodos(
+                                    widget.idEmprestimo,
+                                  );
 
-                      if (viewmodel.empFinalizado) {
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: itemDoDTO.dispositivos.length,
-                          itemBuilder: (context, indexUnidade) {
-                            final emprDisp =
-                                itemDoDTO.dispositivos[indexUnidade];
-                            final dispositivosEncontrados = itemDoDTO
-                                .dispositivosObj
-                                .where((d) => d.id == emprDisp.idDispositivo)
-                                .toList();
-                            final dispositivo =
-                                dispositivosEncontrados.firstOrNull;
-                            return Card(
-                              child: Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: _cardFinalizado(
-                                  dispositivo!,
-                                  tipoDispositivo,
+                                  if (!context.mounted) return;
+
+                                  if (sucesso) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Todos os dispositivos foram desmarcados.'),
+                                        backgroundColor: Colors.green,
+                                      ),
+                                    );
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          viewmodel.errorMessage ??
+                                              'Erro ao desmarcar dispositivos.',
+                                        ),
+                                        backgroundColor: const Color(0xFFB00303),
+                                      ),
+                                    );
+                                  }
+                                },
+                                icon: const Icon(Icons.remove_done, color: Colors.white),
+                                label: const Text('Desfazer devoluções', style: TextStyle(color: Colors.white)),
+                                style: TextButton.styleFrom(
+                                  backgroundColor: const Color(0xFF2196F3),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  fixedSize: const Size(130, 30),
                                 ),
                               ),
-                            );
-                          },
-                        );
-                      } else {
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: itemDoDTO.dispositivos.length,
-                          itemBuilder: (context, indexUnidade) {
-                            final emprDisp =
-                                itemDoDTO.dispositivos[indexUnidade];
-                            final dispositivosEncontrados = itemDoDTO
-                                .dispositivosObj
-                                .where((d) => d.id == emprDisp.idDispositivo)
-                                .toList();
-                            final dispositivo =
-                                dispositivosEncontrados.isNotEmpty
-                                ? dispositivosEncontrados.first
-                                : null;
-                            return Card(
-                              child: Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: _cardItens(
-                                  itemDoDTO,
-                                  emprestimoItem,
-                                  tipoDispositivo,
-                                  dispositivo,
-                                  emprDisp,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: viewmodel.dispositivosDoEmprestimo.length + 1,
+                          itemBuilder: (context, index) {
+                            if (index == viewmodel.dispositivosDoEmprestimo.length) {
+                              return Padding(
+                                // Botão adicionar
+                                padding: const EdgeInsets.symmetric(vertical: 20),
+                                child: Center(
+                                  child: ElevatedButton(
+                                    onPressed: () async {
+                                      final viewmodel = context.read<EmprestimoDetalheViewmodel>();
+
+                                      final resultado =
+                                          await Navigator.push<Map<String, dynamic>>(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => SelecionarDispositivoScreen(
+                                            null,
+                                            widget.idEmprestimo,
+                                          ),
+                                        ),
+                                      );
+
+                                      if (!mounted) return;
+
+                                      if (resultado != null) {
+                                        final idDispositivo =
+                                            resultado['idDispositivo'] as int;
+                                        _controllerMap.clear();
+
+                                        await viewmodel.adicionarDispositivo(
+                                          widget.idEmprestimo,
+                                          idDispositivo,
+                                        );
+
+                                        await viewmodel.carregarDispositivosDoEmprestimo(
+                                          widget.idEmprestimo,
+                                        );
+                                      }
+                                    },
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: const Color(0xFF2196F3),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      fixedSize: const Size(130, 30),
+                                    ),
+                                    child: const Text(
+                                      'Adicionar',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
                                 ),
-                              ),
+                              );
+                            }
+
+                            final itemDoDTO = viewmodel.dispositivosDoEmprestimo[index];
+                            final emprestimoItem = itemDoDTO.item;
+                            final tipoDispositivo =
+                                TipoDispositivo.values
+                                        .where(
+                                          (tipo) =>
+                                              tipo.id == emprestimoItem.idTipoDispositivo,
+                                        )
+                                        .firstOrNull
+                                        ?.nomeTipo ??
+                                    'Tipo não encontrado';
+
+                            if (viewmodel.empFinalizado) {
+                              return ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: itemDoDTO.dispositivos.length,
+                                itemBuilder: (context, indexUnidade) {
+                                  final emprDisp = itemDoDTO.dispositivos[indexUnidade];
+                                  final dispositivosEncontrados = itemDoDTO.dispositivosObj
+                                      .where((d) => d.id == emprDisp.idDispositivo)
+                                      .toList();
+                                  final dispositivo = dispositivosEncontrados.firstOrNull;
+
+                                  return Card(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10),
+                                      child: _cardFinalizado(
+                                        dispositivo!,
+                                        tipoDispositivo,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            }
+
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: itemDoDTO.dispositivos.length,
+                              itemBuilder: (context, indexUnidade) {
+                                final emprDisp = itemDoDTO.dispositivos[indexUnidade];
+                                final dispositivosEncontrados = itemDoDTO.dispositivosObj
+                                    .where((d) => d.id == emprDisp.idDispositivo)
+                                    .toList();
+
+                                final dispositivo = dispositivosEncontrados.isNotEmpty
+                                    ? dispositivosEncontrados.first
+                                    : null;
+
+                                return Card(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: _cardItens(
+                                      itemDoDTO,
+                                      emprestimoItem,
+                                      tipoDispositivo,
+                                      dispositivo,
+                                      emprDisp,
+                                    ),
+                                  ),
+                                );
+                              },
                             );
                           },
-                        );
-                      }
-                    },
+                        ),
+                      ),
+                    ],
                   );
                 }),
               ),
