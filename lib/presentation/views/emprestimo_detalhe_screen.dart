@@ -166,71 +166,73 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                         padding: const EdgeInsets.only(bottom: 10),
                         child: Row(
                           children: [
-                            Expanded(
-                              child: ElevatedButton.icon(
-                                onPressed: () async {
-                                  await viewmodel.marcarTodos(widget.idEmprestimo);
+                            if (widget.idStatus != EmprestimoStatus.concluido.id) ... [
+                              Expanded(
+                                child: ElevatedButton.icon(
+                                  onPressed: () async {
+                                    await viewmodel.marcarTodos(widget.idEmprestimo);
 
-                                  if (!context.mounted) return;
+                                    if (!context.mounted) return;
 
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Todos os dispositivos foram marcados como devolvidos.'),
-                                      backgroundColor: Colors.green,
-                                    ),
-                                  );
-                                },
-                                icon: const Icon(Icons.done_all, color: Colors.white),
-                                label: const Text('Devolver todos', style: TextStyle(color: Colors.white)),
-                                style: TextButton.styleFrom(
-                                  backgroundColor: const Color(0xFF2196F3),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  fixedSize: const Size(130, 30),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: ElevatedButton.icon(
-                                onPressed: () async {
-                                  final sucesso = await viewmodel.desmarcarTodos(
-                                    widget.idEmprestimo,
-                                  );
-
-                                  if (!context.mounted) return;
-
-                                  if (sucesso) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
-                                        content: Text('Todos os dispositivos foram desmarcados.'),
+                                        content: Text('Todos os dispositivos foram marcados como devolvidos.'),
                                         backgroundColor: Colors.green,
                                       ),
                                     );
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          viewmodel.errorMessage ??
-                                              'Erro ao desmarcar dispositivos.',
-                                        ),
-                                        backgroundColor: const Color(0xFFB00303),
-                                      ),
-                                    );
-                                  }
-                                },
-                                icon: const Icon(Icons.remove_done, color: Colors.white),
-                                label: const Text('Desfazer devoluções', style: TextStyle(color: Colors.white)),
-                                style: TextButton.styleFrom(
-                                  backgroundColor: const Color(0xFF2196F3),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
+                                  },
+                                  icon: const Icon(Icons.done_all, color: Colors.white),
+                                  label: const Text('Devolver todos', style: TextStyle(color: Colors.white)),
+                                  style: TextButton.styleFrom(
+                                    backgroundColor: const Color(0xFF2196F3),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    fixedSize: const Size(130, 30),
                                   ),
-                                  fixedSize: const Size(130, 30),
                                 ),
                               ),
-                            ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: ElevatedButton.icon(
+                                  onPressed: () async {
+                                    final sucesso = await viewmodel.desmarcarTodos(
+                                      widget.idEmprestimo,
+                                    );
+
+                                    if (!context.mounted) return;
+
+                                    if (sucesso) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          content: Text('Todos os dispositivos foram desmarcados.'),
+                                          backgroundColor: Colors.green,
+                                        ),
+                                      );
+                                    } else {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            viewmodel.errorMessage ??
+                                                'Erro ao desmarcar dispositivos.',
+                                          ),
+                                          backgroundColor: const Color(0xFFB00303),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  icon: const Icon(Icons.remove_done, color: Colors.white),
+                                  label: const Text('Desfazer devoluções', style: TextStyle(color: Colors.white)),
+                                  style: TextButton.styleFrom(
+                                    backgroundColor: const Color(0xFF2196F3),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    fixedSize: const Size(130, 30),
+                                  ),
+                                ),
+                              ),
+                            ]
                           ],
                         ),
                       ),
@@ -239,56 +241,59 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                           itemCount: viewmodel.dispositivosDoEmprestimo.length + 1,
                           itemBuilder: (context, index) {
                             if (index == viewmodel.dispositivosDoEmprestimo.length) {
-                              return Padding(
-                                // Botão adicionar
-                                padding: const EdgeInsets.symmetric(vertical: 20),
-                                child: Center(
-                                  child: ElevatedButton(
-                                    onPressed: () async {
-                                      final viewmodel = context.read<EmprestimoDetalheViewmodel>();
+                              if(widget.idStatus != EmprestimoStatus.concluido.id){
+                                return Padding(
+                                  // Botão adicionar
+                                  padding: const EdgeInsets.symmetric(vertical: 20),
+                                  child: Center(
+                                    child: ElevatedButton(
+                                      onPressed: () async {
+                                        final viewmodel = context.read<EmprestimoDetalheViewmodel>();
 
-                                      final resultado =
-                                          await Navigator.push<Map<String, dynamic>>(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) => SelecionarDispositivoScreen(
-                                            null,
-                                            widget.idEmprestimo,
+                                        final resultado =
+                                            await Navigator.push<Map<String, dynamic>>(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => SelecionarDispositivoScreen(
+                                              null,
+                                              widget.idEmprestimo,
+                                            ),
                                           ),
+                                        );
+
+                                        if (!mounted) return;
+
+                                        if (resultado != null) {
+                                          final idDispositivo =
+                                              resultado['idDispositivo'] as int;
+                                          _controllerMap.clear();
+
+                                          await viewmodel.adicionarDispositivo(
+                                            widget.idEmprestimo,
+                                            idDispositivo,
+                                          );
+
+                                          await viewmodel.carregarDispositivosDoEmprestimo(
+                                            widget.idEmprestimo,
+                                          );
+                                        }
+                                      },
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: const Color(0xFF2196F3),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8),
                                         ),
-                                      );
-
-                                      if (!mounted) return;
-
-                                      if (resultado != null) {
-                                        final idDispositivo =
-                                            resultado['idDispositivo'] as int;
-                                        _controllerMap.clear();
-
-                                        await viewmodel.adicionarDispositivo(
-                                          widget.idEmprestimo,
-                                          idDispositivo,
-                                        );
-
-                                        await viewmodel.carregarDispositivosDoEmprestimo(
-                                          widget.idEmprestimo,
-                                        );
-                                      }
-                                    },
-                                    style: TextButton.styleFrom(
-                                      backgroundColor: const Color(0xFF2196F3),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
+                                        fixedSize: const Size(130, 30),
                                       ),
-                                      fixedSize: const Size(130, 30),
-                                    ),
-                                    child: const Text(
-                                      'Adicionar',
-                                      style: TextStyle(color: Colors.white),
+                                      child: const Text(
+                                        'Adicionar',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              );
+                                );
+                              }
+                              return const SizedBox.shrink();
                             }
 
                             final itemDoDTO = viewmodel.dispositivosDoEmprestimo[index];
