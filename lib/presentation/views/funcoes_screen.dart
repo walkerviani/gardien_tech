@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gardien_tech/presentation/views/dispositivo_list_screen.dart';
 import 'package:gardien_tech/presentation/views/problema_list_screen.dart';
+import 'package:gardien_tech/presentation/views/relatorios_screen.dart';
 import 'package:gardien_tech/presentation/views/usuario_list_screen.dart';
 
 class FuncoesScreen extends StatelessWidget {
@@ -45,7 +46,9 @@ class FuncoesScreen extends StatelessWidget {
            */
           ElevatedButton(
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => DispositivoListScreen()),
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => DispositivoListScreen()),
               );
             },
             style: ElevatedButton.styleFrom(
@@ -70,7 +73,10 @@ class FuncoesScreen extends StatelessWidget {
            */
           ElevatedButton(
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => ProblemaListScreen()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => ProblemaListScreen()),
+              );
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF006dc4),
@@ -84,7 +90,10 @@ class FuncoesScreen extends StatelessWidget {
               children: [
                 Icon(Icons.report_problem, size: 30),
                 SizedBox(width: 20),
-                Text('Dispositivos com problemas', style: TextStyle(fontSize: 18)),
+                Text(
+                  'Dispositivos com problemas',
+                  style: TextStyle(fontSize: 18),
+                ),
               ],
             ),
           ),
@@ -93,7 +102,12 @@ class FuncoesScreen extends StatelessWidget {
           Botão de exportar relatórios
           */
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => RelatoriosScreen()),
+              );
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF006dc4),
               foregroundColor: Colors.white,
