@@ -1,22 +1,16 @@
+import 'package:drift/drift.dart';
 import 'package:gardien_tech/data/database.dart';
+import 'package:gardien_tech/data/datasources/dispositivo_datasource.dart';
+import 'package:gardien_tech/data/datasources/emprestimo_dispositivos_datasource.dart';
 import 'package:gardien_tech/data/datasources/emprestimo_item_datasource.dart';
 import 'package:gardien_tech/data/dto/emprestimo_item_com_dispositivo_dto.dart';
-import 'package:gardien_tech/domain/entities/dispositivo.dart';
 import 'package:gardien_tech/domain/entities/emprestimo_item.dart';
-import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
-import 'package:gardien_tech/domain/repositories/emprestimo_dispositivo_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_item_repository.dart';
 
 class EmprestimoItemRepositoryImpl implements EmprestimoItemRepository {
   final AppDatabase _database;
-  final EmprestimoDispositivoRepository _edRepository;
-  final DispositivoRepository _dispositivoRepository;
 
-  EmprestimoItemRepositoryImpl(
-    this._database,
-    this._edRepository,
-    this._dispositivoRepository,
-  );
+  EmprestimoItemRepositoryImpl(this._database);
 
   @override
   Future<EmprestimoItem?> buscarPorId(int id) async {
@@ -64,26 +58,57 @@ class EmprestimoItemRepositoryImpl implements EmprestimoItemRepository {
   @override
   Future<List<EmprestimoItemComDispositivoDTO>>
   buscarEmprestimoItemComDispositivo(int idEmprestimo) async {
-    final itens = await buscarPorEmprestimo(idEmprestimo);
-    return Future.wait(
-      itens.map((item) async {
-        final dispositivosVinculados = await _edRepository
-            .buscarPorEmprestimoItem(item.id!);
-        final dispositivosObj = await Future.wait(
-          dispositivosVinculados
-              .where((emprDisp) => emprDisp.idDispositivo != null)
-              .map(
-                (emprDisp) =>
-                    _dispositivoRepository.buscarPorId(emprDisp.idDispositivo!),
-              ),
-        );
-        return EmprestimoItemComDispositivoDTO(
-          item,
-          dispositivosVinculados,
-          dispositivosObj.whereType<Dispositivo>().toList(),
-        );
-      }),
-    );
+    final rows = await (_database.select(_database.emprestimoItens)
+      ..where((ei) => ei.idEmprestimo.equals(idEmprestimo)))
+      .join([
+        leftOuterJoin(
+          _database.emprestimoDispositivos,
+          _database.emprestimoDispositivos.idEmprestimoItem
+              .equalsExp(_database.emprestimoItens.id),
+        ),
+        leftOuterJoin(
+          _database.dispositivos,
+          _database.dispositivos.id.equalsExp(
+            _database.emprestimoDispositivos.idDispositivo,
+          ),
+        ),
+      ])
+      .get();
+
+    // Agrupa os resultados por EmprestimoItem
+    final Map<int, EmprestimoItemData> itensMap = {};
+    final Map<int, List<EmprestimoDispositivoData>> dispositivosMap = {};
+    final Map<int, List<DispositivoData>> dispositivosObjMap = {};
+
+    for (final row in rows) {
+      final item = row.readTable(_database.emprestimoItens);
+      final emprDisp = row.readTableOrNull(_database.emprestimoDispositivos);
+      final dispositivo = row.readTableOrNull(_database.dispositivos);
+
+      if (!itensMap.containsKey(item.id)) {
+        itensMap[item.id] = item;
+        dispositivosMap[item.id] = [];
+        dispositivosObjMap[item.id] = [];
+      }
+
+      if (emprDisp != null) {
+        dispositivosMap[item.id]!.add(emprDisp);
+      }
+      if (dispositivo != null) {
+        dispositivosObjMap[item.id]!.add(dispositivo);
+      }
+    }
+
+    return itensMap.entries.map((entry) {
+      final item = entry.value.toEntity();
+      final empDisps = dispositivosMap[entry.key]!
+          .map((ed) => ed.toEntity())
+          .toList();
+      final disps = dispositivosObjMap[entry.key]!
+          .map((d) => d.toEntity())
+          .toList();
+      return EmprestimoItemComDispositivoDTO(item, empDisps, disps);
+    }).toList();
   }
 
   @override

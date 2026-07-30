@@ -7,6 +7,7 @@ import 'package:gardien_tech/domain/enum/emprestimo_status.dart';
 import 'package:gardien_tech/domain/enum/tipo_dispositivo.dart';
 import 'package:gardien_tech/presentation/viewmodels/emprestimo_detalhe_viewmodel.dart';
 import 'package:gardien_tech/presentation/views/selecionar_dispositivo_screen.dart';
+import 'package:gardien_tech/presentation/widgets/emprestimo_item_skeleton.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -29,24 +30,35 @@ class EmprestimoDetalheScreen extends StatefulWidget {
 }
 
 class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
-  late final List<TextEditingController> _numPatrimonioController = [];
-  final Map<String, TextEditingController> _controllerMap = {};
-
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Carrega o cache de devolvidos quando abre a tela
-      final viewmodel = context.read<EmprestimoDetalheViewmodel>();
-      viewmodel.carregarCacheDevolvidos(widget.idEmprestimo);
-      viewmodel.carregarDispositivosDoEmprestimo(widget.idEmprestimo);
-    });
+
+    // Força o Flutter a renderizar a tela com o Shimmer antes de executar a query
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+    if (!mounted) return;
+
+    await Future.delayed(const Duration(milliseconds: 300));
+    if (!mounted) return;
+
+    final viewmodel = context.read<EmprestimoDetalheViewmodel>();
+    await viewmodel.carregarDispositivosDoEmprestimo(widget.idEmprestimo);
+  });
   }
 
   Future<void> _excluirItemEmprestimo(
     int idEmprestimoDispositivo,
   ) async {
     final viewmodel = context.read<EmprestimoDetalheViewmodel>();
+
+    viewmodel.resetState(); // Reseta o estado na memória e garante isLoading = true do viewmodel
+    // Inicia a busca dos dados após o frame do Shimmer ser desenhado
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        viewmodel.carregarDispositivosDoEmprestimo(widget.idEmprestimo);
+      }
+    });
+
     final resultado = await viewmodel.removerDispositivo(idEmprestimoDispositivo);
 
     if (!mounted || !resultado) return;
@@ -155,18 +167,23 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
               child: Consumer<EmprestimoDetalheViewmodel>(
                 builder: ((context, viewmodel, child) {
                   if (viewmodel.isLoading) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const EmprestimoDetalheSkeleton(); 
                   }
                   if (viewmodel.dispositivosDoEmprestimo.isEmpty) {
                     return const Text('Nenhum dispositivo encontrado');
                   }
+
+                  final tiposMap = {
+                    for (var t in TipoDispositivo.values) t.id: t.nomeTipo,
+                  };
+
                   return Column(
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(bottom: 10),
                         child: Row(
                           children: [
-                            if (widget.idStatus != EmprestimoStatus.concluido.id) ... [
+                            if (!viewmodel.empFinalizado) ...[
                               Expanded(
                                 child: ElevatedButton.icon(
                                   onPressed: () async {
@@ -176,13 +193,18 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
 
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
-                                        content: Text('Todos os dispositivos foram marcados como devolvidos.'),
+                                        content: Text(
+                                          'Todos os dispositivos foram marcados como devolvidos.',
+                                        ),
                                         backgroundColor: Colors.green,
                                       ),
                                     );
                                   },
                                   icon: const Icon(Icons.done_all, color: Colors.white),
-                                  label: const Text('Devolver todos', style: TextStyle(color: Colors.white)),
+                                  label: const Text(
+                                    'Devolver todos',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                   style: TextButton.styleFrom(
                                     backgroundColor: const Color(0xFF2196F3),
                                     shape: RoundedRectangleBorder(
@@ -232,7 +254,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                                   ),
                                 ),
                               ),
-                            ]
+                            ],
                           ],
                         ),
                       ),
@@ -241,7 +263,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                           itemCount: viewmodel.dispositivosDoEmprestimo.length + 1,
                           itemBuilder: (context, index) {
                             if (index == viewmodel.dispositivosDoEmprestimo.length) {
-                              if(widget.idStatus != EmprestimoStatus.concluido.id){
+                              if (!viewmodel.empFinalizado) {
                                 return Padding(
                                   // Botão adicionar
                                   padding: const EdgeInsets.symmetric(vertical: 20),
@@ -266,7 +288,6 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                                         if (resultado != null) {
                                           final idDispositivo =
                                               resultado['idDispositivo'] as int;
-                                          _controllerMap.clear();
 
                                           await viewmodel.adicionarDispositivo(
                                             widget.idEmprestimo,
@@ -295,71 +316,38 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                               }
                               return const SizedBox.shrink();
                             }
-
+                            
+                            // Mapeia os dados para acelerar a busca de itens e usa Column para otimizar a renderização.
                             final itemDoDTO = viewmodel.dispositivosDoEmprestimo[index];
                             final emprestimoItem = itemDoDTO.item;
                             final tipoDispositivo =
-                                TipoDispositivo.values
-                                        .where(
-                                          (tipo) =>
-                                              tipo.id == emprestimoItem.idTipoDispositivo,
-                                        )
-                                        .firstOrNull
-                                        ?.nomeTipo ??
-                                    'Tipo não encontrado';
+                                tiposMap[emprestimoItem.idTipoDispositivo] ??
+                                'Tipo não encontrado';
 
-                            if (viewmodel.empFinalizado) {
-                              return ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: itemDoDTO.dispositivos.length,
-                                itemBuilder: (context, indexUnidade) {
-                                  final emprDisp = itemDoDTO.dispositivos[indexUnidade];
-                                  final dispositivosEncontrados = itemDoDTO.dispositivosObj
-                                      .where((d) => d.id == emprDisp.idDispositivo)
-                                      .toList();
-                                  final dispositivo = dispositivosEncontrados.firstOrNull;
+                            final dispObjMap = {
+                              for (var d in itemDoDTO.dispositivosObj) d.id: d,
+                            };
 
-                                  return Card(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10),
-                                      child: _cardFinalizado(
-                                        dispositivo!,
-                                        tipoDispositivo,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              );
-                            }
-
-                            return ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: itemDoDTO.dispositivos.length,
-                              itemBuilder: (context, indexUnidade) {
-                                final emprDisp = itemDoDTO.dispositivos[indexUnidade];
-                                final dispositivosEncontrados = itemDoDTO.dispositivosObj
-                                    .where((d) => d.id == emprDisp.idDispositivo)
-                                    .toList();
-
-                                final dispositivo = dispositivosEncontrados.isNotEmpty
-                                    ? dispositivosEncontrados.first
-                                    : null;
+                            return Column(
+                              children: itemDoDTO.dispositivos.map((emprDisp) {
+                                final dispositivo = dispObjMap[emprDisp.idDispositivo];
 
                                 return Card(
+                                  key: ValueKey(emprDisp.id),
                                   child: Padding(
                                     padding: const EdgeInsets.all(10),
-                                    child: _cardItens(
-                                      itemDoDTO,
-                                      emprestimoItem,
-                                      tipoDispositivo,
-                                      dispositivo,
-                                      emprDisp,
-                                    ),
+                                    child: viewmodel.empFinalizado
+                                        ? _cardFinalizado(dispositivo!, tipoDispositivo)
+                                        : _cardItens(
+                                            itemDoDTO,
+                                            emprestimoItem,
+                                            tipoDispositivo,
+                                            dispositivo,
+                                            emprDisp,
+                                          ),
                                   ),
                                 );
-                              },
+                              }).toList(),
                             );
                           },
                         ),
@@ -368,7 +356,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                   );
                 }),
               ),
-            ),
+            )
           ],
         ),
       ),
@@ -376,16 +364,21 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
       Botões Excluir e Finalizar
       */
       bottomNavigationBar: Consumer<EmprestimoDetalheViewmodel>(
-        builder: (_, viewmodel, _) {
-          if (viewmodel.empFinalizado) {
+        builder: (context, viewmodel, _) {
+          // Verifica se está finalizado
+        final bool isFinalizado = widget.idStatus == EmprestimoStatus.concluido.id || viewmodel.empFinalizado;
+
+          if (isFinalizado) {
             return SizedBox.shrink();
           }
+
           return SafeArea(
             child: Container(
               padding: EdgeInsets.all(10),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  // Botão Excluir Empréstimo
                   ElevatedButton(
                     onPressed: () async {
                       return showDialog(
@@ -407,7 +400,6 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                             TextButton(
                               onPressed: () async {
                                 Navigator.pop(context);
-                                final viewmodel = context.read<EmprestimoDetalheViewmodel>();
                                 final sucesso = await viewmodel.excluirEmprestimo(widget.idEmprestimo);
                                 if (!context.mounted) return;
                                 if (sucesso) {
@@ -451,6 +443,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                     ),
                   ),
                   SizedBox(height: 10),
+                  // Botão Finalizar
                   ElevatedButton(
                     onPressed: () async {
                       final sucesso = await viewmodel.finalizarEmprestimo(
@@ -780,15 +773,4 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
       ],
     );
   }
-
-  @override
-  void dispose() {
-    for (var controller in _numPatrimonioController) {
-      controller.dispose();
-    }
-    for (var controller in _controllerMap.values) {
-      controller.dispose();
-    }
-    super.dispose();
-  }
-}
+} 

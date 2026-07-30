@@ -28,17 +28,34 @@ class AppDatabase extends _$AppDatabase {
 
   @override
   int get schemaVersion => 1;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onCreate: (m) async {
+      await m.createAll();
+    },
+    onUpgrade: (m, from, to) async {
+      // Lógica de migração caso existam dados prévios
+    },
+    beforeOpen: (details) async {
+      await customStatement('PRAGMA foreign_keys = ON;');
+      await customStatement('PRAGMA journal_mode = WAL;');
+      
+      // Índices para otimização de query
+      await customStatement(
+        'CREATE INDEX IF NOT EXISTS idx_emp_disp_item ON emprestimo_dispositivos(id_emprestimo_item);',
+      );
+      await customStatement(
+        'CREATE INDEX IF NOT EXISTS idx_emp_item_emprestimo ON emprestimo_itens(id_emprestimo);',
+      );
+    },
+  );
 }
 
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     final dbFolder = await getApplicationDocumentsDirectory();
     final file = File(p.join(dbFolder.path, 'gardien_tech.db'));
-    return NativeDatabase.createInBackground(
-      file,
-      setup: (db) {
-        db.execute('PRAGMA foreign_keys = ON');
-      },
-    );
+    return NativeDatabase.createInBackground(file);
   });
 }

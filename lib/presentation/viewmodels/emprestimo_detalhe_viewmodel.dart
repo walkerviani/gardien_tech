@@ -29,21 +29,18 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
     this._empDispositivoRepository,
   );
 
-  bool isLoading = false;
+  bool isLoading = true; // true por padrão para permitir a renderização do Shimmer
   String? errorMessage;
-  List<EmprestimoItemComDispositivoDTO> dispositivosDoEmprestimo =
-      []; // Lista dos dispositivos presente no emprestimo
-  List<EmprestimoItem> empItens =
-      []; // Lista usada para verificar a devolução dos dispositivos de cada emprestimo_item
-  bool empFinalizado =
-      false; // Usado para controlar a visualização da lista na tela (entre edição e leitura)
+  List<EmprestimoItemComDispositivoDTO> dispositivosDoEmprestimo = []; // Lista dos dispositivos presente no emprestimo
+  List<EmprestimoItem> empItens = []; // Lista usada para verificar a devolução dos dispositivos de cada emprestimo_item
+  bool empFinalizado = false; // Usado para controlar a visualização da lista na tela (entre edição e leitura)
 
-  // Carrega o estado salvo do cache
+  // Restaura na memória local o estado das marcações de devolução (checkboxes) dos dispositivos de um empréstimo
   Future<void> carregarCacheDevolvidos(int idEmprestimo) async {
     final prefs = await SharedPreferences.getInstance();
     _dispositivosDevolvidos.clear();
 
-    // Busca todas as chaves que começam com "devolvido_emp{idEmprestimo}_"
+    // Busca as chaves gravadas no armazenamento e seleciona apenas as que começam com o padrão "devolvido_emp{idEmprestimo}_"
     final chaves = prefs.getKeys();
     for (var chave in chaves) {
       if (chave.startsWith('devolvido_emp${idEmprestimo}_')) {
@@ -53,12 +50,10 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
         _dispositivosDevolvidos[idEmpDisp] = valor;
       }
     }
-    notifyListeners();
   }
 
   // Salva o estado no cache quando marca/desmarca
-  Future<void> salvarCacheDevolvido(
-      int idEmprestimo, int idEmpDisp, bool marcado) async {
+  Future<void> salvarCacheDevolvido(int idEmprestimo, int idEmpDisp, bool marcado) async {
     final prefs = await SharedPreferences.getInstance();
     final chave = 'devolvido_emp${idEmprestimo}_$idEmpDisp';
     await prefs.setBool(chave, marcado);
@@ -74,12 +69,21 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
   Future<void> carregarDispositivosDoEmprestimo(int idEmprestimo) async {
     isLoading = true;
     errorMessage = null;
+    dispositivosDoEmprestimo = [];
     notifyListeners();
 
+    await Future.delayed(Duration.zero);
+
     try {
-      dispositivosDoEmprestimo = await _empItemRepository
-          .buscarEmprestimoItemComDispositivo(idEmprestimo);
-      await verificarStatusEmprestimo(idEmprestimo);
+      // Carrega banco de dados e cache em paralelo com a tela Shimmer
+      final resultados = await Future.wait([
+        _empItemRepository.buscarEmprestimoItemComDispositivo(idEmprestimo),
+        carregarCacheDevolvidos(idEmprestimo),
+        verificarStatusEmprestimo(idEmprestimo),
+      ]);
+
+      dispositivosDoEmprestimo =
+          resultados[0] as List<EmprestimoItemComDispositivoDTO>;
     } catch (e) {
       errorMessage = "Erro ao carregar o empréstimo";
       dispositivosDoEmprestimo = [];
@@ -94,13 +98,13 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
     Emprestimo? emprestimo = await _emprestimoRepository.buscarPorId(
       idEmprestimo,
     );
-    if (emprestimo!.idStatus == 3) {
+    if (emprestimo != null && emprestimo.idStatus == 3) {
       // Status finalizado
       empFinalizado = true;
     } else {
       empFinalizado = false;
     }
-    return false;
+    return empFinalizado;
   }
 
   // Adiciona um novo emprestimo_dispositivo com um objeto dispositivo já vinculado ao emprestimo_item
@@ -199,10 +203,6 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
 
   // Exclui empréstimo não finalizado e libera os dispositivos vinculados
   Future<bool> excluirEmprestimo(int idEmprestimo) async {
-    isLoading = true;
-    errorMessage = null;
-    notifyListeners();
-
     try {
       final itensDTO = await _empItemRepository
           .buscarEmprestimoItemComDispositivo(idEmprestimo);
@@ -375,5 +375,14 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
       errorMessage = 'Erro ao desmarcar todos os dispositivos.';
       return false;
     }
+  }
+
+  void resetState() {
+    isLoading = true;
+    errorMessage = null;
+    empFinalizado = false;
+    dispositivosDoEmprestimo.clear();
+    empItens.clear();
+    notifyListeners();
   }
 }
