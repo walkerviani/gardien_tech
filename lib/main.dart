@@ -101,6 +101,7 @@ void main() {
             context.read<EmprestimoItemRepository>(),
             context.read<EmprestimoDispositivoRepository>(),
             context.read<DispositivoRepository>(),
+            context.read<EmprestimoRepository>(),
           ),
         ),
 
@@ -159,6 +160,7 @@ void main() {
             RelatorioPdfService(),
             context.read<DispositivoRepository>(),
             context.read<ProblemaRepository>(),
+            context.read<EmprestimoService>(),
           ),
         ),
       ],

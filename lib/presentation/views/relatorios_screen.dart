@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gardien_tech/presentation/viewmodels/relatorios_viewmodel.dart';
 import 'package:gardien_tech/presentation/views/visualizar_pdf_screen.dart';
@@ -21,7 +22,73 @@ class RelatoriosScreen extends StatelessWidget {
         child: Column(
           children: [
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                DateTime dataSelecionada = DateTime.now();
+
+                showDialog(
+                  context: context,
+                  builder: (dialogContext) => AlertDialog(
+                    title: Text('Selecione a data'),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    backgroundColor: Colors.white,
+                    content: Container(
+                      height: 250,
+                      width: 300,
+                      color: Colors.white,
+                      child: CupertinoDatePicker(
+                        // Calendário
+                        initialDateTime: dataSelecionada,
+                        mode: CupertinoDatePickerMode.date,
+                        dateOrder: DatePickerDateOrder.dmy,
+                        onDateTimeChanged: (novaData) {
+                          dataSelecionada = novaData;
+                        },
+                        backgroundColor: Colors.white,
+                        minimumYear: DateTime.now().year - 3,
+                        maximumYear: DateTime.now().year + 3,
+                      ),
+                    ),
+                    actionsAlignment: MainAxisAlignment.center,
+                    actions: [
+                      TextButton(
+                        onPressed: () async {
+                          Navigator.pop(dialogContext);
+                          final bytes = await viewmodel.gerarRelatorioEmpDia(
+                            dataSelecionada,
+                          );
+
+                          if (!context.mounted) return;
+
+                          if (bytes == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Não foi possível gerar o PDF'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                            return;
+                          }
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => VisualizarPdfScreen(
+                                'Empréstimos por data',
+                                (format) async => bytes,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Selecionar',
+                          style: TextStyle(color: Color(0xFF000000)),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF006dc4),
                 foregroundColor: const Color(0xFFFFFFFF),
