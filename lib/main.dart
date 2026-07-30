@@ -27,11 +27,13 @@ import 'package:gardien_tech/presentation/viewmodels/dispositivo_problema_list_v
 import 'package:gardien_tech/presentation/viewmodels/emprestimo_list_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/problema_form_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/problema_list_viewmodel.dart';
+import 'package:gardien_tech/presentation/viewmodels/relatorios_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/selecionar_dispositivo_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/usuario_form_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/usuario_list_viewmodel.dart';
 
 import 'package:gardien_tech/presentation/views/main_screen.dart';
+import 'package:gardien_tech/utils/relatorio_pdf_service.dart';
 
 void main() {
   final database = AppDatabase();
@@ -68,11 +70,9 @@ void main() {
         // ==========================
         // REPOSITÓRIOS DE EMPRÉSTIMO
         // ==========================
-
         Provider<EmprestimoDispositivoRepository>(
-          create: (context) => EmprestimoDispositivoRepositoryImpl(
-            context.read<AppDatabase>(),
-          ),
+          create: (context) =>
+              EmprestimoDispositivoRepositoryImpl(context.read<AppDatabase>()),
         ),
 
         // Depende de:
@@ -145,13 +145,18 @@ void main() {
 
         ChangeNotifierProvider<EmprestimoListViewmodel>(
           create: (context) =>
-              EmprestimoListViewmodel(
-                context.read<EmprestimoRepository>(),
-              ),
+              EmprestimoListViewmodel(context.read<EmprestimoRepository>()),
         ),
 
         ChangeNotifierProvider<SelecionarDispositivoViewmodel>(
           create: (context) => SelecionarDispositivoViewmodel(
+            context.read<DispositivoRepository>(),
+          ),
+        ),
+
+        ChangeNotifierProvider<RelatoriosViewmodel>(
+          create: (context) => RelatoriosViewmodel(
+            RelatorioPdfService(),
             context.read<DispositivoRepository>(),
           ),
         ),
