@@ -1,3 +1,4 @@
+import 'package:gardien_tech/data/dto/emprestimo_relatorio_dto.dart';
 import 'package:gardien_tech/domain/entities/emprestimo_dispositivo.dart';
 import 'package:gardien_tech/domain/entities/emprestimo_item.dart';
 import 'package:gardien_tech/domain/enum/dispositivo_status.dart';
@@ -5,6 +6,7 @@ import 'package:gardien_tech/domain/enum/dispositivo_status.dart';
 import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_dispositivo_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_item_repository.dart';
+import 'package:gardien_tech/domain/repositories/emprestimo_repository.dart';
 
 import 'package:gardien_tech/domain/services/emprestimo_service.dart';
 
@@ -14,11 +16,13 @@ class EmprestimoServiceImpl implements EmprestimoService {
   final EmprestimoItemRepository _emprestimoItemRepository;
   final EmprestimoDispositivoRepository _emprestimoDispRepository;
   final DispositivoRepository _dispositivoRepository;
+  final EmprestimoRepository _emprestimoRepository;
 
   EmprestimoServiceImpl(
     this._emprestimoItemRepository,
     this._emprestimoDispRepository,
     this._dispositivoRepository,
+    this._emprestimoRepository,
   );
 
   //  Desfazer a associação. Usado quando o dispositivo errado foi associado
@@ -224,5 +228,23 @@ class EmprestimoServiceImpl implements EmprestimoService {
         EmprestimoDispositivo(null, empItem.id!, idDispositivo: null),
       );
     }
+  }
+
+  @override
+  Future<List<EmprestimoRelatorioDTO>> buscarEmprestimoPorDia(
+    DateTime data,
+  ) async {
+    final emprestimos = await _emprestimoRepository.buscarPorDiaComDetalhes(
+      data,
+    );
+
+    return Future.wait(
+      emprestimos.map((emprestimo) async {
+        final itens = await _emprestimoItemRepository
+            .buscarEmprestimoItemComDispositivo(emprestimo.idEmprestimo);
+
+        return EmprestimoRelatorioDTO(emprestimo, itens);
+      }),
+    );
   }
 }

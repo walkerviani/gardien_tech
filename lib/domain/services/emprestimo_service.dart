@@ -1,3 +1,5 @@
+import 'package:gardien_tech/data/dto/emprestimo_relatorio_dto.dart';
+
 abstract class EmprestimoService {
   Future<void> desvincularDispositivo(int idEmprestimoDispositivo);
 
@@ -21,4 +23,6 @@ abstract class EmprestimoService {
     int quantidade,
     int idTipoDispositivo,
   );
+
+  Future<List<EmprestimoRelatorioDTO>> buscarEmprestimoPorDia(DateTime data);
 }
