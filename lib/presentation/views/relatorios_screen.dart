@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:gardien_tech/presentation/viewmodels/relatorios_viewmodel.dart';
+import 'package:gardien_tech/presentation/views/visualizar_pdf_screen.dart';
+import 'package:provider/provider.dart';
 
 class RelatoriosScreen extends StatelessWidget {
   const RelatoriosScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final viewmodel = context.watch<RelatoriosViewmodel>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Relatórios'),
@@ -76,7 +81,31 @@ class RelatoriosScreen extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () async {
+                final bytes = await viewmodel.gerarRelatorioDispositivos();
+
+                if (!context.mounted) return;
+
+                if (bytes == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Não foi possível gerar o PDF'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                }
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => VisualizarPdfScreen(
+                      'Dispositivos cadastrados',
+                      (format) async => bytes,
+                    ),
+                  ),
+                );
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF006dc4),
                 foregroundColor: const Color(0xFFFFFFFF),
