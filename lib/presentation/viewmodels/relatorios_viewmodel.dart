@@ -1,13 +1,30 @@
 import 'package:flutter/foundation.dart';
 import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
+import 'package:gardien_tech/domain/repositories/problema_repository.dart';
 import 'package:gardien_tech/utils/relatorio_pdf_service.dart';
 
 class RelatoriosViewmodel extends ChangeNotifier {
   final RelatorioPdfService _relatorioPdfService;
   final DispositivoRepository _dispositivoRepository;
+  final ProblemaRepository _problemaRepository;
 
-  RelatoriosViewmodel(this._relatorioPdfService, this._dispositivoRepository);
+  RelatoriosViewmodel(
+    this._relatorioPdfService,
+    this._dispositivoRepository,
+    this._problemaRepository,
+  );
   String? errorMessage;
+
+  Future<Uint8List?> gerarRelatorioProblemas() async {
+    try {
+      final problemas = await _problemaRepository
+          .buscarProblemasAtivosComDispositivos();
+      return _relatorioPdfService.gerarPdfProblemas(problemas);
+    } catch (e) {
+      errorMessage = 'Erro ao gerar relatório';
+      return null;
+    }
+  }
 
   Future<Uint8List?> gerarRelatorioDispositivos() async {
     try {

@@ -62,7 +62,31 @@ class RelatoriosScreen extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () async {
+                final bytes = await viewmodel.gerarRelatorioProblemas();
+
+                if (!context.mounted) return;
+
+                if (bytes == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Não foi possível gerar o PDF'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                }
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => VisualizarPdfScreen(
+                      'Problemas relatados',
+                      (format) async => bytes,
+                    ),
+                  ),
+                );
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF006dc4),
                 foregroundColor: const Color(0xFFFFFFFF),

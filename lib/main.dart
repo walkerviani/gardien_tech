@@ -158,6 +158,7 @@ void main() {
           create: (context) => RelatoriosViewmodel(
             RelatorioPdfService(),
             context.read<DispositivoRepository>(),
+            context.read<ProblemaRepository>(),
           ),
         ),
       ],
