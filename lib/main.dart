@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gardien_tech/presentation/viewmodels/selecionar_usuario_viewmodel.dart';
-import 'package:gardien_tech/presentation/views/selecionar_usuario_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'package:gardien_tech/data/database.dart';

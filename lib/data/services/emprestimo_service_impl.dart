@@ -1,7 +1,6 @@
 import 'package:gardien_tech/data/dto/emprestimo_relatorio_dto.dart';
 import 'package:gardien_tech/domain/entities/emprestimo_dispositivo.dart';
 import 'package:gardien_tech/domain/entities/emprestimo_item.dart';
-import 'package:gardien_tech/domain/entities/usuario.dart';
 import 'package:gardien_tech/domain/enum/dispositivo_status.dart';
 
 import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
