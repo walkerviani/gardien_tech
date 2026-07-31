@@ -68,4 +68,20 @@ class UsuarioRepositoryImpl implements UsuarioRepository {
   Future<void> deletar(int id) async {
     await (_database.delete(_database.usuarios)..where((u) => u.id.equals(id))).go();
   }
+
+  @override
+  Future<List<Usuario>> buscarDescricao(String filtro) async {
+    final f = filtro.trim();
+
+    if (f.isEmpty) return [];
+
+    final query = _database.select(_database.usuarios)
+      ..where((d) =>
+          // Usa índice para otimização
+          d.nome.like('$f%'))
+      ..limit(15);
+
+    final rows = await query.get();
+    return rows.map((d) => d.toEntity()).toList();
+  }
 }

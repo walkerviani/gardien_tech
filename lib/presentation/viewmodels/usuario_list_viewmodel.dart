@@ -9,7 +9,10 @@ class UsuarioListViewmodel extends ChangeNotifier {
 
   bool isLoading = false;
   String? errorMessage;
+
   List<Usuario> usuarios = [];
+  List<Usuario> todosUsuarios = [];
+  String termoBusca = '';
 
   Future<void> carregarUsuarios() async {
     isLoading = true;
@@ -41,6 +44,29 @@ class UsuarioListViewmodel extends ChangeNotifier {
         errorMessage = 'Erro ao excluir o usuário';
       }
       return false;
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> pesquisar(String termo) async {
+    final query = termo.trim();
+
+    if (query.isEmpty) {
+      await carregarUsuarios();
+      return;
+    }
+
+    isLoading = true;
+    errorMessage = null;
+    notifyListeners();
+
+    try {
+      usuarios = await _repository.buscarDescricao(query);
+    } catch (e) {
+      errorMessage = 'Erro ao pesquisar os usuários';
+      usuarios = [];
     } finally {
       isLoading = false;
       notifyListeners();
