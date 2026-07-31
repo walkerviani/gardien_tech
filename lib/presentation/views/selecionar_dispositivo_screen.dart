@@ -19,8 +19,9 @@ class SelecionarDispositivoScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _SelecionarDispositivoScreenState();
 }
 
-class _SelecionarDispositivoScreenState
-    extends State<SelecionarDispositivoScreen> {
+class _SelecionarDispositivoScreenState extends State<SelecionarDispositivoScreen> {
+  final TextEditingController _searchController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -30,6 +31,17 @@ class _SelecionarDispositivoScreenState
             idsParaIgnorar: widget.idsParaIgnorar,
           );
     });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _executarPesquisa() {
+    final termo = _searchController.text;
+    context.read<SelecionarDispositivoViewmodel>().pesquisar(termo);
   }
 
   IconData _selecionarIcone(int tipoDispositivo) {
@@ -84,6 +96,43 @@ class _SelecionarDispositivoScreenState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+          /*
+          Campo de pesquisa de dispositivo
+          */
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable: _searchController,
+            builder: (context, value, child) {
+              final possuiTexto = value.text.isNotEmpty;
+
+              return TextField(
+                controller: _searchController,
+                textInputAction: TextInputAction.search,
+                decoration: InputDecoration(
+                  hintText: 'Digite patrimônio ou série...',
+                  border: const OutlineInputBorder(),
+                  suffixIcon: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      possuiTexto ?
+                        IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: () {
+                            _searchController.clear();
+                            _executarPesquisa();
+                          },
+                        )
+                      : IconButton(
+                          icon: const Icon(Icons.search),
+                          onPressed: _executarPesquisa,
+                        ),
+                    ],
+                  ),
+                ),
+                onSubmitted: (_) => _executarPesquisa(),
+              );
+            },
+          ),
+          const SizedBox(height: 12),
             Expanded(
               child: Consumer<SelecionarDispositivoViewmodel>(
                 builder: (context, viewmodel, child) {
