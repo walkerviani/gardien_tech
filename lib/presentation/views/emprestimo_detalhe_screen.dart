@@ -100,6 +100,14 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
     );
   }
 
+  List<int> _obterIdsDispositivosAtuais() {
+    final viewmodel = context.read<EmprestimoDetalheViewmodel>();
+    return viewmodel.dispositivosDoEmprestimo
+        .expand((dto) => dto.dispositivosObj)
+        .map((d) => d.id!)
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     final String horaFormatada = DateFormat(
@@ -271,6 +279,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                                     child: ElevatedButton(
                                       onPressed: () async {
                                         final viewmodel = context.read<EmprestimoDetalheViewmodel>();
+                                        final idsParaIgnorar = _obterIdsDispositivosAtuais(); // Coleta IDs existentes para filtrar na hora de adicionar ao empréstimo
 
                                         final resultado =
                                             await Navigator.push<Map<String, dynamic>>(
@@ -279,6 +288,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                                             builder: (_) => SelecionarDispositivoScreen(
                                               null,
                                               widget.idEmprestimo,
+                                              idsParaIgnorar: idsParaIgnorar,
                                             ),
                                           ),
                                         );
@@ -516,65 +526,68 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                     fontSize: 14,
                     color: Color(0xFF686767),
                   ),
-                  onTap: dispositivo == null
-                      ? () async {
-                          final resultado = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => SelecionarDispositivoScreen(
-                                emprestimoItem.idTipoDispositivo,
-                                widget.idEmprestimo,
-                              ),
-                            ),
+                  onTap: dispositivo == null ? () async {
+                    final idsParaIgnorar = _obterIdsDispositivosAtuais(); // Coleta IDs existentes para filtrar na hora de adicionar ao empréstimo
+                    final resultado = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => SelecionarDispositivoScreen(
+                          emprestimoItem.idTipoDispositivo,
+                          widget.idEmprestimo,
+                          idsParaIgnorar: idsParaIgnorar,
+                        ),
+                      ),
+                    );
+                    if (!mounted) return;
+                    if (resultado != null) {
+                      final idDispositivo =
+                          resultado['idDispositivo'] as int;
+                      final sucesso = await context
+                          .read<EmprestimoDetalheViewmodel>()
+                          .vincularDispositivo(
+                            empDispositivo.id!,
+                            idDispositivo,
                           );
-                          if (!mounted) return;
-                          if (resultado != null) {
-                            final idDispositivo =
-                                resultado['idDispositivo'] as int;
-                            final sucesso = await context
-                                .read<EmprestimoDetalheViewmodel>()
-                                .vincularDispositivo(
-                                  empDispositivo.id!,
-                                  idDispositivo,
-                                );
-                            if (mounted && sucesso) {
-                              await context
-                                  .read<EmprestimoDetalheViewmodel>()
-                                  .carregarDispositivosDoEmprestimo(
-                                    widget.idEmprestimo,
-                                  );
-                            }
-                          }
-                        }
-                      : () async {
-                          final resultado = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => SelecionarDispositivoScreen(
-                                emprestimoItem.idTipoDispositivo,
-                                widget.idEmprestimo,
-                              ),
-                            ),
+                      if (mounted && sucesso) {
+                        await context
+                            .read<EmprestimoDetalheViewmodel>()
+                            .carregarDispositivosDoEmprestimo(
+                              widget.idEmprestimo,
+                            );
+                      }
+                    }
+                  }
+                  : () async {
+                    final idsParaIgnorar = _obterIdsDispositivosAtuais(); // Coleta IDs existentes para filtrar na hora de adicionar ao empréstimo
+                    final resultado = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => SelecionarDispositivoScreen(
+                          emprestimoItem.idTipoDispositivo,
+                          widget.idEmprestimo,
+                          idsParaIgnorar: idsParaIgnorar,
+                        ),
+                      ),
+                    );
+                    if (!mounted) return;
+                    if (resultado != null) {
+                      final idDispositivo =
+                          resultado['idDispositivo'] as int;
+                      final sucesso = await context
+                          .read<EmprestimoDetalheViewmodel>()
+                          .trocarDispositivo(
+                            empDispositivo.id!,
+                            idDispositivo,
                           );
-                          if (!mounted) return;
-                          if (resultado != null) {
-                            final idDispositivo =
-                                resultado['idDispositivo'] as int;
-                            final sucesso = await context
-                                .read<EmprestimoDetalheViewmodel>()
-                                .trocarDispositivo(
-                                  empDispositivo.id!,
-                                  idDispositivo,
-                                );
-                            if (mounted && sucesso) {
-                              await context
-                                  .read<EmprestimoDetalheViewmodel>()
-                                  .carregarDispositivosDoEmprestimo(
-                                    widget.idEmprestimo,
-                                  );
-                            }
-                          }
-                        },
+                      if (mounted && sucesso) {
+                        await context
+                            .read<EmprestimoDetalheViewmodel>()
+                            .carregarDispositivosDoEmprestimo(
+                              widget.idEmprestimo,
+                            );
+                      }
+                    }
+                  },
                 ),
               ),
               SizedBox(width: 10),

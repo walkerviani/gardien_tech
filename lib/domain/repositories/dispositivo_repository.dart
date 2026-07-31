@@ -13,4 +13,5 @@ abstract class DispositivoRepository {
   Future<void> marcarDisponivel(int id);
   Future<void> marcarIndisponivel(int id);
   Future<int> contarDisponiveisPorTipo(int idTipoDispositivo);
+  Future<List<Dispositivo>> buscarDisponiveisExcluindo({int? idTipoDispositivo, List<int> idsParaIgnorar = const []});
 }

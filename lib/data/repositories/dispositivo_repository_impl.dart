@@ -111,4 +111,23 @@ class DispositivoRepositoryImpl implements DispositivoRepository {
       .getSingleOrNull();
     return result?.toEntity();
   }
+
+  @override
+  Future<List<Dispositivo>> buscarDisponiveisExcluindo({int? idTipoDispositivo, List<int> idsParaIgnorar = const []}) async {
+    final query = _database.select(_database.dispositivos)
+      ..where((d) => d.idStatus.equals(DispositivoStatus.disponivel.id));
+
+    // Filtra por tipo, se informado
+    if (idTipoDispositivo != null) {
+      query.where((d) => d.idTipoDispositivo.equals(idTipoDispositivo));
+    }
+
+    // Ignora dispositivos que já estão na lista
+    if (idsParaIgnorar.isNotEmpty) {
+      query.where((d) => d.id.isNotIn(idsParaIgnorar));
+    }
+
+    final result = await query.get();
+    return result.map((d) => d.toEntity()).toList();
+  }
 }

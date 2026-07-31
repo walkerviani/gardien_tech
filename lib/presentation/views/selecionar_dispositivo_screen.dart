@@ -4,13 +4,15 @@ import 'package:gardien_tech/presentation/viewmodels/selecionar_dispositivo_view
 import 'package:provider/provider.dart';
 
 class SelecionarDispositivoScreen extends StatefulWidget {
-  final int? idtipoDispositivo;
+  final int? idTipoDispositivo;
   final int idEmprestimo;
+  final List<int> idsParaIgnorar; // Lista de IDs para serem ignorados ao adicionar um novo dispositivo
 
   const SelecionarDispositivoScreen(
-    this.idtipoDispositivo,
+    this.idTipoDispositivo,
     this.idEmprestimo, {
     super.key,
+    this.idsParaIgnorar = const [],
   });
 
   @override
@@ -24,8 +26,9 @@ class _SelecionarDispositivoScreenState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<SelecionarDispositivoViewmodel>().carregarDispositivos(
-        widget.idtipoDispositivo,
-      );
+            idTipoDispositivo: widget.idTipoDispositivo,
+            idsParaIgnorar: widget.idsParaIgnorar,
+          );
     });
   }
 
