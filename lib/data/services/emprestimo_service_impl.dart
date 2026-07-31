@@ -1,6 +1,7 @@
 import 'package:gardien_tech/data/dto/emprestimo_relatorio_dto.dart';
 import 'package:gardien_tech/domain/entities/emprestimo_dispositivo.dart';
 import 'package:gardien_tech/domain/entities/emprestimo_item.dart';
+import 'package:gardien_tech/domain/entities/usuario.dart';
 import 'package:gardien_tech/domain/enum/dispositivo_status.dart';
 
 import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
@@ -237,7 +238,25 @@ class EmprestimoServiceImpl implements EmprestimoService {
     final emprestimos = await _emprestimoRepository.buscarPorDiaComDetalhes(
       data,
     );
+    // Mapeia os empréstimos com os seus itens
+    return Future.wait(
+      emprestimos.map((emprestimo) async {
+        final itens = await _emprestimoItemRepository
+            .buscarEmprestimoItemComDispositivo(emprestimo.idEmprestimo);
 
+        return EmprestimoRelatorioDTO(emprestimo, itens);
+      }),
+    );
+  }
+
+  @override
+  Future<List<EmprestimoRelatorioDTO>> buscarEmprestimoPorUsuario(
+    int idUsuario,
+  ) async {
+    final emprestimos = await _emprestimoRepository.buscarPorUsuarioComDetalhes(
+      idUsuario,
+    );
+    // Mapeia os empréstimos com os seus itens
     return Future.wait(
       emprestimos.map((emprestimo) async {
         final itens = await _emprestimoItemRepository
