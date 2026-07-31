@@ -3,6 +3,7 @@ import 'package:gardien_tech/data/dto/dispositivo_com_problema_dto.dart';
 import 'package:gardien_tech/data/dto/emprestimo_item_com_dispositivo_dto.dart';
 import 'package:gardien_tech/data/dto/emprestimo_relatorio_dto.dart';
 import 'package:gardien_tech/domain/entities/dispositivo.dart';
+import 'package:gardien_tech/domain/entities/usuario.dart';
 import 'package:gardien_tech/domain/enum/emprestimo_status.dart';
 import 'package:gardien_tech/domain/enum/tipo_cargo.dart';
 import 'package:gardien_tech/domain/enum/tipo_dispositivo.dart';
@@ -136,6 +137,38 @@ class RelatorioPdfService {
             pw.Divider(),
           ];
         }).toList(),
+      ),
+    );
+    return pdf.save();
+  }
+
+  Future<Uint8List> gerarPdfEmprestimoUsuario(
+    List<EmprestimoRelatorioDTO> relatorios,
+    Usuario usuario,
+  ) async {
+    final bytesLogo = await rootBundle.load('assets/icon/pdf_icon_512x.png');
+    final logo = pw.MemoryImage(bytesLogo.buffer.asUint8List());
+
+    final pdf = pw.Document(theme: await _carregarTema());
+    pdf.addPage(
+      pw.MultiPage(
+        header: (context) => _cabecalho(logo, 'EMPRÉSTIMOS'),
+        build: (context) => [
+          pw.Text(
+            'Usuário: ${usuario.nome}',
+            style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 18),
+          ),
+          pw.SizedBox(height: 5),
+          pw.Divider(),
+          ...relatorios.expand((relatorio) {
+            return [
+              _cabecalhoEmprestimo(relatorio),
+              pw.SizedBox(height: 8),
+              _cabecalhoItens(relatorio.itens),
+              pw.Divider(),
+            ];
+          }),
+        ],
       ),
     );
     return pdf.save();
