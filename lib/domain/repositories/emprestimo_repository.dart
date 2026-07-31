@@ -11,4 +11,7 @@ abstract class EmprestimoRepository {
   Future<void> deletar(int id);
   Future<void> concluir(int id);
   Future<void> definirEmObservacao();
+  Future<List<EmprestimoComDetalhesDTO>> buscarPorUsuarioComDetalhes(
+    int idUsuario,
+  );
 }

@@ -138,4 +138,47 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
           ),
         );
   }
+
+  @override
+  Future<List<EmprestimoComDetalhesDTO>> buscarPorUsuarioComDetalhes(
+    int idUsuario,
+  ) async {
+    final rows = await (_database.select(_database.emprestimos).join([
+      innerJoin(
+        _database.usuarios,
+        _database.emprestimos.idResponsavel.equalsExp(_database.usuarios.id),
+      ),
+      leftOuterJoin(
+        _database.emprestimoItens,
+        _database.emprestimoItens.idEmprestimo.equalsExp(
+          _database.emprestimos.id,
+        ),
+      ),
+    ])..where(_database.usuarios.id.equals(idUsuario))).get();
+
+    final Map<int, EmprestimoComDetalhesDTO> mapa = {};
+
+    for (final row in rows) {
+      final emprestimo = row.readTable(_database.emprestimos);
+      final usuario = row.readTable(_database.usuarios);
+      final emprestimoItem = row.readTableOrNull(_database.emprestimoItens);
+
+      if (mapa.containsKey(emprestimo.id)) {
+        mapa[emprestimo.id]!.qtdSolicitada += emprestimoItem!.qtdSolicitada;
+      } else {
+        mapa[emprestimo.id] = EmprestimoComDetalhesDTO(
+          idEmprestimo: emprestimo.id,
+          idUsuario: usuario.id,
+          idEmprestimoItem: emprestimoItem!.id,
+          idTipoCargo: usuario.idTipoCargo,
+          idStatusEmprestimo: emprestimo.idStatus,
+          qtdSolicitada: emprestimoItem.qtdSolicitada,
+          dataHoraEfetuado: emprestimo.dataHoraEfetuado,
+          nomeUsuario: usuario.nome,
+        );
+      }
+    }
+
+    return mapa.values.toList();
+  }
 }
