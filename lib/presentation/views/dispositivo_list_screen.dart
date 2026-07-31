@@ -15,12 +15,25 @@ class DispositivoListScreen extends StatefulWidget {
 }
 
 class _DispositivoListScreenState extends State<DispositivoListScreen> {
+  final TextEditingController _searchController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<DispositivoListViewmodel>().carregarDispositivos();
     });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _executarPesquisa() {
+    final termo = _searchController.text;
+    context.read<DispositivoListViewmodel>().pesquisar(termo);
   }
 
   void _abrirFormulario({Dispositivo? dispositivo}) async {
@@ -120,6 +133,43 @@ class _DispositivoListScreenState extends State<DispositivoListScreen> {
                   ),
                 ],
               ),
+            ),
+            const SizedBox(height: 12),
+            /*
+            Campo de pesquisa de dispositivo
+            */
+            ValueListenableBuilder<TextEditingValue>(
+              valueListenable: _searchController,
+              builder: (context, value, child) {
+                final possuiTexto = value.text.isNotEmpty;
+
+                return TextField(
+                  controller: _searchController,
+                  textInputAction: TextInputAction.search,
+                  decoration: InputDecoration(
+                    hintText: 'Digite patrimônio ou série...',
+                    border: const OutlineInputBorder(),
+                    suffixIcon: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        possuiTexto ?
+                          IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: () {
+                              _searchController.clear();
+                              _executarPesquisa();
+                            },
+                          )
+                        : IconButton(
+                            icon: const Icon(Icons.search),
+                            onPressed: _executarPesquisa,
+                          ),
+                      ],
+                    ),
+                  ),
+                  onSubmitted: (_) => _executarPesquisa(),
+                );
+              },
             ),
             const SizedBox(height: 12),
             Expanded(
