@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:gardien_tech/domain/entities/usuario.dart';
 import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
 import 'package:gardien_tech/domain/repositories/problema_repository.dart';
 import 'package:gardien_tech/domain/services/emprestimo_service.dart';
@@ -20,10 +21,35 @@ class RelatoriosViewmodel extends ChangeNotifier {
 
   // Relatório de empréstimos do dia selecionado pelo usuário
   Future<Uint8List?> gerarRelatorioEmpDia(DateTime data) async {
+    errorMessage = null;
     try {
       final relatorios = await _emprestimoService.buscarEmprestimoPorDia(data);
-      if (relatorios.isEmpty) return null;
+      if (relatorios.isEmpty) {
+        errorMessage = 'Não foi encontrado nenhum empréstimo nessa data';
+        return null;
+      }
       return _relatorioPdfService.gerarPdfEmprestimoDia(relatorios, data);
+    } catch (e) {
+      errorMessage = 'Erro ao gerar relatório';
+      return null;
+    }
+  }
+
+  // Relatório de empréstimos por usuário
+  Future<Uint8List?> gerarRelatorioEmpUsuario(Usuario usuario) async {
+    errorMessage = null;
+    try {
+      final relatorios = await _emprestimoService.buscarEmprestimoPorUsuario(
+        usuario.id!,
+      );
+      if (relatorios.isEmpty) {
+        errorMessage = 'Não foi encontrado nenhum empréstimo para esse usuário';
+        return null;
+      }
+      return _relatorioPdfService.gerarPdfEmprestimoUsuario(
+        relatorios,
+        usuario,
+      );
     } catch (e) {
       errorMessage = 'Erro ao gerar relatório';
       return null;
@@ -32,10 +58,14 @@ class RelatoriosViewmodel extends ChangeNotifier {
 
   // Relatório de problemas relatados
   Future<Uint8List?> gerarRelatorioProblemas() async {
+    errorMessage = null;
     try {
       final problemas = await _problemaRepository
           .buscarProblemasAtivosComDispositivos();
-      if (problemas.isEmpty) return null;
+      if (problemas.isEmpty) {
+        errorMessage = 'Não foi encontrado nenhum problema';
+        return null;
+      }
       return _relatorioPdfService.gerarPdfProblemas(problemas);
     } catch (e) {
       errorMessage = 'Erro ao gerar relatório';
@@ -45,9 +75,13 @@ class RelatoriosViewmodel extends ChangeNotifier {
 
   // Relatório de dispositivos cadastrados
   Future<Uint8List?> gerarRelatorioDispositivos() async {
+    errorMessage = null;
     try {
       final dispositivos = await _dispositivoRepository.buscarTodos();
-      if (dispositivos.isEmpty) return null;
+      if (dispositivos.isEmpty) {
+        errorMessage = 'Não foi encontrado nenhum dispositivo';
+        return null;
+      }
       return _relatorioPdfService.gerarPdfDispositivos(dispositivos);
     } catch (e) {
       errorMessage = 'Erro ao gerar relatório';

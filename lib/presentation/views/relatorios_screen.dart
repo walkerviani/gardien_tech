@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gardien_tech/domain/entities/usuario.dart';
 import 'package:gardien_tech/presentation/viewmodels/relatorios_viewmodel.dart';
+import 'package:gardien_tech/presentation/views/selecionar_usuario_screen.dart';
 import 'package:gardien_tech/presentation/views/visualizar_pdf_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -63,8 +65,11 @@ class RelatoriosScreen extends StatelessWidget {
 
                           if (bytes == null) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Não foi possível gerar o PDF'),
+                              SnackBar(
+                                content: Text(
+                                  viewmodel.errorMessage ??
+                                      'Não foi possível gerar o PDF',
+                                ),
                                 backgroundColor: Colors.red,
                               ),
                             );
@@ -107,7 +112,38 @@ class RelatoriosScreen extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () async {
+                final usuario = await Navigator.push<Usuario>(
+                  context,
+                  MaterialPageRoute(builder: (_) => SelecionarUsuarioScreen()),
+                );
+                if (usuario == null) return;
+
+                final bytes = await viewmodel.gerarRelatorioEmpUsuario(usuario);
+                if (!context.mounted) return;
+                if (bytes == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        viewmodel.errorMessage ??
+                            'Não foi possível gerar o PDF',
+                      ),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                }
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => VisualizarPdfScreen(
+                      'Empréstimos ${usuario.nome}',
+                      (format) async => bytes,
+                    ),
+                  ),
+                );
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF006dc4),
                 foregroundColor: const Color(0xFFFFFFFF),
@@ -136,8 +172,11 @@ class RelatoriosScreen extends StatelessWidget {
 
                 if (bytes == null) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Não foi possível gerar o PDF'),
+                    SnackBar(
+                      content: Text(
+                        viewmodel.errorMessage ??
+                            'Não foi possível gerar o PDF',
+                      ),
                       backgroundColor: Colors.red,
                     ),
                   );
@@ -179,8 +218,11 @@ class RelatoriosScreen extends StatelessWidget {
 
                 if (bytes == null) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Não foi possível gerar o PDF'),
+                    SnackBar(
+                      content: Text(
+                        viewmodel.errorMessage ??
+                            'Não foi possível gerar o PDF',
+                      ),
                       backgroundColor: Colors.red,
                     ),
                   );
