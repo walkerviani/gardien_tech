@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gardien_tech/presentation/viewmodels/selecionar_usuario_viewmodel.dart';
+import 'package:gardien_tech/presentation/views/selecionar_usuario_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'package:gardien_tech/data/database.dart';
@@ -79,9 +81,8 @@ void main() {
         // EmprestimoDispositivoRepository
         // DispositivoRepository
         Provider<EmprestimoItemRepository>(
-          create: (context) => EmprestimoItemRepositoryImpl(
-            context.read<AppDatabase>(),
-          ),
+          create: (context) =>
+              EmprestimoItemRepositoryImpl(context.read<AppDatabase>()),
         ),
 
         // Depende de:
@@ -160,6 +161,11 @@ void main() {
             context.read<ProblemaRepository>(),
             context.read<EmprestimoService>(),
           ),
+        ),
+
+        ChangeNotifierProvider<SelecionarUsuarioViewmodel>(
+          create: ((context) =>
+              SelecionarUsuarioViewmodel(context.read<UsuarioRepository>())),
         ),
       ],
       child: const MyApp(),
