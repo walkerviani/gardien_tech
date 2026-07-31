@@ -9,7 +9,10 @@ class DispositivoListViewmodel extends ChangeNotifier {
 
   bool isLoading = false;
   String? errorMessage;
+
   List<Dispositivo> dispositivos = [];
+  List<Dispositivo> todosDispositivos = [];
+  String termoBusca = '';
 
   Future<void> carregarDispositivos() async {
     isLoading = true;
@@ -73,6 +76,29 @@ class DispositivoListViewmodel extends ChangeNotifier {
         errorMessage = 'Erro ao excluir o dispositivo';
       }
       return false;
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> pesquisar(String termo) async {
+    final query = termo.trim();
+
+    if (query.isEmpty) {
+      await carregarDispositivos();
+      return;
+    }
+
+    isLoading = true;
+    errorMessage = null;
+    notifyListeners();
+
+    try {
+      dispositivos = await _repository.buscarDescricao(query);
+    } catch (e) {
+      errorMessage = 'Erro ao pesquisar os dispositivos';
+      dispositivos = [];
     } finally {
       isLoading = false;
       notifyListeners();

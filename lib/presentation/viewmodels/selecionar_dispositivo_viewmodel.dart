@@ -10,23 +10,16 @@ class SelecionarDispositivoViewmodel extends ChangeNotifier {
   String? errorMessage;
   List<Dispositivo> dispositivos = [];
 
-  Future<void> carregarDispositivos(int? tipoDispositivo) async {
+  Future<void> carregarDispositivos({int? idTipoDispositivo, List<int> idsParaIgnorar = const []}) async {
     isLoading = true;
     errorMessage = null;
     notifyListeners();
 
     try {
-      if (tipoDispositivo != null) {
-        dispositivos = await _dispositivoRepository.buscarPorTipo(
-          tipoDispositivo,
-        );
-      } else {
-        dispositivos = await _dispositivoRepository.buscarTodos();
-      }
-
-      dispositivos = dispositivos
-          .where((dispositivo) => dispositivo.idStatus == 1)
-          .toList();
+      dispositivos = await _dispositivoRepository.buscarDisponiveisExcluindo(
+        idTipoDispositivo: idTipoDispositivo,
+        idsParaIgnorar: idsParaIgnorar,
+      );
     } catch (e) {
       errorMessage = 'Erro ao carregar os dispositivos';
       dispositivos = [];
