@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:gardien_tech/domain/enum/tipo_cargo.dart';
 import 'package:gardien_tech/presentation/viewmodels/selecionar_usuario_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -12,12 +11,25 @@ class SelecionarUsuarioScreen extends StatefulWidget {
 }
 
 class _SelecionarUsuarioScreenState extends State<SelecionarUsuarioScreen> {
+  final TextEditingController _searchController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<SelecionarUsuarioViewmodel>().carregarUsuarios();
     });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _executarPesquisa() {
+    final termo = _searchController.text;
+    context.read<SelecionarUsuarioViewmodel>().pesquisar(termo);
   }
 
   @override
@@ -33,6 +45,43 @@ class _SelecionarUsuarioScreenState extends State<SelecionarUsuarioScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            /*
+            Campo de pesquisa de usuário
+            */
+            ValueListenableBuilder<TextEditingValue>(
+              valueListenable: _searchController,
+              builder: (context, value, child) {
+                final possuiTexto = value.text.isNotEmpty;
+
+                return TextField(
+                  controller: _searchController,
+                  textInputAction: TextInputAction.search,
+                  decoration: InputDecoration(
+                    hintText: 'Digite o nome...',
+                    border: const OutlineInputBorder(),
+                    suffixIcon: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        possuiTexto ?
+                          IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: () {
+                              _searchController.clear();
+                              _executarPesquisa();
+                            },
+                          )
+                        : IconButton(
+                            icon: const Icon(Icons.search),
+                            onPressed: _executarPesquisa,
+                          ),
+                      ],
+                    ),
+                  ),
+                  onSubmitted: (_) => _executarPesquisa(),
+                );
+              },
+            ),
+            const SizedBox(height: 12),
             Expanded(
               child: Consumer<SelecionarUsuarioViewmodel>(
                 builder: (context, viewmodel, child) {
