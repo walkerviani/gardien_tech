@@ -1,5 +1,4 @@
 import 'package:gardien_tech/data/dto/emprestimo_relatorio_dto.dart';
-import 'package:gardien_tech/domain/entities/usuario.dart';
 
 abstract class EmprestimoService {
   Future<void> desvincularDispositivo(int idEmprestimoDispositivo);
