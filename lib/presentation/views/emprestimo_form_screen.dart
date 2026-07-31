@@ -457,7 +457,7 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
             ...erros.map((erro) => Text('• $erro')),
           ],
         ),
-        backgroundColor: const Color(0xFFB00303),
+        backgroundColor: Colors.red,
         duration: const Duration(seconds: 4),
         behavior: SnackBarBehavior.floating,
       ),
