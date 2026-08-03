@@ -25,4 +25,24 @@ class Dispositivo {
   // Getters
   int? get id => _id;
   int get idTipoDispositivo => _idTipoDispositivo;
+
+  // Json
+  Map<String, dynamic> toJson() {
+    return {
+      'id': _id,
+      'idTipoDispositivo': _idTipoDispositivo,
+      'numSerie': numSerie,
+      'numPatrimonio': numPatrimonio,
+      'idStatus': idStatus,
+    };
+  }
+  factory Dispositivo.fromJson(Map<String, dynamic> json) {
+    return Dispositivo(
+      json['id'] as int?,
+      json['idTipoDispositivo'] as int,
+      json['numSerie'] as String,
+      json['numPatrimonio'] as String,
+      idStatus: json['idStatus'] as int,
+    );
+  }
 }

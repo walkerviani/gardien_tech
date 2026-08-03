@@ -18,4 +18,24 @@ class Emprestimo {
   // Getters
   int? get id => _id;
   int get idResponsavel => _idResponsavel;
+
+  // Json
+  Map<String, dynamic> toJson() {
+    return {
+      'id': _id,
+      'dataHoraEfetuado': dataHoraEfetuado,
+      'dataHoraConcluido': dataHoraConcluido,
+      'idResponsavel': _idResponsavel,
+      'idStatus': idStatus,
+    };
+  }
+  factory Emprestimo.fromJson(Map<String, dynamic> json) {
+    return Emprestimo(
+      json['id'] as int?,
+      dataHoraEfetuado: json['dataHoraEfetuado'] as DateTime,
+      dataHoraConcluido: json['dataHoraConcluido'] as DateTime?,
+      json['idResponsavel'] as int,
+      idStatus: json['idStatus'] as int,
+    );
+  }
 }

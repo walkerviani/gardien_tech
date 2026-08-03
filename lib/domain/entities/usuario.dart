@@ -10,4 +10,20 @@ class Usuario {
   // Getters
   int? get id => _id;
   int get idTipoCargo => _idTipoCargo;
+
+  // Json
+  Map<String, dynamic> toJson() {
+    return {
+      'id': _id,
+      'idTipoCargo': _idTipoCargo,
+      'nome': nome,
+    };
+  }
+  factory Usuario.fromJson(Map<String, dynamic> json) {
+    return Usuario(
+      json['id'] as int?,
+      json['idTipoCargo'] as int,
+      json['nome'] as String,
+    );
+  }
 }
