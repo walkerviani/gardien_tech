@@ -36,22 +36,21 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
 
     // Força o Flutter a renderizar a tela com o Shimmer antes de executar a query
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-    if (!mounted) return;
+      if (!mounted) return;
 
-    await Future.delayed(const Duration(milliseconds: 300));
-    if (!mounted) return;
+      await Future.delayed(const Duration(milliseconds: 300));
+      if (!mounted) return;
 
-    final viewmodel = context.read<EmprestimoDetalheViewmodel>();
-    await viewmodel.carregarDispositivosDoEmprestimo(widget.idEmprestimo);
-  });
+      final viewmodel = context.read<EmprestimoDetalheViewmodel>();
+      await viewmodel.carregarDispositivosDoEmprestimo(widget.idEmprestimo);
+    });
   }
 
-  Future<void> _excluirItemEmprestimo(
-    int idEmprestimoDispositivo,
-  ) async {
+  Future<void> _excluirItemEmprestimo(int idEmprestimoDispositivo) async {
     final viewmodel = context.read<EmprestimoDetalheViewmodel>();
 
-    viewmodel.resetState(); // Reseta o estado na memória e garante isLoading = true do viewmodel
+    viewmodel
+        .resetState(); // Reseta o estado na memória e garante isLoading = true do viewmodel
     // Inicia a busca dos dados após o frame do Shimmer ser desenhado
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
@@ -59,7 +58,9 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
       }
     });
 
-    final resultado = await viewmodel.removerDispositivo(idEmprestimoDispositivo);
+    final resultado = await viewmodel.removerDispositivo(
+      idEmprestimoDispositivo,
+    );
 
     if (!mounted || !resultado) return;
 
@@ -175,7 +176,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
               child: Consumer<EmprestimoDetalheViewmodel>(
                 builder: ((context, viewmodel, child) {
                   if (viewmodel.isLoading) {
-                    return const EmprestimoDetalheSkeleton(); 
+                    return const EmprestimoDetalheSkeleton();
                   }
                   if (viewmodel.dispositivosDoEmprestimo.isEmpty) {
                     return const Text('Nenhum dispositivo encontrado');
@@ -195,7 +196,9 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                               Expanded(
                                 child: ElevatedButton.icon(
                                   onPressed: () async {
-                                    await viewmodel.marcarTodos(widget.idEmprestimo);
+                                    await viewmodel.marcarTodos(
+                                      widget.idEmprestimo,
+                                    );
 
                                     if (!context.mounted) return;
 
@@ -208,7 +211,10 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                                       ),
                                     );
                                   },
-                                  icon: const Icon(Icons.done_all, color: Colors.white),
+                                  icon: const Icon(
+                                    Icons.done_all,
+                                    color: Colors.white,
+                                  ),
                                   label: const Text(
                                     'Devolver todos',
                                     style: TextStyle(color: Colors.white),
@@ -226,33 +232,46 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                               Expanded(
                                 child: ElevatedButton.icon(
                                   onPressed: () async {
-                                    final sucesso = await viewmodel.desmarcarTodos(
-                                      widget.idEmprestimo,
-                                    );
+                                    final sucesso = await viewmodel
+                                        .desmarcarTodos(widget.idEmprestimo);
 
                                     if (!context.mounted) return;
 
                                     if (sucesso) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
                                         const SnackBar(
-                                          content: Text('Todos os dispositivos foram desmarcados.'),
+                                          content: Text(
+                                            'Todos os dispositivos foram desmarcados.',
+                                          ),
                                           backgroundColor: Colors.green,
                                         ),
                                       );
                                     } else {
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
                                         SnackBar(
                                           content: Text(
                                             viewmodel.errorMessage ??
                                                 'Erro ao desmarcar dispositivos.',
                                           ),
-                                          backgroundColor: const Color(0xFFB00303),
+                                          backgroundColor: const Color(
+                                            0xFFB00303,
+                                          ),
                                         ),
                                       );
                                     }
                                   },
-                                  icon: const Icon(Icons.remove_done, color: Colors.white),
-                                  label: const Text('Desfazer devoluções', style: TextStyle(color: Colors.white)),
+                                  icon: const Icon(
+                                    Icons.remove_done,
+                                    color: Colors.white,
+                                  ),
+                                  label: const Text(
+                                    'Desfazer devoluções',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                   style: TextButton.styleFrom(
                                     backgroundColor: const Color(0xFF2196F3),
                                     shape: RoundedRectangleBorder(
@@ -268,30 +287,40 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                       ),
                       Expanded(
                         child: ListView.builder(
-                          itemCount: viewmodel.dispositivosDoEmprestimo.length + 1,
+                          itemCount:
+                              viewmodel.dispositivosDoEmprestimo.length + 1,
                           itemBuilder: (context, index) {
-                            if (index == viewmodel.dispositivosDoEmprestimo.length) {
+                            if (index ==
+                                viewmodel.dispositivosDoEmprestimo.length) {
                               if (!viewmodel.empFinalizado) {
                                 return Padding(
                                   // Botão adicionar
-                                  padding: const EdgeInsets.symmetric(vertical: 20),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 20,
+                                  ),
                                   child: Center(
                                     child: ElevatedButton(
                                       onPressed: () async {
-                                        final viewmodel = context.read<EmprestimoDetalheViewmodel>();
-                                        final idsParaIgnorar = _obterIdsDispositivosAtuais(); // Coleta IDs existentes para filtrar na hora de adicionar ao empréstimo
+                                        final viewmodel = context
+                                            .read<EmprestimoDetalheViewmodel>();
+                                        final idsParaIgnorar =
+                                            _obterIdsDispositivosAtuais(); // Coleta IDs existentes para filtrar na hora de adicionar ao empréstimo
 
                                         final resultado =
-                                            await Navigator.push<Map<String, dynamic>>(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) => SelecionarDispositivoScreen(
-                                              null,
-                                              widget.idEmprestimo,
-                                              idsParaIgnorar: idsParaIgnorar,
-                                            ),
-                                          ),
-                                        );
+                                            await Navigator.push<
+                                              Map<String, dynamic>
+                                            >(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (_) =>
+                                                    SelecionarDispositivoScreen(
+                                                      null,
+                                                      widget.idEmprestimo,
+                                                      idsParaIgnorar:
+                                                          idsParaIgnorar,
+                                                    ),
+                                              ),
+                                            );
 
                                         if (!mounted) return;
 
@@ -304,15 +333,20 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                                             idDispositivo,
                                           );
 
-                                          await viewmodel.carregarDispositivosDoEmprestimo(
-                                            widget.idEmprestimo,
-                                          );
+                                          await viewmodel
+                                              .carregarDispositivosDoEmprestimo(
+                                                widget.idEmprestimo,
+                                              );
                                         }
                                       },
                                       style: TextButton.styleFrom(
-                                        backgroundColor: const Color(0xFF2196F3),
+                                        backgroundColor: const Color(
+                                          0xFF2196F3,
+                                        ),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
                                         ),
                                         fixedSize: const Size(130, 30),
                                       ),
@@ -326,9 +360,10 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                               }
                               return const SizedBox.shrink();
                             }
-                            
+
                             // Mapeia os dados para acelerar a busca de itens e usa Column para otimizar a renderização.
-                            final itemDoDTO = viewmodel.dispositivosDoEmprestimo[index];
+                            final itemDoDTO =
+                                viewmodel.dispositivosDoEmprestimo[index];
                             final emprestimoItem = itemDoDTO.item;
                             final tipoDispositivo =
                                 tiposMap[emprestimoItem.idTipoDispositivo] ??
@@ -340,14 +375,18 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
 
                             return Column(
                               children: itemDoDTO.dispositivos.map((emprDisp) {
-                                final dispositivo = dispObjMap[emprDisp.idDispositivo];
+                                final dispositivo =
+                                    dispObjMap[emprDisp.idDispositivo];
 
                                 return Card(
                                   key: ValueKey(emprDisp.id),
                                   child: Padding(
                                     padding: const EdgeInsets.all(10),
                                     child: viewmodel.empFinalizado
-                                        ? _cardFinalizado(dispositivo!, tipoDispositivo)
+                                        ? _cardFinalizado(
+                                            dispositivo!,
+                                            tipoDispositivo,
+                                          )
                                         : _cardItens(
                                             itemDoDTO,
                                             emprestimoItem,
@@ -366,7 +405,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                   );
                 }),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -376,7 +415,9 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
       bottomNavigationBar: Consumer<EmprestimoDetalheViewmodel>(
         builder: (context, viewmodel, _) {
           // Verifica se está finalizado
-        final bool isFinalizado = widget.idStatus == EmprestimoStatus.concluido.id || viewmodel.empFinalizado;
+          final bool isFinalizado =
+              widget.idStatus == EmprestimoStatus.concluido.id ||
+              viewmodel.empFinalizado;
 
           if (isFinalizado) {
             return SizedBox.shrink();
@@ -410,12 +451,15 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                             TextButton(
                               onPressed: () async {
                                 Navigator.pop(context);
-                                final sucesso = await viewmodel.excluirEmprestimo(widget.idEmprestimo);
+                                final sucesso = await viewmodel
+                                    .excluirEmprestimo(widget.idEmprestimo);
                                 if (!context.mounted) return;
                                 if (sucesso) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                      content: Text('Empréstimo excluído com sucesso'),
+                                      content: Text(
+                                        'Empréstimo excluído com sucesso',
+                                      ),
                                       backgroundColor: Colors.blueGrey,
                                     ),
                                   );
@@ -424,16 +468,17 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text(
-                                        viewmodel.errorMessage ?? 'Erro ao excluir o empréstimo',
+                                        viewmodel.errorMessage ??
+                                            'Erro ao excluir o empréstimo',
                                       ),
-                                      backgroundColor: const Color(0xFFB00303),
+                                      backgroundColor: Colors.red,
                                     ),
                                   );
                                 }
                               },
                               child: const Text(
                                 'Excluir',
-                                style: TextStyle(color: Color(0xFFB00303)),
+                                style: TextStyle(color: Colors.red),
                               ),
                             ),
                           ],
@@ -467,7 +512,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                             content: const Text(
                               "Verifique se todos os dispositivos foram devolvidos",
                             ),
-                            backgroundColor: const Color(0xFFB00303),
+                            backgroundColor: Colors.red,
                           ),
                         );
                       } else {
@@ -526,68 +571,71 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                     fontSize: 14,
                     color: Color(0xFF686767),
                   ),
-                  onTap: dispositivo == null ? () async {
-                    final idsParaIgnorar = _obterIdsDispositivosAtuais(); // Coleta IDs existentes para filtrar na hora de adicionar ao empréstimo
-                    final resultado = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => SelecionarDispositivoScreen(
-                          emprestimoItem.idTipoDispositivo,
-                          widget.idEmprestimo,
-                          idsParaIgnorar: idsParaIgnorar,
-                        ),
-                      ),
-                    );
-                    if (!mounted) return;
-                    if (resultado != null) {
-                      final idDispositivo =
-                          resultado['idDispositivo'] as int;
-                      final sucesso = await context
-                          .read<EmprestimoDetalheViewmodel>()
-                          .vincularDispositivo(
-                            empDispositivo.id!,
-                            idDispositivo,
+                  onTap: dispositivo == null
+                      ? () async {
+                          final idsParaIgnorar =
+                              _obterIdsDispositivosAtuais(); // Coleta IDs existentes para filtrar na hora de adicionar ao empréstimo
+                          final resultado = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => SelecionarDispositivoScreen(
+                                emprestimoItem.idTipoDispositivo,
+                                widget.idEmprestimo,
+                                idsParaIgnorar: idsParaIgnorar,
+                              ),
+                            ),
                           );
-                      if (mounted && sucesso) {
-                        await context
-                            .read<EmprestimoDetalheViewmodel>()
-                            .carregarDispositivosDoEmprestimo(
-                              widget.idEmprestimo,
-                            );
-                      }
-                    }
-                  }
-                  : () async {
-                    final idsParaIgnorar = _obterIdsDispositivosAtuais(); // Coleta IDs existentes para filtrar na hora de adicionar ao empréstimo
-                    final resultado = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => SelecionarDispositivoScreen(
-                          emprestimoItem.idTipoDispositivo,
-                          widget.idEmprestimo,
-                          idsParaIgnorar: idsParaIgnorar,
-                        ),
-                      ),
-                    );
-                    if (!mounted) return;
-                    if (resultado != null) {
-                      final idDispositivo =
-                          resultado['idDispositivo'] as int;
-                      final sucesso = await context
-                          .read<EmprestimoDetalheViewmodel>()
-                          .trocarDispositivo(
-                            empDispositivo.id!,
-                            idDispositivo,
+                          if (!mounted) return;
+                          if (resultado != null) {
+                            final idDispositivo =
+                                resultado['idDispositivo'] as int;
+                            final sucesso = await context
+                                .read<EmprestimoDetalheViewmodel>()
+                                .vincularDispositivo(
+                                  empDispositivo.id!,
+                                  idDispositivo,
+                                );
+                            if (mounted && sucesso) {
+                              await context
+                                  .read<EmprestimoDetalheViewmodel>()
+                                  .carregarDispositivosDoEmprestimo(
+                                    widget.idEmprestimo,
+                                  );
+                            }
+                          }
+                        }
+                      : () async {
+                          final idsParaIgnorar =
+                              _obterIdsDispositivosAtuais(); // Coleta IDs existentes para filtrar na hora de adicionar ao empréstimo
+                          final resultado = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => SelecionarDispositivoScreen(
+                                emprestimoItem.idTipoDispositivo,
+                                widget.idEmprestimo,
+                                idsParaIgnorar: idsParaIgnorar,
+                              ),
+                            ),
                           );
-                      if (mounted && sucesso) {
-                        await context
-                            .read<EmprestimoDetalheViewmodel>()
-                            .carregarDispositivosDoEmprestimo(
-                              widget.idEmprestimo,
-                            );
-                      }
-                    }
-                  },
+                          if (!mounted) return;
+                          if (resultado != null) {
+                            final idDispositivo =
+                                resultado['idDispositivo'] as int;
+                            final sucesso = await context
+                                .read<EmprestimoDetalheViewmodel>()
+                                .trocarDispositivo(
+                                  empDispositivo.id!,
+                                  idDispositivo,
+                                );
+                            if (mounted && sucesso) {
+                              await context
+                                  .read<EmprestimoDetalheViewmodel>()
+                                  .carregarDispositivosDoEmprestimo(
+                                    widget.idEmprestimo,
+                                  );
+                            }
+                          }
+                        },
                 ),
               ),
               SizedBox(width: 10),
@@ -637,7 +685,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                             content: Text(
                               'Este dispositivo está sendo usado em outro empréstimo.',
                             ),
-                            backgroundColor: const Color(0xFFB00303),
+                            backgroundColor: Colors.red,
                           ),
                         );
                         return;
@@ -678,7 +726,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                               viewmodel.errorMessage ??
                                   'Erro ao alterar status do dispositivo',
                             ),
-                            backgroundColor: const Color(0xFFB00303),
+                            backgroundColor: Colors.red,
                           ),
                         );
                       }
@@ -711,7 +759,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                         },
                         child: const Text(
                           'Excluir',
-                          style: TextStyle(color: Color(0xFFB00303)),
+                          style: TextStyle(color: Colors.red),
                         ),
                       ),
                     ],
@@ -786,4 +834,4 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
       ],
     );
   }
-} 
+}
