@@ -19,6 +19,13 @@ class EmprestimoDispositivoRepositoryImpl
   }
 
   @override
+  Future<List<EmprestimoDispositivo>> buscarTodos() async {
+    final emprestimoDispositivos = await _database.select(_database.emprestimoDispositivos).get();
+
+    return emprestimoDispositivos.map((emprestimoDispositivo) => emprestimoDispositivo.toEntity()).toList();
+  }
+
+  @override
   Future<List<EmprestimoDispositivo>> buscarPorEmprestimoItem(
     int idEmprestimoItem,
   ) async {
