@@ -124,6 +124,78 @@ class FuncoesScreen extends StatelessWidget {
               ],
             ),
           ),
+          const SizedBox(height: 10),
+          /*
+          Botão de criar backup
+          */
+          ElevatedButton(
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF006dc4),
+              foregroundColor: Colors.white,
+              minimumSize: const Size(double.infinity, 70),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.download, size: 30),
+                SizedBox(width: 20),
+                Text('Criar backup', style: TextStyle(fontSize: 18)),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+          /*
+          Botão de restaurar backup
+          */
+          ElevatedButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Deseja restaurar um backup?'),
+                  backgroundColor: Colors.white,
+                  content: const Text(
+                    'Tem certeza que deseja apagar os dados atuais e restaurar os dados salvos em um backup?',
+                  ),
+                  actionsAlignment: MainAxisAlignment.spaceEvenly,
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text(
+                        'Cancelar',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {},
+                      child: const Text(
+                        'Restaurar',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF006dc4),
+              foregroundColor: Colors.white,
+              minimumSize: const Size(double.infinity, 70),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.backup_sharp, size: 30),
+                SizedBox(width: 20),
+                Text('Restaurar backup', style: TextStyle(fontSize: 18)),
+              ],
+            ),
+          ),
         ],
       ),
     );
