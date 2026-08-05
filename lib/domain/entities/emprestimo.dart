@@ -23,8 +23,8 @@ class Emprestimo {
   Map<String, dynamic> toJson() {
     return {
       'id': _id,
-      'dataHoraEfetuado': dataHoraEfetuado,
-      'dataHoraConcluido': dataHoraConcluido,
+      'dataHoraEfetuado': dataHoraEfetuado.toIso8601String(),
+      'dataHoraConcluido': dataHoraConcluido?.toIso8601String(),
       'idResponsavel': _idResponsavel,
       'idStatus': idStatus,
     };
@@ -32,9 +32,11 @@ class Emprestimo {
   factory Emprestimo.fromJson(Map<String, dynamic> json) {
     return Emprestimo(
       json['id'] as int?,
-      dataHoraEfetuado: json['dataHoraEfetuado'] as DateTime,
-      dataHoraConcluido: json['dataHoraConcluido'] as DateTime?,
       json['idResponsavel'] as int,
+      dataHoraEfetuado: DateTime.parse(json['dataHoraEfetuado'] as String),
+      dataHoraConcluido: json['dataHoraConcluido'] == null
+          ? null
+          : DateTime.parse(json['dataHoraConcluido'] as String),
       idStatus: json['idStatus'] as int,
     );
   }
