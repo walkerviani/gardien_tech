@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:gardien_tech/presentation/views/dispositivo_list_screen.dart';
 import 'package:gardien_tech/presentation/views/problema_list_screen.dart';
 import 'package:gardien_tech/presentation/views/relatorios_screen.dart';
 import 'package:gardien_tech/presentation/views/usuario_list_screen.dart';
+import 'package:gardien_tech/presentation/viewmodels/backup_viewmodel.dart';
 
 class FuncoesScreen extends StatelessWidget {
   const FuncoesScreen({super.key});
@@ -129,7 +131,58 @@ class FuncoesScreen extends StatelessWidget {
           Botão de criar backup
           */
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () async {
+              final backupViewModel = context.read<BackupViewmodel>();
+              final messenger = ScaffoldMessenger.of(context);
+              final navigator = Navigator.of(context);
+
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (_) {
+                  return AlertDialog(
+                    backgroundColor: Colors.white,
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CircularProgressIndicator(),
+                        SizedBox(height: 16),
+                        Text('Exportando backup...'),
+                      ],
+                    ),
+                  );
+                },
+              );
+
+              await backupViewModel.exportarBackup();
+              if (navigator.canPop()) {
+                navigator.pop();
+              }
+
+              if (backupViewModel.successMessage != null) {
+                messenger.showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      backupViewModel.successMessage!,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+                backupViewModel.clearMessages();
+              } else if (backupViewModel.errorMessage != null) {
+                messenger.showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      backupViewModel.errorMessage!,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+                backupViewModel.clearMessages();
+              }
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF006dc4),
               foregroundColor: Colors.white,
@@ -154,7 +207,7 @@ class FuncoesScreen extends StatelessWidget {
             onPressed: () {
               showDialog(
                 context: context,
-                builder: (context) => AlertDialog(
+                builder: (dialogContext) => AlertDialog(
                   title: const Text('Deseja restaurar um backup?'),
                   backgroundColor: Colors.white,
                   content: const Text(
@@ -163,14 +216,67 @@ class FuncoesScreen extends StatelessWidget {
                   actionsAlignment: MainAxisAlignment.spaceEvenly,
                   actions: [
                     TextButton(
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () => Navigator.pop(dialogContext),
                       child: const Text(
                         'Cancelar',
                         style: TextStyle(color: Colors.black),
                       ),
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        Navigator.pop(dialogContext);
+
+                        final backupViewModel = context.read<BackupViewmodel>();
+                        final messenger = ScaffoldMessenger.of(context);
+                        final navigator = Navigator.of(context);
+
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (_) {
+                            return AlertDialog(
+                              backgroundColor: Colors.white,
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  CircularProgressIndicator(),
+                                  SizedBox(height: 16),
+                                  Text('Importando backup...'),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+
+                        await backupViewModel.restaurarBackup();
+                        if (navigator.canPop()) {
+                          navigator.pop();
+                        }
+
+                        if (backupViewModel.successMessage != null) {
+                          messenger.showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                backupViewModel.successMessage!,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                          backupViewModel.clearMessages();
+                        } else if (backupViewModel.errorMessage != null) {
+                          messenger.showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                backupViewModel.errorMessage!,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                          backupViewModel.clearMessages();
+                        }
+                      },
                       child: const Text(
                         'Restaurar',
                         style: TextStyle(color: Colors.red),
