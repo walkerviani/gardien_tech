@@ -75,6 +75,13 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
   Future<List<EmprestimoComDetalhesDTO>> buscarPorDiaComDetalhes(
     DateTime data,
   ) async {
+    final hoje = DateTime.now();
+
+    final ehHoje =
+        data.day == hoje.day &&
+        data.month == hoje.month &&
+        data.year == hoje.year;
+
     final rows = await (_database.select(_database.emprestimos).join([
       innerJoin(
         _database.usuarios,
@@ -88,13 +95,25 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
       ),
     ])).get();
     final Map<int, EmprestimoComDetalhesDTO> mapa = {};
+
     for (final row in rows) {
       final emprestimo = row.readTable(_database.emprestimos);
       final dataEmprestimo = emprestimo.dataHoraEfetuado;
 
-      if (dataEmprestimo.day == data.day &&
+      final mesmaData =
+          dataEmprestimo.day == data.day &&
           dataEmprestimo.month == data.month &&
-          dataEmprestimo.year == data.year) {
+          dataEmprestimo.year == data.year;
+
+      final emObservacao =
+          emprestimo.idStatus == EmprestimoStatus.emObservacao.id;
+
+      /* 
+      Se a data do empréstimo for igual a da data selecionada ou 
+      Se o empréstimo está em observação e a data selecionada é hoje, 
+      então entra na lista 
+      */
+      if (mesmaData || (ehHoje && emObservacao)) {
         final usuario = row.readTable(_database.usuarios);
         final emprestimoItem = row.readTableOrNull(_database.emprestimoItens);
 
@@ -114,8 +133,31 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
         }
       }
     }
+    final lista = mapa.values.toList();
+    if (ehHoje) {
+      return _ordernarEmprestimoDiaAtual(lista);
+    }
 
-    return mapa.values.toList();
+    return lista;
+  }
+
+  List<EmprestimoComDetalhesDTO> _ordernarEmprestimoDiaAtual(
+    List<EmprestimoComDetalhesDTO> lista,
+  ) {
+    lista.sort((a, b) {
+      int prioridade(int status) {
+        if (status == EmprestimoStatus.emObservacao.id) return 0;
+        if (status == EmprestimoStatus.ativo.id) return 1;
+        if (status == EmprestimoStatus.concluido.id) return 2;
+        return 3;
+      }
+
+      return prioridade(
+        a.idStatusEmprestimo,
+      ).compareTo(prioridade(b.idStatusEmprestimo));
+    });
+
+    return lista;
   }
 
   @override
