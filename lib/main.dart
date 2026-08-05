@@ -12,6 +12,7 @@ import 'package:gardien_tech/data/repositories/problema_repository_impl.dart';
 import 'package:gardien_tech/data/repositories/usuario_repository_impl.dart';
 
 import 'package:gardien_tech/data/services/emprestimo_service_impl.dart';
+import 'package:gardien_tech/data/services/backup_service_impl.dart';
 
 import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_dispositivo_repository.dart';
@@ -21,6 +22,7 @@ import 'package:gardien_tech/domain/repositories/problema_repository.dart';
 import 'package:gardien_tech/domain/repositories/usuario_repository.dart';
 
 import 'package:gardien_tech/domain/services/emprestimo_service.dart';
+import 'package:gardien_tech/domain/services/backup_service.dart';
 
 import 'package:gardien_tech/presentation/viewmodels/dispositivo_form_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/dispositivo_list_viewmodel.dart';
@@ -32,6 +34,7 @@ import 'package:gardien_tech/presentation/viewmodels/relatorios_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/selecionar_dispositivo_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/usuario_form_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/usuario_list_viewmodel.dart';
+import 'package:gardien_tech/presentation/viewmodels/backup_viewmodel.dart';
 
 import 'package:gardien_tech/presentation/views/main_screen.dart';
 import 'package:gardien_tech/utils/relatorio_pdf_service.dart';
@@ -103,6 +106,17 @@ void main() {
           ),
         ),
 
+        Provider<BackupService>(
+          create: (context) => BackupServiceImpl(
+            context.read<UsuarioRepository>(),
+            context.read<DispositivoRepository>(),
+            context.read<ProblemaRepository>(),
+            context.read<EmprestimoRepository>(),
+            context.read<EmprestimoItemRepository>(),
+            context.read<EmprestimoDispositivoRepository>(),
+          ),
+        ),
+
         // ==========================
         // VIEWMODELS
         // ==========================
@@ -166,10 +180,18 @@ void main() {
           create: ((context) =>
               SelecionarUsuarioViewmodel(context.read<UsuarioRepository>())),
         ),
+
+        ChangeNotifierProvider<BackupViewmodel>(
+          create: (context) =>
+              BackupViewmodel(context.read<BackupService>()),
+        ),
       ],
       child: const MyApp(),
     ),
   );
+
+  print('ROSÂNGELA'.runes.toList());
+  print('ROSÃNGELA'.runes.toList());
 }
 
 class MyApp extends StatelessWidget {
