@@ -5,9 +5,15 @@ import 'package:pdf/pdf.dart';
 
 class VisualizarPdfScreen extends StatelessWidget {
   final String tituloPagina;
+  final String nomeArquivo;
   final Future<Uint8List> Function(PdfPageFormat) criarPdf;
 
-  const VisualizarPdfScreen(this.tituloPagina, this.criarPdf, {super.key});
+  const VisualizarPdfScreen(
+    this.tituloPagina,
+    this.criarPdf,
+    this.nomeArquivo, {
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +32,7 @@ class VisualizarPdfScreen extends StatelessWidget {
         ),
         body: PdfPreview(
           build: criarPdf,
+          pdfFileName: nomeArquivo,
           allowPrinting: true,
           allowSharing: true,
           canChangeOrientation: false,

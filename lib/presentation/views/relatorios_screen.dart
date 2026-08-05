@@ -4,6 +4,7 @@ import 'package:gardien_tech/domain/entities/usuario.dart';
 import 'package:gardien_tech/presentation/viewmodels/relatorios_viewmodel.dart';
 import 'package:gardien_tech/presentation/views/selecionar_usuario_screen.dart';
 import 'package:gardien_tech/presentation/views/visualizar_pdf_screen.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class RelatoriosScreen extends StatelessWidget {
@@ -26,6 +27,9 @@ class RelatoriosScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 DateTime dataSelecionada = DateTime.now();
+                String dataFormatada = DateFormat(
+                  'dd/MM/yyyy',
+                ).format(dataSelecionada);
 
                 showDialog(
                   context: context,
@@ -81,6 +85,7 @@ class RelatoriosScreen extends StatelessWidget {
                               builder: (_) => VisualizarPdfScreen(
                                 'Empréstimos por data',
                                 (format) async => bytes,
+                                'relatorio_emprestimos_$dataFormatada',
                               ),
                             ),
                           );
@@ -140,6 +145,7 @@ class RelatoriosScreen extends StatelessWidget {
                     builder: (_) => VisualizarPdfScreen(
                       'Empréstimos ${usuario.nome}',
                       (format) async => bytes,
+                      'relatorio_emprestimos_${usuario.nome}',
                     ),
                   ),
                 );
@@ -189,6 +195,7 @@ class RelatoriosScreen extends StatelessWidget {
                     builder: (_) => VisualizarPdfScreen(
                       'Problemas relatados',
                       (format) async => bytes,
+                      'relatorio_problemas',
                     ),
                   ),
                 );
@@ -235,6 +242,7 @@ class RelatoriosScreen extends StatelessWidget {
                     builder: (_) => VisualizarPdfScreen(
                       'Dispositivos cadastrados',
                       (format) async => bytes,
+                      'relatorio_dispositivos',
                     ),
                   ),
                 );
