@@ -5,6 +5,7 @@ abstract class EmprestimoRepository {
   Future<List<Emprestimo>> buscarTodos();
   Future<List<Emprestimo>> buscarTodosAtivos();
   Future<List<EmprestimoComDetalhesDTO>> buscarPorDiaComDetalhes(DateTime data);
+  Future<List<EmprestimoComDetalhesDTO>> buscarporDiaTelaInicial(DateTime data);
   Future<Emprestimo?> buscarPorId(int id);
   Future<int> criar(Emprestimo emprestimo);
   Future<void> atualizar(Emprestimo emprestimo);

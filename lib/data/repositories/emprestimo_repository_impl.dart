@@ -75,6 +75,57 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
   Future<List<EmprestimoComDetalhesDTO>> buscarPorDiaComDetalhes(
     DateTime data,
   ) async {
+    final rows = await (_database.select(_database.emprestimos).join([
+      innerJoin(
+        _database.usuarios,
+        _database.emprestimos.idResponsavel.equalsExp(_database.usuarios.id),
+      ),
+      leftOuterJoin(
+        _database.emprestimoItens,
+        _database.emprestimoItens.idEmprestimo.equalsExp(
+          _database.emprestimos.id,
+        ),
+      ),
+    ])).get();
+    final Map<int, EmprestimoComDetalhesDTO> mapa = {};
+
+    for (final row in rows) {
+      final emprestimo = row.readTable(_database.emprestimos);
+      final dataEmprestimo = emprestimo.dataHoraEfetuado;
+
+      final mesmaData =
+          dataEmprestimo.day == data.day &&
+          dataEmprestimo.month == data.month &&
+          dataEmprestimo.year == data.year;
+
+      if (mesmaData) {
+        final usuario = row.readTable(_database.usuarios);
+        final emprestimoItem = row.readTableOrNull(_database.emprestimoItens);
+
+        if (mapa.containsKey(emprestimo.id)) {
+          mapa[emprestimo.id]!.qtdSolicitada += emprestimoItem!.qtdSolicitada;
+        } else {
+          mapa[emprestimo.id] = EmprestimoComDetalhesDTO(
+            idEmprestimo: emprestimo.id,
+            idUsuario: usuario.id,
+            idEmprestimoItem: emprestimoItem!.id,
+            idTipoCargo: usuario.idTipoCargo,
+            idStatusEmprestimo: emprestimo.idStatus,
+            qtdSolicitada: emprestimoItem.qtdSolicitada,
+            dataHoraEfetuado: emprestimo.dataHoraEfetuado,
+            nomeUsuario: usuario.nome,
+          );
+        }
+      }
+    }
+    return mapa.values.toList();
+    ;
+  }
+
+  @override
+  Future<List<EmprestimoComDetalhesDTO>> buscarporDiaTelaInicial(
+    DateTime data,
+  ) async {
     final hoje = DateTime.now();
 
     final ehHoje =
@@ -135,13 +186,13 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
     }
     final lista = mapa.values.toList();
     if (ehHoje) {
-      return _ordernarEmprestimoDiaAtual(lista);
+      return _ordenarEmprestimoDiaAtual(lista);
     }
 
     return lista;
   }
 
-  List<EmprestimoComDetalhesDTO> _ordernarEmprestimoDiaAtual(
+  List<EmprestimoComDetalhesDTO> _ordenarEmprestimoDiaAtual(
     List<EmprestimoComDetalhesDTO> lista,
   ) {
     lista.sort((a, b) {
