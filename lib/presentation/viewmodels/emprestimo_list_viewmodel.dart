@@ -17,7 +17,7 @@ class EmprestimoListViewmodel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      emprestimos = await _repository.buscarPorDiaComDetalhes(data);
+      emprestimos = await _repository.buscarporDiaTelaInicial(data);
     } catch (e) {
       errorMessage = 'Erro ao carregar os empréstimos do dia selecionado';
       emprestimos = [];
