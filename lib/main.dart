@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gardien_tech/presentation/viewmodels/selecionar_usuario_viewmodel.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
 import 'package:gardien_tech/data/database.dart';
@@ -39,7 +40,10 @@ import 'package:gardien_tech/presentation/viewmodels/backup_viewmodel.dart';
 import 'package:gardien_tech/presentation/views/main_screen.dart';
 import 'package:gardien_tech/utils/relatorio_pdf_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('pt_BR', null);
+
   final database = AppDatabase();
 
   runApp(
@@ -182,16 +186,12 @@ void main() {
         ),
 
         ChangeNotifierProvider<BackupViewmodel>(
-          create: (context) =>
-              BackupViewmodel(context.read<BackupService>()),
+          create: (context) => BackupViewmodel(context.read<BackupService>()),
         ),
       ],
       child: const MyApp(),
     ),
   );
-
-  print('ROSÂNGELA'.runes.toList());
-  print('ROSÃNGELA'.runes.toList());
 }
 
 class MyApp extends StatelessWidget {
