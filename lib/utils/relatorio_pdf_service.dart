@@ -70,6 +70,12 @@ class RelatorioPdfService {
             ?.nomeStatus ??
         'Status não encontrado';
 
+    final dataEfetuadoEmprestimo = relatorio.emprestimo.dataHoraEfetuado;
+    final dataHoraFormatada = DateFormat(
+      'dd/MM/y HH:mm',
+      'pt_BR',
+    ).format(dataEfetuadoEmprestimo);
+
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
@@ -78,6 +84,7 @@ class RelatorioPdfService {
           style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
         ),
         pw.SizedBox(height: 8),
+        pw.Text('Data Efetuado: $dataHoraFormatada'),
         pw.Text(
           'Responsável: ${relatorio.emprestimo.nomeUsuario} - $cargoString',
         ),
