@@ -119,7 +119,6 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
       }
     }
     return mapa.values.toList();
-    ;
   }
 
   @override
