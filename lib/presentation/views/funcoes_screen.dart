@@ -302,6 +302,31 @@ class FuncoesScreen extends StatelessWidget {
               ],
             ),
           ),
+          const SizedBox(height: 10),
+          /* 
+          Botão de Importar dispositivos por csv
+          */
+          ElevatedButton(
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF006dc4),
+              foregroundColor: Colors.white,
+              minimumSize: const Size(double.infinity, 70),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.browser_updated, size: 30),
+                SizedBox(width: 20),
+                Text(
+                  'Importar dispositivos por csv',
+                  style: TextStyle(fontSize: 18),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
