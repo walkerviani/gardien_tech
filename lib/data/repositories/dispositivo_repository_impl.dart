@@ -113,6 +113,14 @@ class DispositivoRepositoryImpl implements DispositivoRepository {
   }
 
   @override
+  Future<bool> existePorPatrimonioOuSerie(String numPatrimonio, String numSerie) async {
+    final result = await (_database.select(_database.dispositivos)
+      ..where((d) => d.numPatrimonio.equals(numPatrimonio) | d.numSerie.equals(numSerie)))
+      .getSingleOrNull();
+    return result != null;
+  }
+
+  @override
   Future<List<Dispositivo>> buscarDisponiveisExcluindo({int? idTipoDispositivo, List<int> idsParaIgnorar = const []}) async {
     final query = _database.select(_database.dispositivos)
       ..where((d) => d.idStatus.equals(DispositivoStatus.disponivel.id));

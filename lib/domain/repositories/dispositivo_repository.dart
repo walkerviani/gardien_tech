@@ -6,6 +6,7 @@ abstract class DispositivoRepository {
   Future<List<Dispositivo>> buscarPorTipo(int idTipoDispositivo);
   Future<List<Dispositivo>> buscarDescricao(String filtro);
   Future<Dispositivo?> buscarPorPatrimonio(String numPatrimonio);
+  Future<bool> existePorPatrimonioOuSerie(String numPatrimonio, String numSerie);
   Future<void> criar(Dispositivo dispositivo);
   Future<void> atualizar(Dispositivo dispositivo);
   Future<void> deletar(int id);
