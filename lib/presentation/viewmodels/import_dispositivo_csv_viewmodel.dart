@@ -61,6 +61,14 @@ class ImportDispositivoCsvViewmodel extends ChangeNotifier {
         return false;
       }
 
+      if (qntDispCriados > 0) {
+        if (qntDispDescartados > 0) {
+          errorMessage =
+              'Dispositivos: $qntDispCriados criados e $qntDispDescartados já existiam';
+          return false;
+        }
+      }
+
       return true;
     } catch (e) {
       errorMessage = 'Erro ao importar os dispositivos';
