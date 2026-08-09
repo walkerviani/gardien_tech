@@ -90,7 +90,7 @@ class _ImportDispositivoCsvScreenState
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Import dispositivos por csv'),
+        title: const Text('Importar dispositivos por csv'),
         backgroundColor: const Color(0xFF2196F3),
         foregroundColor: Colors.white,
       ),
