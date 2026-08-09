@@ -224,7 +224,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8),
                                     ),
-                                    fixedSize: const Size(130, 30),
+                                    minimumSize: const Size(double.infinity, 40),
                                   ),
                                 ),
                               ),
@@ -277,7 +277,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8),
                                     ),
-                                    fixedSize: const Size(130, 30),
+                                    minimumSize: const Size(double.infinity, 40),
                                   ),
                                 ),
                               ),
