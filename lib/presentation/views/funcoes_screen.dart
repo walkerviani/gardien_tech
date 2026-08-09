@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gardien_tech/presentation/views/import_dispositivo_csv_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:gardien_tech/presentation/views/dispositivo_list_screen.dart';
 import 'package:gardien_tech/presentation/views/problema_list_screen.dart';
@@ -307,7 +308,12 @@ class FuncoesScreen extends StatelessWidget {
           Botão de Importar dispositivos por csv
           */
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => ImportDispositivoCsvScreen()),
+              );
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF006dc4),
               foregroundColor: Colors.white,
