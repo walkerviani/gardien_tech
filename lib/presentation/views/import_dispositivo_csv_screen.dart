@@ -237,6 +237,45 @@ class _ImportDispositivoCsvScreenState
                     '3. Envie o arquivo csv no aplicativo.',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                   ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      const Text(
+                        '4. Atenção',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => {
+                          showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              title: const Text(
+                                'Mais Informações',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              content: const Text(
+                                'O modelo serve para ajudar na importação, porém não é necessário o uso.\n\nNo entanto, para caso deseja realizar um arquivo csv à parte, os dados precisam estar na seguinte ordem:\n1-Número de Patrimônio,\n2-Número de Série\n3-Tipo do Dispositivo',
+                                style: TextStyle(fontSize: 17),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text(
+                                    'Entendi',
+                                    style: TextStyle(color: Color(0xFF000000)),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        },
+                        icon: Icon(Icons.help_outline),
+                      ),
+                    ],
+                  ),
                 ],
               ),
       ),
