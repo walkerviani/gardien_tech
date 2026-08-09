@@ -95,9 +95,150 @@ class _ImportDispositivoCsvScreenState
         foregroundColor: Colors.white,
       ),
       body: Container(
+        padding: EdgeInsets.all(12),
         child: viewmodel.isLoading
             ? const CircularProgressIndicator(color: Color(0xFF006dc4))
-            : Text('1', style: TextStyle(fontSize: 18)),
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Instruções',
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    '1. Adicione os dados abaixo na tabela da aba Dispositivos.',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        'Número de Patrimônio',
+                        style: TextStyle(
+                          fontSize: 17,
+                          color: Color(0xFFED7D31),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              title: const Text(
+                                'Número de Patrimônio',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              content: const Text(
+                                'Código de registro único colocado em um bem físico.\n\n(Empresas e órgãos públicos implementam esse número para controlar e localizar seus bens).',
+                                style: TextStyle(fontSize: 17),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text(
+                                    'Entendi',
+                                    style: TextStyle(color: Color(0xFF000000)),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.help_outline),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        'Número de Série',
+                        style: TextStyle(
+                          fontSize: 17,
+                          color: Color(0xFF5B9BD5),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              title: const Text(
+                                'Número de Série',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              content: const Text(
+                                'Código único formado por letras e números.\n\n(Ele é definido pelo fabricante durante a produção)',
+                                style: TextStyle(fontSize: 17),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text(
+                                    'Entendi',
+                                    style: TextStyle(color: Color(0xFF000000)),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.help_outline),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        'Tipo de Dispositivo',
+                        style: TextStyle(
+                          fontSize: 17,
+                          color: Color(0xFF70AD47),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              title: const Text(
+                                'Tipo de Dispositivo',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              content: const Text(
+                                'Usado para diferenciar qual é o tipo do dispositivo.\n\n(No modelo: ao clicar na célula vazia do tipo de dispositivo, abra o menu ao lado direito da célula e selecione o tipo de dispositivo ideal)',
+                                style: TextStyle(fontSize: 17),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text(
+                                    'Entendi',
+                                    style: TextStyle(color: Color(0xFF000000)),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.help_outline),
+                      ),
+                    ],
+                  ),
+                  Text(
+                    '2. Converta o arquivo para csv ou no processo de salvar o arquivo selecione o tipo do arquivo para csv.',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    '3. Envie o arquivo csv no aplicativo.',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
       ),
       bottomNavigationBar: SafeArea(
         child: Container(
