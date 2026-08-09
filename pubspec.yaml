@@ -54,6 +54,7 @@ dependencies:
   rename_app: ^1.6.6
   pdf: ^3.12.0
   printing: ^5.14.3
+  csv: ^8.0.0
 
 dev_dependencies:
   flutter_test:
