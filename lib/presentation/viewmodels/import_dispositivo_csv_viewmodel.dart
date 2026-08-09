@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:gardien_tech/domain/entities/dispositivo.dart';
@@ -21,16 +22,43 @@ class ImportDispositivoCsvViewmodel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final csvString = await arquivo.readAsString();
-
-      dispositivos = _csvService.importDispositivos(csvString);
+      final File arquivoConvertido = _xfileParaFile(arquivo);
+      dispositivos = await _csvService.importDispositivos(arquivoConvertido);
 
       if (dispositivos.isEmpty) {
         errorMessage = 'Lista de dispositivos vazia';
         return false;
       }
+
+      int qntDispCriados = 0;
+      int qntDispDescartados = 0; // Dispositivos já existentes
+
       for (final dispositivo in dispositivos) {
-        await _dispositivoRepository.criar(dispositivo);
+        try {
+          final existe = await _dispositivoRepository
+              .existePorPatrimonioOuSerie(
+                dispositivo.numPatrimonio,
+                dispositivo.numSerie,
+              );
+
+          if (existe) {
+            qntDispDescartados++;
+            continue;
+          }
+
+          await _dispositivoRepository.criar(dispositivo);
+          qntDispCriados++;
+        } catch (e) {
+          errorMessage = 'Erro ao criar dispositivo';
+          return false;
+        }
+      }
+
+      if (qntDispCriados == 0) {
+        errorMessage = qntDispDescartados > 0
+            ? 'Todos os dispositivos do arquivo já existem no sistema.'
+            : 'Nenhum dispositivo importado.';
+        return false;
       }
 
       return true;
@@ -41,5 +69,9 @@ class ImportDispositivoCsvViewmodel extends ChangeNotifier {
       isLoading = false;
       notifyListeners();
     }
+  }
+
+  File _xfileParaFile(XFile xfile) {
+    return File(xfile.path);
   }
 }
