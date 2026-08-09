@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gardien_tech/presentation/viewmodels/import_dispositivo_csv_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/selecionar_usuario_viewmodel.dart';
+import 'package:gardien_tech/utils/dispositivos_csv_service.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
@@ -187,6 +189,13 @@ void main() async {
 
         ChangeNotifierProvider<BackupViewmodel>(
           create: (context) => BackupViewmodel(context.read<BackupService>()),
+        ),
+
+        ChangeNotifierProvider<ImportDispositivoCsvViewmodel>(
+          create: (context) => ImportDispositivoCsvViewmodel(
+            DispositivosCsvService(),
+            context.read<DispositivoRepository>(),
+          ),
         ),
       ],
       child: const MyApp(),
