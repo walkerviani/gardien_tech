@@ -90,7 +90,7 @@ class _ImportDispositivoCsvScreenState
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Importar dispositivos por csv'),
+        title: const Text('Importar por CSV'),
         backgroundColor: const Color(0xFF2196F3),
         foregroundColor: Colors.white,
       ),
@@ -284,7 +284,7 @@ class _ImportDispositivoCsvScreenState
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.grid_on, size: 30),
+                    Icon(Icons.table_chart, size: 30),
                     SizedBox(width: 20),
                     Text(
                       'Adicionar arquivo csv',

@@ -327,7 +327,7 @@ class FuncoesScreen extends StatelessWidget {
                 Icon(Icons.browser_updated, size: 30),
                 SizedBox(width: 20),
                 Text(
-                  'Importar dispositivos por csv',
+                  'Importar dispositivos por CSV',
                   style: TextStyle(fontSize: 18),
                 ),
               ],
