@@ -11,7 +11,7 @@ class FuncoesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(12),
 
       child: Column(
