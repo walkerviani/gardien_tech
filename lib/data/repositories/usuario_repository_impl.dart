@@ -11,7 +11,8 @@ class UsuarioRepositoryImpl implements UsuarioRepository {
 
   @override
   Future<List<Usuario>> buscarTodos() async {
-    final usuarios = await _database.select(_database.usuarios).get();
+    final usuarios = await (_database.select(_database.usuarios)
+      ..orderBy([(u) => OrderingTerm.asc(u.nome)])).get();
 
     return usuarios.map((usuario) => usuario.toEntity()).toList();
   }
@@ -33,9 +34,9 @@ class UsuarioRepositoryImpl implements UsuarioRepository {
     final query = _database.select(_database.usuarios)
       ..where((u) =>
           // Usa índice para otimização
-          u.nome.like('$f%') |         
+          u.nome.like('$f%') |
           u.nome.like('%$f%'))
-      ..limit(15);
+      ..orderBy([(u) => OrderingTerm.asc(u.nome)]);
 
     final rows = await query.get();
     return rows.map((u) => u.toEntity()).toList();
@@ -79,7 +80,7 @@ class UsuarioRepositoryImpl implements UsuarioRepository {
       ..where((d) =>
           // Usa índice para otimização
           d.nome.like('$f%'))
-      ..limit(15);
+      ..orderBy([(d) => OrderingTerm.asc(d.nome)]);
 
     final rows = await query.get();
     return rows.map((d) => d.toEntity()).toList();

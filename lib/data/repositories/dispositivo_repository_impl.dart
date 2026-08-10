@@ -20,14 +20,16 @@ class DispositivoRepositoryImpl implements DispositivoRepository {
 
   @override
   Future<List<Dispositivo>> buscarTodos() async {
-    final dispositivos = await _database.select(_database.dispositivos).get();
+    final dispositivos = await (_database.select(_database.dispositivos)
+      ..orderBy([(d) => OrderingTerm.asc(d.numPatrimonio)])).get();
     return dispositivos.map((d) => d.toEntity()).toList();
   }
 
   @override
   Future<List<Dispositivo>> buscarPorTipo(int idTipoDispositivo) async {
     final dispositivos = await (_database.select(_database.dispositivos)
-      ..where((d) => d.idTipoDispositivo.equals(idTipoDispositivo)))
+      ..where((d) => d.idTipoDispositivo.equals(idTipoDispositivo))
+      ..orderBy([(d) => OrderingTerm.asc(d.numPatrimonio)]))
         .get();
     return dispositivos.map((d) => d.toEntity()).toList();
   }
@@ -40,12 +42,9 @@ class DispositivoRepositoryImpl implements DispositivoRepository {
 
     final query = _database.select(_database.dispositivos)
       ..where((d) =>
-          // Usa índice para otimização
-          d.numPatrimonio.like('$f%') |   
-          d.numSerie.like('$f%') |        
-          d.numPatrimonio.like('%$f%') |  
-          d.numSerie.like('%$f%'))
-      ..limit(15);
+          d.numPatrimonio.contains(f) |
+          d.numSerie.contains(f))
+      ..orderBy([(d) => OrderingTerm.asc(d.numPatrimonio)]);
 
     final rows = await query.get();
     return rows.map((d) => d.toEntity()).toList();
@@ -123,7 +122,8 @@ class DispositivoRepositoryImpl implements DispositivoRepository {
   @override
   Future<List<Dispositivo>> buscarDisponiveisExcluindo({int? idTipoDispositivo, List<int> idsParaIgnorar = const []}) async {
     final query = _database.select(_database.dispositivos)
-      ..where((d) => d.idStatus.equals(DispositivoStatus.disponivel.id));
+      ..where((d) => d.idStatus.equals(DispositivoStatus.disponivel.id))
+      ..orderBy([(d) => OrderingTerm.asc(d.numPatrimonio)]);
 
     // Filtra por tipo, se informado
     if (idTipoDispositivo != null) {
