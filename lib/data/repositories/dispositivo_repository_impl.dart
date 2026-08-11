@@ -47,7 +47,48 @@ class DispositivoRepositoryImpl implements DispositivoRepository {
       ..orderBy([(d) => OrderingTerm.asc(d.numPatrimonio)]);
 
     final rows = await query.get();
-    return rows.map((d) => d.toEntity()).toList();
+    final dispositivos = rows.map((d) => d.toEntity()).toList();
+
+    // Agrupa por numPatrimonio
+    final Map<String, List<Dispositivo>> grupos = {};
+    for (final d in dispositivos) {
+      grupos.putIfAbsent(d.numPatrimonio, () => []).add(d);
+    }
+
+    // Define prioridade do grupo: 0 = patrimônio contém f, 1 = alguma série contém f
+    int prioridade(String patrimonio, List<Dispositivo> itens) {
+      if (patrimonio.contains(f)) return 0;
+      if (itens.any((i) => i.numSerie.contains(f))) return 1;
+      return 2;
+    }
+
+    final entries = grupos.entries.toList();
+
+    // Ordena itens dentro do grupo: primeiro itens cujo patrimônio contenha f, depois por série, depois os demais
+    for (final e in entries) {
+      e.value.sort((a, b) {
+        final aPat = a.numPatrimonio.contains(f) ? 0 : (a.numSerie.contains(f) ? 1 : 2);
+        final bPat = b.numPatrimonio.contains(f) ? 0 : (b.numSerie.contains(f) ? 1 : 2);
+        if (aPat != bPat) return aPat - bPat;
+        return a.numPatrimonio.compareTo(b.numPatrimonio);
+      });
+    }
+
+    // Ordena grupos por prioridade e por chave
+    entries.sort((a, b) {
+      final pa = prioridade(a.key, a.value);
+      final pb = prioridade(b.key, b.value);
+      if (pa != pb) return pa - pb;
+      return a.key.compareTo(b.key);
+    });
+
+    // Achata em uma lista ordenada
+    final List<Dispositivo> resultado = [];
+    for (final e in entries) {
+      resultado.addAll(e.value);
+    }
+
+    return resultado;
   }
 
   @override

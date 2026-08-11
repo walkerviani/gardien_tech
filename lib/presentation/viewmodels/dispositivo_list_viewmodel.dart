@@ -84,6 +84,7 @@ class DispositivoListViewmodel extends ChangeNotifier {
 
   Future<void> pesquisar(String termo) async {
     final query = termo.trim();
+    termoBusca = query;
 
     if (query.isEmpty) {
       await carregarDispositivos();

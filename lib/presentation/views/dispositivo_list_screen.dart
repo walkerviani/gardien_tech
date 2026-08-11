@@ -208,7 +208,7 @@ class _DispositivoListScreenState extends State<DispositivoListScreen> {
                       return Card(
                         key: ValueKey(dispositivo.id),
                         child: Padding(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                             horizontal: 6,
                             vertical: 6,
                           ),
@@ -227,14 +227,14 @@ class _DispositivoListScreenState extends State<DispositivoListScreen> {
                                         children: <TextSpan>[
                                           TextSpan(
                                             text: '$dispositivoTipo \n',
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 18,
                                             ),
                                           ),
                                           TextSpan(
                                             text: 'PATRIMÔNIO \n',
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 13,
                                             ),
@@ -242,18 +242,18 @@ class _DispositivoListScreenState extends State<DispositivoListScreen> {
                                           TextSpan(
                                             text:
                                                 '${dispositivo.numPatrimonio} \n',
-                                            style: TextStyle(fontSize: 13),
+                                            style: const TextStyle(fontSize: 13),
                                           ),
                                           TextSpan(
                                             text: 'NÚMERO DE SÉRIE \n',
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 13,
                                             ),
                                           ),
                                           TextSpan(
                                             text: dispositivo.numSerie,
-                                            style: TextStyle(fontSize: 13),
+                                            style: const TextStyle(fontSize: 13),
                                           ),
                                         ],
                                       ),

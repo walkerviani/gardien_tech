@@ -287,8 +287,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                       ),
                       Expanded(
                         child: ListView.builder(
-                          itemCount:
-                              viewmodel.dispositivosDoEmprestimo.length + 1,
+                          itemCount:viewmodel.dispositivosDoEmprestimo.length + 1,
                           itemBuilder: (context, index) {
                             if (index ==
                                 viewmodel.dispositivosDoEmprestimo.length) {
@@ -358,7 +357,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                                   ),
                                 );
                               }
-                              return const SizedBox.shrink();
+                              return const SizedBox(height: 100);
                             }
 
                             // Mapeia os dados para acelerar a busca de itens e usa Column para otimizar a renderização.
