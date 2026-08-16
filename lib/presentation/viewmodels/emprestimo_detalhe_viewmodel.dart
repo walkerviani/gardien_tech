@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:gardien_tech/data/dto/emprestimo_item_com_dispositivo_dto.dart';
 import 'package:gardien_tech/domain/entities/emprestimo.dart';
 import 'package:gardien_tech/domain/entities/emprestimo_item.dart';
+import 'package:gardien_tech/domain/enum/emprestimo_status.dart';
 import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_dispositivo_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_item_repository.dart';
@@ -29,11 +30,16 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
     this._empDispositivoRepository,
   );
 
-  bool isLoading = true; // true por padrão para permitir a renderização do Shimmer
+  bool isLoading =
+      true; // true por padrão para permitir a renderização do Shimmer
   String? errorMessage;
-  List<EmprestimoItemComDispositivoDTO> dispositivosDoEmprestimo = []; // Lista dos dispositivos presente no emprestimo
-  List<EmprestimoItem> empItens = []; // Lista usada para verificar a devolução dos dispositivos de cada emprestimo_item
-  bool empFinalizado = false; // Usado para controlar a visualização da lista na tela (entre edição e leitura)
+  List<EmprestimoItemComDispositivoDTO> dispositivosDoEmprestimo =
+      []; // Lista dos dispositivos presente no emprestimo
+  List<EmprestimoItem> empItens =
+      []; // Lista usada para verificar a devolução dos dispositivos de cada emprestimo_item
+  bool empFinalizado =
+      false; // Usado para controlar a visualização da lista na tela (entre edição e leitura)
+  bool empSemCorrespondencia = false;
 
   // Restaura na memória local o estado das marcações de devolução (checkboxes) dos dispositivos de um empréstimo
   Future<void> carregarCacheDevolvidos(int idEmprestimo) async {
@@ -44,8 +50,9 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
     final chaves = prefs.getKeys();
     for (var chave in chaves) {
       if (chave.startsWith('devolvido_emp${idEmprestimo}_')) {
-        final idEmpDisp =
-            int.parse(chave.replaceFirst('devolvido_emp${idEmprestimo}_', ''));
+        final idEmpDisp = int.parse(
+          chave.replaceFirst('devolvido_emp${idEmprestimo}_', ''),
+        );
         final valor = prefs.getBool(chave) ?? false;
         _dispositivosDevolvidos[idEmpDisp] = valor;
       }
@@ -53,7 +60,11 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
   }
 
   // Salva o estado no cache quando marca/desmarca
-  Future<void> salvarCacheDevolvido(int idEmprestimo, int idEmpDisp, bool marcado) async {
+  Future<void> salvarCacheDevolvido(
+    int idEmprestimo,
+    int idEmpDisp,
+    bool marcado,
+  ) async {
     final prefs = await SharedPreferences.getInstance();
     final chave = 'devolvido_emp${idEmprestimo}_$idEmpDisp';
     await prefs.setBool(chave, marcado);
@@ -98,7 +109,8 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
     Emprestimo? emprestimo = await _emprestimoRepository.buscarPorId(
       idEmprestimo,
     );
-    if (emprestimo != null && emprestimo.idStatus == 3) {
+    if (emprestimo != null &&
+        (emprestimo.idStatus == 3 || emprestimo.idStatus == 4)) {
       // Status finalizado
       empFinalizado = true;
     } else {
@@ -176,8 +188,9 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
 
   // Verifica se ocorreu a devolução completa de cada emprestimo_item
   Future<bool> finalizarEmprestimo(int idEmprestimo) async {
-    isLoading = true;
     errorMessage = null;
+
+    isLoading = true;
     notifyListeners();
 
     try {
@@ -194,6 +207,43 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
       return true;
     } catch (e) {
       errorMessage = "Erro ao finalizar o empréstimo";
+      return false;
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> definirSemCorrespondencia(int idEmprestimo) async {
+    errorMessage = null;
+
+    isLoading = true;
+    notifyListeners();
+
+    final emprestimo = await _emprestimoRepository.buscarPorId(idEmprestimo);
+    final estaEmObservacao =
+        emprestimo?.idStatus == EmprestimoStatus.emObservacao.id;
+
+    try {
+      if (!estaEmObservacao) {
+        errorMessage =
+            'Essa operação requer que o empréstimo esteja Em Observação';
+        return false;
+      }
+
+      final sucesso = await _emprestimoService.verificarSemCorrespondencia(
+        idEmprestimo,
+      );
+      if (!sucesso) {
+        errorMessage = 'Não é possível definir como Sem Correspondência';
+        return false;
+      }
+
+      await _emprestimoRepository.definirSemCorrespondencia(idEmprestimo);
+      return true;
+    } catch (e) {
+      errorMessage =
+          'Ocorreu um erro ao definir o empréstimo como "Sem correspondência"';
       return false;
     } finally {
       isLoading = false;
@@ -257,8 +307,11 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
       return true;
     } else {
       // Verifica se o dispositivo está em uso em outro empréstimo
-      final dispositivo = await _dispositivoRepository.buscarPorId(idDispositivo);
-      if (dispositivo != null && dispositivo.idStatus == 3) { // Status EM_USO
+      final dispositivo = await _dispositivoRepository.buscarPorId(
+        idDispositivo,
+      );
+      if (dispositivo != null && dispositivo.idStatus == 3) {
+        // Status EM_USO
         errorMessage = 'Este dispositivo está sendo usado em outro empréstimo';
         notifyListeners();
         return false;
@@ -280,7 +333,6 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
     try {
       for (final itemDTO in dispositivosDoEmprestimo) {
         for (final empDispositivo in itemDTO.dispositivos) {
-
           if (empDispositivo.id == null) {
             continue;
           }
@@ -290,9 +342,6 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
           );
 
           if (dispositivo == null) {
-            debugPrint(
-              'Dispositivo ${empDispositivo.idDispositivo} não encontrado.'
-            );
             continue;
           }
 
@@ -312,9 +361,7 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
 
       await carregarDispositivosDoEmprestimo(idEmprestimo);
       return true;
-    } catch (e, s) {
-      debugPrint(e.toString());
-      debugPrint(s.toString());
+    } catch (e) {
       errorMessage = 'Erro ao marcar todos os dispositivos.';
       return false;
     }
@@ -325,15 +372,9 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
     try {
       for (final itemDTO in dispositivosDoEmprestimo) {
         for (final empDispositivo in itemDTO.dispositivos) {
-
           // Ignora vínculos vazios
           if (empDispositivo.id == null ||
               empDispositivo.idDispositivo == null) {
-            debugPrint(
-              'Pulando vínculo sem dispositivo: '
-              'id=${empDispositivo.id}, '
-              'idDispositivo=${empDispositivo.idDispositivo}',
-            );
             continue;
           }
 
@@ -342,9 +383,6 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
           );
 
           if (dispositivo == null) {
-            debugPrint(
-              'Dispositivo ${empDispositivo.idDispositivo} não encontrado.',
-            );
             continue;
           }
 
@@ -368,10 +406,7 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
 
       await carregarDispositivosDoEmprestimo(idEmprestimo);
       return true;
-
-    } catch (e, s) {
-      debugPrint(e.toString());
-      debugPrint(s.toString());
+    } catch (e) {
       errorMessage = 'Erro ao desmarcar todos os dispositivos.';
       return false;
     }

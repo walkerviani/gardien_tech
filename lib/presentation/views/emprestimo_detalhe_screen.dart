@@ -109,6 +109,132 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
         .toList();
   }
 
+  Future<void> _excluirEmprestimo(
+    BuildContext context,
+    EmprestimoDetalheViewmodel viewmodel,
+  ) async {
+    final confirmar = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text("Excluir Empréstimo"),
+        content: const Text("Tem certeza que deseja excluir o empréstimo?"),
+        actionsAlignment: MainAxisAlignment.spaceEvenly,
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text(
+              'Cancelar',
+              style: TextStyle(color: Color(0xFF000000)),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Excluir', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmar != true) return;
+
+    final sucesso = await viewmodel.excluirEmprestimo(widget.idEmprestimo);
+
+    if (!context.mounted) return;
+
+    if (sucesso) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Empréstimo excluído com sucesso'),
+          backgroundColor: Colors.blueGrey,
+        ),
+      );
+      Navigator.pop(context, true);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            viewmodel.errorMessage ?? 'Erro ao excluir o empréstimo',
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<void> _finalizarEmprestimo(
+    BuildContext context,
+    EmprestimoDetalheViewmodel viewmodel,
+  ) async {
+    final sucesso = await viewmodel.finalizarEmprestimo(widget.idEmprestimo);
+    if (!context.mounted) return;
+
+    if (!sucesso) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            viewmodel.errorMessage ??
+                'Verifique se todos os dispositivos foram devolvidos',
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    await viewmodel.carregarDispositivosDoEmprestimo(widget.idEmprestimo);
+  }
+
+  Future<void> _definirSemCorrespondencia(
+    BuildContext context,
+    EmprestimoDetalheViewmodel viewmodel,
+  ) async {
+    final confirmar = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text(
+          'Sem Correspondência',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: const Text(
+          'Tem certeza que deseja definir como Sem Correspondência?\n\n'
+          'Isso quer dizer que há dispositivos que não foram vinculados e '
+          'atualmente não há como identificar os dispositivos que estavam no empréstimo',
+        ),
+        actionsAlignment: MainAxisAlignment.spaceEvenly,
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text(
+              'Cancelar',
+              style: TextStyle(color: Color(0xFF000000)),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Definir', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+    if (confirmar != true) return;
+
+    final sucesso = await viewmodel.definirSemCorrespondencia(
+      widget.idEmprestimo,
+    );
+    if (!context.mounted) return;
+    if (!sucesso) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            viewmodel.errorMessage ??
+                'Não foi possível definir como Sem Correspondência',
+          ),
+        ),
+      );
+    }
+    await viewmodel.carregarDispositivosDoEmprestimo(widget.idEmprestimo);
+  }
+
   @override
   Widget build(BuildContext context) {
     final String horaFormatada = DateFormat(
@@ -224,7 +350,10 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8),
                                     ),
-                                    minimumSize: const Size(double.infinity, 40),
+                                    minimumSize: const Size(
+                                      double.infinity,
+                                      40,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -277,7 +406,10 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8),
                                     ),
-                                    minimumSize: const Size(double.infinity, 40),
+                                    minimumSize: const Size(
+                                      double.infinity,
+                                      40,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -384,7 +516,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                                     padding: const EdgeInsets.all(10),
                                     child: viewmodel.empFinalizado
                                         ? _cardFinalizado(
-                                            dispositivo!,
+                                            dispositivo,
                                             tipoDispositivo,
                                           )
                                         : _cardItens(
@@ -418,119 +550,81 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
           final bool isFinalizado =
               widget.idStatus == EmprestimoStatus.concluido.id ||
               viewmodel.empFinalizado;
-
+          final bool isEmObservacao =
+              widget.idStatus == EmprestimoStatus.emObservacao.id;
           if (isFinalizado) {
             return SizedBox.shrink();
           }
 
           return SafeArea(
             child: Container(
-              padding: EdgeInsets.all(10),
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Botão Excluir Empréstimo
-                  ElevatedButton(
-                    onPressed: () async {
-                      return showDialog(
-                        context: context,
-                        builder: (_) => AlertDialog(
-                          title: const Text("Excluir Empréstimo"),
-                          content: const Text(
-                            "Tem certeza que deseja excluir o empréstimo?",
-                          ),
-                          actionsAlignment: MainAxisAlignment.spaceEvenly,
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text(
-                                'Cancelar',
-                                style: TextStyle(color: Color(0xFF000000)),
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () async {
-                                Navigator.pop(context);
-                                final sucesso = await viewmodel
-                                    .excluirEmprestimo(widget.idEmprestimo);
-                                if (!context.mounted) return;
-                                if (sucesso) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                        'Empréstimo excluído com sucesso',
-                                      ),
-                                      backgroundColor: Colors.blueGrey,
-                                    ),
-                                  );
-                                  Navigator.pop(context, true);
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        viewmodel.errorMessage ??
-                                            'Erro ao excluir o empréstimo',
-                                      ),
-                                      backgroundColor: Colors.red,
-                                    ),
-                                  );
-                                }
-                              },
-                              child: const Text(
-                                'Excluir',
-                                style: TextStyle(color: Colors.red),
-                              ),
-                            ),
-                          ],
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: viewmodel.isLoading
+                          ? null
+                          : () => _excluirEmprestimo(context, viewmodel),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFB00303),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFB00303),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
                       ),
-                      fixedSize: const Size(300, 50),
-                    ),
-                    child: Text(
-                      'Excluir empréstimo',
-                      style: TextStyle(color: Colors.white),
+                      child: Text(
+                        'Excluir empréstimo',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
-                  SizedBox(height: 10),
-                  // Botão Finalizar
-                  ElevatedButton(
-                    onPressed: () async {
-                      final sucesso = await viewmodel.finalizarEmprestimo(
-                        widget.idEmprestimo,
-                      );
-                      if (!context.mounted) return;
-
-                      if (!sucesso) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: const Text(
-                              "Verifique se todos os dispositivos foram devolvidos",
-                            ),
-                            backgroundColor: Colors.red,
+                  if (isEmObservacao) ...[
+                    SizedBox(height: 10),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: viewmodel.isLoading
+                            ? null
+                            : () => _definirSemCorrespondencia(
+                                context,
+                                viewmodel,
+                              ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFe76f06),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                        );
-                      } else {
-                        viewmodel.carregarDispositivosDoEmprestimo(
-                          widget.idEmprestimo,
-                        );
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        ),
+
+                        child: Text(
+                          'Sem Correspondência',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
-                      fixedSize: const Size(300, 50),
                     ),
-                    child: Text(
-                      'Finalizar',
-                      style: TextStyle(color: Colors.white),
+                  ],
+                  SizedBox(height: 10),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: viewmodel.isLoading
+                          ? null
+                          : () => _finalizarEmprestimo(context, viewmodel),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Text(
+                        'Finalizar',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                 ],
@@ -784,7 +878,9 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
     );
   }
 
-  Widget _cardFinalizado(Dispositivo dispositivo, String tipoDispositivo) {
+  Widget _cardFinalizado(Dispositivo? dispositivo, String tipoDispositivo) {
+    final numPatrimonio = dispositivo?.numPatrimonio;
+
     return Column(
       children: [
         SizedBox(
@@ -802,7 +898,9 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                     border: OutlineInputBorder(),
                   ),
                   controller: TextEditingController(
-                    text: dispositivo.numPatrimonio,
+                    text: numPatrimonio == null || numPatrimonio.isEmpty
+                        ? '?'
+                        : numPatrimonio,
                   ),
                   style: const TextStyle(
                     fontSize: 14,
