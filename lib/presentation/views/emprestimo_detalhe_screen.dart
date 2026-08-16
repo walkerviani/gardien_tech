@@ -246,6 +246,9 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
             .firstOrNull
             ?.nomeStatus ??
         'Status não encontrado';
+    String nomeCortado = widget.nomeResponsavel.length > 15
+        ? '${widget.nomeResponsavel.substring(0, 17)}...'
+        : widget.nomeResponsavel;
     return Scaffold(
       appBar: AppBar(
         title: Text('Detalhes do empréstimo'),
@@ -280,7 +283,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                               ),
                             ),
                             TextSpan(
-                              text: 'Responsável: ${widget.nomeResponsavel}\n',
+                              text: 'Responsável: $nomeCortado\n',
                               style: TextStyle(fontSize: 13),
                             ),
                             TextSpan(
