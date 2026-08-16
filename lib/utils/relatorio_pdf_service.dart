@@ -22,6 +22,14 @@ class RelatorioPdfService {
     return pw.ThemeData.withFont(base: font, bold: bold);
   }
 
+  String _dataFormatada(DateTime? data) {
+    if (data == null) {
+      return '-----';
+    }
+    final dataHoraFormatada = DateFormat('dd/MM/y HH:mm', 'pt_BR').format(data);
+    return dataHoraFormatada;
+  }
+
   // Cria o cabeçalho com icone do app e título do relatório
   pw.Widget _cabecalho(pw.MemoryImage logo, String titulo) {
     return pw.Column(
@@ -71,10 +79,7 @@ class RelatorioPdfService {
         'Status não encontrado';
 
     final dataEfetuadoEmprestimo = relatorio.emprestimo.dataHoraEfetuado;
-    final dataHoraFormatada = DateFormat(
-      'dd/MM/y HH:mm',
-      'pt_BR',
-    ).format(dataEfetuadoEmprestimo);
+    final dataConcluidoEmprestimo = relatorio.emprestimo.dataHoraConcluido;
 
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -84,7 +89,8 @@ class RelatorioPdfService {
           style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
         ),
         pw.SizedBox(height: 8),
-        pw.Text('Data Efetuado: $dataHoraFormatada'),
+        pw.Text('Data Efetuado: ${_dataFormatada(dataEfetuadoEmprestimo)}'),
+        pw.Text('Data Concluído: ${_dataFormatada(dataConcluidoEmprestimo)}'),
         pw.Text(
           'Responsável: ${relatorio.emprestimo.nomeUsuario} - $cargoString',
         ),
