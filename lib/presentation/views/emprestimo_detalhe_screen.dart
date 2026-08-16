@@ -496,8 +496,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                             }
 
                             // Mapeia os dados para acelerar a busca de itens e usa Column para otimizar a renderização.
-                            final itemDoDTO =
-                                viewmodel.dispositivosDoEmprestimo[index];
+                            final itemDoDTO = viewmodel.dispositivosDoEmprestimo[index];
                             final emprestimoItem = itemDoDTO.item;
                             final tipoDispositivo =
                                 tiposMap[emprestimoItem.idTipoDispositivo] ??
