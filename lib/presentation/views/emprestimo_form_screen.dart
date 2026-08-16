@@ -235,7 +235,7 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
                 title: Row(
                   children: [
                     const Text(
-                      'Tipo de dispositivo:',
+                      'Tipo:',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -244,7 +244,7 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: DropdownMenuFormField<TipoDispositivo>(
-                        label: const Text('Tipo'),
+                        label: const Text('Tipo de dispositivo'),
                         menuHeight: 200,
                         dropdownMenuEntries: TipoDispositivo.values
                             .where(
@@ -281,7 +281,7 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
                     Row(
                       children: [
                         const Text(
-                          'Informe a quantidade:',
+                          'Quantidade:',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -294,7 +294,7 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
                                 viewModel.itensQuantidade[index].quantidade,
                             decoration: const InputDecoration(
                               border: OutlineInputBorder(),
-                              labelText: "Quantidade",
+                              labelText: "Informe a quantidade",
                             ),
                             textAlign: TextAlign.center,
                             keyboardType: TextInputType.number,
