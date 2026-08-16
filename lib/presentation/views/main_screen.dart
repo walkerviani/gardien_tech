@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:gardien_tech/presentation/views/emprestimo_form_screen.dart';
 import 'package:gardien_tech/presentation/views/emprestimo_list_screen.dart';
 import 'package:gardien_tech/presentation/views/funcoes_screen.dart';
+import 'package:gardien_tech/utils/cores_gardien.dart';
 
-enum Aba { home, adicionar, funcoes}
+enum Aba { home, adicionar, funcoes }
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -32,24 +33,24 @@ class _MainScreenState extends State<MainScreen> {
         title: const Text(
           'Gardien Tech',
           style: TextStyle(
-            color: Colors.white,
+            color: CoresGardien.branco,
             fontSize: 25,
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: const Color(0xFF2196F3),
+        backgroundColor: CoresGardien.azulClaro,
       ),
       body: _buildTela(),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _abaAtual == Aba.adicionar ? 0 : Aba.values.indexOf(_abaAtual),
+        currentIndex: _abaAtual == Aba.adicionar
+            ? 0
+            : Aba.values.indexOf(_abaAtual),
         onTap: (index) {
           final aba = Aba.values[index];
           if (aba == Aba.adicionar) {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => EmprestimoFormScreen(),
-              ),
+              MaterialPageRoute(builder: (context) => EmprestimoFormScreen()),
             ).then((_) {
               setState(() {
                 _abaAtual = Aba.home;
@@ -61,13 +62,16 @@ class _MainScreenState extends State<MainScreen> {
           setState(() => _abaAtual = aba);
         },
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Página inicial'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Página inicial',
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Adicionar'),
           BottomNavigationBarItem(icon: Icon(Icons.apps), label: 'Funções'),
         ],
-        selectedItemColor: Colors.white,
-        backgroundColor: const Color(0xFF2196F3),
-        unselectedItemColor: Colors.white,
+        selectedItemColor: CoresGardien.branco,
+        backgroundColor: CoresGardien.azulClaro,
+        unselectedItemColor: CoresGardien.branco,
       ),
     );
   }

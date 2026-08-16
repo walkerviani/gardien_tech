@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gardien_tech/presentation/views/ajuda_card_screen.dart';
 import 'package:gardien_tech/presentation/views/ajuda_tipo_emprestimo_screen.dart';
+import 'package:gardien_tech/utils/cores_gardien.dart';
 
 class AjudaListScreen extends StatelessWidget {
   const AjudaListScreen({super.key});
@@ -10,8 +11,8 @@ class AjudaListScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ajuda e informações'),
-        backgroundColor: const Color(0xFF2196F3),
-        foregroundColor: Colors.white,
+        backgroundColor: CoresGardien.azulClaro,
+        foregroundColor: CoresGardien.branco,
       ),
       body: Container(
         padding: EdgeInsets.all(12),
@@ -25,8 +26,8 @@ class AjudaListScreen extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF006dc4),
-                foregroundColor: const Color(0xFFFFFFFF),
+                backgroundColor: CoresGardien.azulEscuro,
+                foregroundColor: CoresGardien.branco,
                 minimumSize: const Size(double.infinity, 70),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(4),
@@ -51,8 +52,8 @@ class AjudaListScreen extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF006dc4),
-                foregroundColor: const Color(0xFFFFFFFF),
+                backgroundColor: CoresGardien.azulEscuro,
+                foregroundColor: CoresGardien.branco,
                 minimumSize: const Size(double.infinity, 70),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(4),

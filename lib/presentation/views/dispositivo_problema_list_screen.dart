@@ -3,6 +3,7 @@ import 'package:gardien_tech/domain/entities/problema.dart';
 import 'package:gardien_tech/domain/repositories/problema_repository.dart';
 import 'package:gardien_tech/presentation/viewmodels/dispositivo_problema_list_viewmodel.dart';
 import 'package:gardien_tech/presentation/views/problema_form_screen.dart';
+import 'package:gardien_tech/utils/cores_gardien.dart';
 import 'package:provider/provider.dart';
 
 class DispositivoProblemaListScreen extends StatefulWidget {
@@ -66,7 +67,7 @@ class _DispositivoProblemaListScreenState
             onPressed: () => Navigator.pop(context),
             child: const Text(
               'Cancelar',
-              style: TextStyle(color: Color(0xFF000000)),
+              style: TextStyle(color: CoresGardien.preto),
             ),
           ),
           TextButton(
@@ -86,7 +87,10 @@ class _DispositivoProblemaListScreenState
                 );
               }
             },
-            child: const Text('Excluir', style: TextStyle(color: Colors.red)),
+            child: const Text(
+              'Excluir',
+              style: TextStyle(color: CoresGardien.vermelhoClaro),
+            ),
           ),
         ],
       ),
@@ -98,8 +102,8 @@ class _DispositivoProblemaListScreenState
     return Scaffold(
       appBar: AppBar(
         title: const Text('Problemas'),
-        backgroundColor: const Color(0xFF2196F3),
-        foregroundColor: Colors.white,
+        backgroundColor: CoresGardien.azulClaro,
+        foregroundColor: CoresGardien.branco,
       ),
       body: Container(
         padding: const EdgeInsets.all(12),
@@ -111,7 +115,7 @@ class _DispositivoProblemaListScreenState
             Container(
               padding: EdgeInsets.all(5),
               decoration: BoxDecoration(
-                border: Border.all(color: const Color(0xFF000000)),
+                border: Border.all(color: CoresGardien.preto),
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Align(
@@ -147,8 +151,8 @@ class _DispositivoProblemaListScreenState
             ElevatedButton(
               onPressed: () => _abrirFormulario(),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFe76f06),
-                foregroundColor: Colors.white,
+                backgroundColor: CoresGardien.laranja,
+                foregroundColor: CoresGardien.branco,
                 minimumSize: const Size(double.infinity, 70),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(4),

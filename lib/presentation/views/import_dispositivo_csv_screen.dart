@@ -2,6 +2,7 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gardien_tech/presentation/viewmodels/import_dispositivo_csv_viewmodel.dart';
+import 'package:gardien_tech/utils/cores_gardien.dart';
 import 'package:provider/provider.dart';
 import 'package:public_file_saver/public_file_saver.dart';
 
@@ -35,7 +36,7 @@ class _ImportDispositivoCsvScreenState
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Arquivo modelo salvo com sucesso'),
-            backgroundColor: Colors.green,
+            backgroundColor: CoresGardien.verdeClaro,
           ),
         );
       }
@@ -44,7 +45,7 @@ class _ImportDispositivoCsvScreenState
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Erro ao salvar o arquivo'),
-          backgroundColor: Colors.red,
+          backgroundColor: CoresGardien.vermelhoClaro,
         ),
       );
     }
@@ -71,14 +72,14 @@ class _ImportDispositivoCsvScreenState
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Importação de dispositivos realizado com sucesso'),
-          backgroundColor: Colors.green,
+          backgroundColor: CoresGardien.verdeClaro,
         ),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(viewmodel.errorMessage ?? 'Erro desconhecido'),
-          backgroundColor: Colors.red,
+          backgroundColor: CoresGardien.vermelhoClaro,
         ),
       );
     }
@@ -91,13 +92,13 @@ class _ImportDispositivoCsvScreenState
     return Scaffold(
       appBar: AppBar(
         title: const Text('Importar por CSV'),
-        backgroundColor: const Color(0xFF2196F3),
-        foregroundColor: Colors.white,
+        backgroundColor: CoresGardien.azulClaro,
+        foregroundColor: CoresGardien.branco,
       ),
       body: Container(
         padding: EdgeInsets.all(12),
         child: viewmodel.isLoading
-            ? const CircularProgressIndicator(color: Color(0xFF006dc4))
+            ? const CircularProgressIndicator(color: CoresGardien.azulClaro)
             : Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,7 +118,7 @@ class _ImportDispositivoCsvScreenState
                         'Número de Patrimônio',
                         style: TextStyle(
                           fontSize: 17,
-                          color: Color(0xFFED7D31),
+                          color: CoresGardien.laranja,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -139,7 +140,7 @@ class _ImportDispositivoCsvScreenState
                                   onPressed: () => Navigator.pop(context),
                                   child: const Text(
                                     'Entendi',
-                                    style: TextStyle(color: Color(0xFF000000)),
+                                    style: TextStyle(color: CoresGardien.preto),
                                   ),
                                 ),
                               ],
@@ -156,7 +157,7 @@ class _ImportDispositivoCsvScreenState
                         'Número de Série',
                         style: TextStyle(
                           fontSize: 17,
-                          color: Color(0xFF5B9BD5),
+                          color: CoresGardien.azulClaro,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -178,7 +179,7 @@ class _ImportDispositivoCsvScreenState
                                   onPressed: () => Navigator.pop(context),
                                   child: const Text(
                                     'Entendi',
-                                    style: TextStyle(color: Color(0xFF000000)),
+                                    style: TextStyle(color: CoresGardien.preto),
                                   ),
                                 ),
                               ],
@@ -195,7 +196,7 @@ class _ImportDispositivoCsvScreenState
                         'Tipo de Dispositivo',
                         style: TextStyle(
                           fontSize: 17,
-                          color: Color(0xFF70AD47),
+                          color: CoresGardien.verdeClaro,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -217,7 +218,7 @@ class _ImportDispositivoCsvScreenState
                                   onPressed: () => Navigator.pop(context),
                                   child: const Text(
                                     'Entendi',
-                                    style: TextStyle(color: Color(0xFF000000)),
+                                    style: TextStyle(color: CoresGardien.preto),
                                   ),
                                 ),
                               ],
@@ -265,7 +266,7 @@ class _ImportDispositivoCsvScreenState
                                   onPressed: () => Navigator.pop(context),
                                   child: const Text(
                                     'Entendi',
-                                    style: TextStyle(color: Color(0xFF000000)),
+                                    style: TextStyle(color: CoresGardien.preto),
                                   ),
                                 ),
                               ],
@@ -291,8 +292,8 @@ class _ImportDispositivoCsvScreenState
                   await _salvarModeloCsv();
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF006dc4),
-                  foregroundColor: Colors.white,
+                  backgroundColor: CoresGardien.azulEscuro,
+                  foregroundColor: CoresGardien.branco,
                   minimumSize: const Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4),
@@ -314,8 +315,8 @@ class _ImportDispositivoCsvScreenState
                 onPressed: viewmodel.isLoading ? null : _adicionarCsv,
 
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  foregroundColor: Colors.white,
+                  backgroundColor: CoresGardien.verdeClaro,
+                  foregroundColor: CoresGardien.branco,
                   minimumSize: const Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4),

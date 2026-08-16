@@ -4,6 +4,7 @@ import 'package:gardien_tech/domain/entities/usuario.dart';
 import 'package:gardien_tech/presentation/viewmodels/relatorios_viewmodel.dart';
 import 'package:gardien_tech/presentation/views/selecionar_usuario_screen.dart';
 import 'package:gardien_tech/presentation/views/visualizar_pdf_screen.dart';
+import 'package:gardien_tech/utils/cores_gardien.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -17,8 +18,8 @@ class RelatoriosScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Relatórios'),
-        backgroundColor: const Color(0xFF2196F3),
-        foregroundColor: Colors.white,
+        backgroundColor: CoresGardien.azulClaro,
+        foregroundColor: CoresGardien.branco,
       ),
       body: Container(
         padding: EdgeInsets.all(12),
@@ -38,11 +39,11 @@ class RelatoriosScreen extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    backgroundColor: Colors.white,
+                    backgroundColor: CoresGardien.branco,
                     content: Container(
                       height: 250,
                       width: 300,
-                      color: Colors.white,
+                      color: CoresGardien.branco,
                       child: CupertinoDatePicker(
                         // Calendário
                         initialDateTime: dataSelecionada,
@@ -51,7 +52,7 @@ class RelatoriosScreen extends StatelessWidget {
                         onDateTimeChanged: (novaData) {
                           dataSelecionada = novaData;
                         },
-                        backgroundColor: Colors.white,
+                        backgroundColor: CoresGardien.branco,
                         minimumYear: DateTime.now().year - 3,
                         maximumYear: DateTime.now().year + 3,
                       ),
@@ -74,7 +75,7 @@ class RelatoriosScreen extends StatelessWidget {
                                   viewmodel.errorMessage ??
                                       'Não foi possível gerar o PDF',
                                 ),
-                                backgroundColor: Colors.red,
+                                backgroundColor: CoresGardien.vermelhoClaro,
                               ),
                             );
                             return;
@@ -92,7 +93,7 @@ class RelatoriosScreen extends StatelessWidget {
                         },
                         child: Text(
                           'Selecionar',
-                          style: TextStyle(color: Color(0xFF000000)),
+                          style: TextStyle(color: CoresGardien.preto),
                         ),
                       ),
                     ],
@@ -100,8 +101,8 @@ class RelatoriosScreen extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF006dc4),
-                foregroundColor: const Color(0xFFFFFFFF),
+                backgroundColor: CoresGardien.azulEscuro,
+                foregroundColor: CoresGardien.branco,
                 minimumSize: const Size(double.infinity, 70),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(4),
@@ -133,7 +134,7 @@ class RelatoriosScreen extends StatelessWidget {
                         viewmodel.errorMessage ??
                             'Não foi possível gerar o PDF',
                       ),
-                      backgroundColor: Colors.red,
+                      backgroundColor: CoresGardien.vermelhoClaro,
                     ),
                   );
                   return;
@@ -151,8 +152,8 @@ class RelatoriosScreen extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF006dc4),
-                foregroundColor: const Color(0xFFFFFFFF),
+                backgroundColor: CoresGardien.azulEscuro,
+                foregroundColor: CoresGardien.branco,
                 minimumSize: const Size(double.infinity, 70),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(4),
@@ -183,7 +184,7 @@ class RelatoriosScreen extends StatelessWidget {
                         viewmodel.errorMessage ??
                             'Não foi possível gerar o PDF',
                       ),
-                      backgroundColor: Colors.red,
+                      backgroundColor: CoresGardien.vermelhoClaro,
                     ),
                   );
                   return;
@@ -201,8 +202,8 @@ class RelatoriosScreen extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF006dc4),
-                foregroundColor: const Color(0xFFFFFFFF),
+                backgroundColor: CoresGardien.azulEscuro,
+                foregroundColor: CoresGardien.branco,
                 minimumSize: const Size(double.infinity, 70),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(4),
@@ -230,7 +231,7 @@ class RelatoriosScreen extends StatelessWidget {
                         viewmodel.errorMessage ??
                             'Não foi possível gerar o PDF',
                       ),
-                      backgroundColor: Colors.red,
+                      backgroundColor: CoresGardien.vermelhoClaro,
                     ),
                   );
                   return;
@@ -248,8 +249,8 @@ class RelatoriosScreen extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF006dc4),
-                foregroundColor: const Color(0xFFFFFFFF),
+                backgroundColor: CoresGardien.azulEscuro,
+                foregroundColor: CoresGardien.branco,
                 minimumSize: const Size(double.infinity, 70),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(4),

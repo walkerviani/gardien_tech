@@ -83,11 +83,11 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      backgroundColor: Colors.white,
+                      backgroundColor: CoresGardien.branco,
                       content: Container(
                         height: 250,
                         width: 300,
-                        color: Colors.white,
+                        color: CoresGardien.branco,
                         child: CupertinoDatePicker(
                           // Calendário
                           initialDateTime: _dataController,
@@ -98,7 +98,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                               _dataController = data;
                             });
                           },
-                          backgroundColor: Colors.white,
+                          backgroundColor: CoresGardien.branco,
                           minimumYear: DateTime.now().year - 3,
                           maximumYear: DateTime.now().year + 3,
                         ),
@@ -117,7 +117,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                           },
                           child: const Text(
                             'Selecionar Dia Atual',
-                            style: TextStyle(color: Color(0xFF2196F3)),
+                            style: TextStyle(color: CoresGardien.azulClaro),
                           ),
                         ),
                         TextButton(
@@ -129,7 +129,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                           },
                           child: const Text(
                             'Selecionar',
-                            style: TextStyle(color: Color(0xFF000000)),
+                            style: TextStyle(color: CoresGardien.preto),
                           ),
                         ),
                       ],
@@ -137,7 +137,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                   );
                 },
                 style: TextButton.styleFrom(
-                  backgroundColor: Colors.blue,
+                  backgroundColor: CoresGardien.azulClaro,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -145,7 +145,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                 child: Text(
                   _dataFormatada(_dataController),
                   style: TextStyle(
-                    color: Colors.white,
+                    color: CoresGardien.branco,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
@@ -199,7 +199,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                                         emprestimo.dataHoraEfetuado,
                                       ),
                                       style: TextStyle(
-                                        color: Colors.white,
+                                        color: CoresGardien.branco,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18,
                                       ),
@@ -207,7 +207,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                                     Text(
                                       nomeCortado,
                                       style: TextStyle(
-                                        color: Colors.white,
+                                        color: CoresGardien.branco,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
                                       ),
@@ -215,7 +215,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                                     Text(
                                       '$usuarioCargo\n${emprestimo.qtdSolicitada} $dispositivoStr',
                                       style: TextStyle(
-                                        color: Colors.white,
+                                        color: CoresGardien.branco,
                                         fontSize: 16,
                                       ),
                                     ),
@@ -273,7 +273,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                                 child: Text(
                                   'Clique aqui para mais detalhes',
                                   style: TextStyle(
-                                    color: Colors.white,
+                                    color: CoresGardien.branco,
                                     fontWeight: FontWeight.bold,
                                     fontStyle: FontStyle.italic,
                                   ),

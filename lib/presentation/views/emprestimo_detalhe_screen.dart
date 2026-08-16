@@ -8,6 +8,7 @@ import 'package:gardien_tech/domain/enum/tipo_dispositivo.dart';
 import 'package:gardien_tech/presentation/viewmodels/emprestimo_detalhe_viewmodel.dart';
 import 'package:gardien_tech/presentation/views/selecionar_dispositivo_screen.dart';
 import 'package:gardien_tech/presentation/widgets/emprestimo_item_skeleton.dart';
+import 'package:gardien_tech/utils/cores_gardien.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -84,7 +85,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Empréstimo sem itens removido.'),
-            backgroundColor: Colors.blueGrey,
+            backgroundColor: CoresGardien.cinzaClaro,
           ),
         );
 
@@ -96,7 +97,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Item removido com sucesso'),
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: CoresGardien.cinzaClaro,
       ),
     );
   }
@@ -124,12 +125,15 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
             onPressed: () => Navigator.pop(context, false),
             child: const Text(
               'Cancelar',
-              style: TextStyle(color: Color(0xFF000000)),
+              style: TextStyle(color: CoresGardien.preto),
             ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Excluir', style: TextStyle(color: Colors.red)),
+            child: const Text(
+              'Excluir',
+              style: TextStyle(color: CoresGardien.vermelhoClaro),
+            ),
           ),
         ],
       ),
@@ -145,7 +149,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Empréstimo excluído com sucesso'),
-          backgroundColor: Colors.blueGrey,
+          backgroundColor: CoresGardien.cinzaClaro,
         ),
       );
       Navigator.pop(context, true);
@@ -155,7 +159,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
           content: Text(
             viewmodel.errorMessage ?? 'Erro ao excluir o empréstimo',
           ),
-          backgroundColor: Colors.red,
+          backgroundColor: CoresGardien.vermelhoClaro,
         ),
       );
     }
@@ -175,7 +179,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
             viewmodel.errorMessage ??
                 'Verifique se todos os dispositivos foram devolvidos',
           ),
-          backgroundColor: Colors.red,
+          backgroundColor: CoresGardien.vermelhoClaro,
         ),
       );
       return;
@@ -206,12 +210,15 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
             onPressed: () => Navigator.pop(context, false),
             child: const Text(
               'Cancelar',
-              style: TextStyle(color: Color(0xFF000000)),
+              style: TextStyle(color: CoresGardien.preto),
             ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Definir', style: TextStyle(color: Colors.red)),
+            child: const Text(
+              'Definir',
+              style: TextStyle(color: CoresGardien.vermelhoClaro),
+            ),
           ),
         ],
       ),
@@ -252,8 +259,8 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Detalhes do empréstimo'),
-        backgroundColor: const Color(0xFF2196F3),
-        foregroundColor: Colors.white,
+        backgroundColor: CoresGardien.azulClaro,
+        foregroundColor: CoresGardien.branco,
       ),
       body: Container(
         padding: EdgeInsets.all(12),
@@ -261,7 +268,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
           children: [
             Container(
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
+                border: Border.all(color: CoresGardien.cinza),
                 borderRadius: BorderRadius.circular(5),
               ),
               padding: EdgeInsets.all(4),
@@ -336,20 +343,23 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                                         content: Text(
                                           'Todos os dispositivos foram marcados como devolvidos.',
                                         ),
-                                        backgroundColor: Colors.green,
+                                        backgroundColor:
+                                            CoresGardien.verdeClaro,
                                       ),
                                     );
                                   },
                                   icon: const Icon(
                                     Icons.done_all,
-                                    color: Colors.white,
+                                    color: CoresGardien.branco,
                                   ),
                                   label: const Text(
                                     'Devolver todos',
-                                    style: TextStyle(color: Colors.white),
+                                    style: TextStyle(
+                                      color: CoresGardien.branco,
+                                    ),
                                   ),
                                   style: TextButton.styleFrom(
-                                    backgroundColor: const Color(0xFF2196F3),
+                                    backgroundColor: CoresGardien.azulClaro,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8),
                                     ),
@@ -377,7 +387,8 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                                           content: Text(
                                             'Todos os dispositivos foram marcados como em uso.',
                                           ),
-                                          backgroundColor: Colors.green,
+                                          backgroundColor:
+                                              CoresGardien.verdeClaro,
                                         ),
                                       );
                                     } else {
@@ -389,27 +400,31 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                                             viewmodel.errorMessage ??
                                                 'Erro ao desmarcar dispositivos.',
                                           ),
-                                          backgroundColor: const Color(
-                                            0xFFB00303,
-                                          ),
+                                          backgroundColor:
+                                              CoresGardien.vermelhoClaro,
                                         ),
                                       );
                                     }
                                   },
                                   icon: const Icon(
                                     Icons.remove_done,
-                                    color: Colors.white,
+                                    color: CoresGardien.branco,
                                   ),
                                   label: const Text(
                                     'Desfazer devoluções',
-                                    style: TextStyle(color: Colors.white),
+                                    style: TextStyle(
+                                      color: CoresGardien.branco,
+                                    ),
                                   ),
                                   style: TextButton.styleFrom(
-                                    backgroundColor: const Color(0xFF2196F3),
+                                    backgroundColor: CoresGardien.azulClaro,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8),
                                     ),
-                                    minimumSize: const Size(double.infinity, 40),
+                                    minimumSize: const Size(
+                                      double.infinity,
+                                      40,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -472,20 +487,22 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                                         }
                                       },
                                       style: TextButton.styleFrom(
-                                        backgroundColor: const Color(
-                                          0xFF2196F3,
-                                        ),
+                                        backgroundColor: CoresGardien.azulClaro,
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(
                                             8,
                                           ),
                                         ),
-                                        minimumSize:
-                                            const Size(double.infinity, 50),
+                                        minimumSize: const Size(
+                                          double.infinity,
+                                          50,
+                                        ),
                                       ),
                                       child: const Text(
                                         'Adicionar',
-                                        style: TextStyle(color: Colors.white),
+                                        style: TextStyle(
+                                          color: CoresGardien.branco,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -495,8 +512,8 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                             }
 
                             // Mapeia os dados para acelerar a busca de itens e usa Column para otimizar a renderização.
-                            final itemDoDTO = viewmodel
-                                .dispositivosDoEmprestimo[index];
+                            final itemDoDTO =
+                                viewmodel.dispositivosDoEmprestimo[index];
                             final emprestimoItem = itemDoDTO.item;
                             final tipoDispositivo =
                                 tiposMap[emprestimoItem.idTipoDispositivo] ??
@@ -578,14 +595,14 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                           ? null
                           : () => _excluirEmprestimo(context, viewmodel),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFB00303),
+                        backgroundColor: CoresGardien.vermelhoEscuro,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
                       child: Text(
                         'Excluir empréstimo',
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: CoresGardien.branco),
                       ),
                     ),
                   ),
@@ -602,14 +619,14 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                                 viewmodel,
                               ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFe76f06),
+                          backgroundColor: CoresGardien.amarelo,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
                         child: Text(
                           'Sem Correspondência',
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(color: CoresGardien.branco),
                         ),
                       ),
                     ),
@@ -623,14 +640,14 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                           ? null
                           : () => _finalizarEmprestimo(context, viewmodel),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
+                        backgroundColor: CoresGardien.verdeClaro,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
                       child: Text(
                         'Finalizar',
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: CoresGardien.branco),
                       ),
                     ),
                   ),
@@ -670,7 +687,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                   ),
                   style: const TextStyle(
                     fontSize: 14,
-                    color: Color(0xFF686767),
+                    color: CoresGardien.cinza,
                   ),
                   onTap: dispositivo == null
                       ? () async {
@@ -753,7 +770,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                   ),
                   style: const TextStyle(
                     fontSize: 14,
-                    color: Color(0xFF686767),
+                    color: CoresGardien.cinza,
                   ),
                 ),
               ),
@@ -767,8 +784,8 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
           children: [
             Text('Devolvido: '),
             Checkbox(
-              checkColor: Colors.white,
-              activeColor: const Color(0xFF006dc4),
+              checkColor: CoresGardien.branco,
+              activeColor: CoresGardien.azulClaro,
               // Usa o cache do viewmodel para saber se foi marcado como devolvido
               value:
                   context.read<EmprestimoDetalheViewmodel>().obterEstadoCache(
@@ -786,7 +803,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                             content: Text(
                               'Este dispositivo está sendo usado em outro empréstimo.',
                             ),
-                            backgroundColor: Colors.red,
+                            backgroundColor: CoresGardien.vermelhoClaro,
                           ),
                         );
                         return;
@@ -817,7 +834,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                                   ? 'Dispositivo marcado como disponível'
                                   : 'Dispositivo marcado como em uso',
                             ),
-                            backgroundColor: Colors.green,
+                            backgroundColor: CoresGardien.verdeClaro,
                           ),
                         );
                       } else {
@@ -827,7 +844,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                               viewmodel.errorMessage ??
                                   'Erro ao alterar status do dispositivo',
                             ),
-                            backgroundColor: Colors.red,
+                            backgroundColor: CoresGardien.vermelhoClaro,
                           ),
                         );
                       }
@@ -850,7 +867,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                         onPressed: () => Navigator.pop(context),
                         child: const Text(
                           'Cancelar',
-                          style: TextStyle(color: Color(0xFF000000)),
+                          style: TextStyle(color: CoresGardien.preto),
                         ),
                       ),
                       TextButton(
@@ -860,7 +877,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                         },
                         child: const Text(
                           'Excluir',
-                          style: TextStyle(color: Colors.red),
+                          style: TextStyle(color: CoresGardien.vermelhoClaro),
                         ),
                       ),
                     ],
@@ -868,7 +885,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFB00303),
+                backgroundColor: CoresGardien.vermelhoEscuro,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -876,7 +893,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
               ),
               child: const Text(
                 'Remover',
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: CoresGardien.branco),
               ),
             ),
           ],
@@ -911,7 +928,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                   ),
                   style: const TextStyle(
                     fontSize: 14,
-                    color: Color(0xFF686767),
+                    color: CoresGardien.cinza,
                   ),
                 ),
               ),
@@ -929,7 +946,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                   ),
                   style: const TextStyle(
                     fontSize: 14,
-                    color: Color(0xFF686767),
+                    color: CoresGardien.cinza,
                   ),
                 ),
               ),

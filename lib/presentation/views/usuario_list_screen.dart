@@ -4,6 +4,7 @@ import 'package:gardien_tech/domain/enum/tipo_cargo.dart';
 import 'package:gardien_tech/domain/repositories/usuario_repository.dart';
 import 'package:gardien_tech/presentation/viewmodels/usuario_list_viewmodel.dart';
 import 'package:gardien_tech/presentation/views/usuario_form_screen.dart';
+import 'package:gardien_tech/utils/cores_gardien.dart';
 import 'package:provider/provider.dart';
 
 class UsuarioListScreen extends StatefulWidget {
@@ -67,7 +68,7 @@ class _UsuarioListScreenState extends State<UsuarioListScreen> {
             onPressed: () => Navigator.pop(context),
             child: const Text(
               'Cancelar',
-              style: TextStyle(color: Color(0xFF000000)),
+              style: TextStyle(color: CoresGardien.preto),
             ),
           ),
           TextButton(
@@ -82,12 +83,15 @@ class _UsuarioListScreenState extends State<UsuarioListScreen> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(viewModel.errorMessage ?? 'Erro ao excluir'),
-                    backgroundColor: Colors.red,
+                    backgroundColor: CoresGardien.vermelhoClaro,
                   ),
                 );
               }
             },
-            child: const Text('Excluir', style: TextStyle(color: Colors.red)),
+            child: const Text(
+              'Excluir',
+              style: TextStyle(color: CoresGardien.vermelhoClaro),
+            ),
           ),
         ],
       ),
@@ -99,8 +103,8 @@ class _UsuarioListScreenState extends State<UsuarioListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Usuários'),
-        backgroundColor: const Color(0xFF2196F3),
-        foregroundColor: Colors.white,
+        backgroundColor: CoresGardien.azulClaro,
+        foregroundColor: CoresGardien.branco,
       ),
       body: Container(
         padding: const EdgeInsets.all(12),
@@ -109,8 +113,8 @@ class _UsuarioListScreenState extends State<UsuarioListScreen> {
             ElevatedButton(
               onPressed: () => _abrirFormulario(),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                foregroundColor: Colors.white,
+                backgroundColor: CoresGardien.verdeClaro,
+                foregroundColor: CoresGardien.branco,
                 minimumSize: const Size(double.infinity, 70),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(4),
@@ -145,18 +149,18 @@ class _UsuarioListScreenState extends State<UsuarioListScreen> {
                     suffixIcon: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        possuiTexto ?
-                          IconButton(
-                            icon: const Icon(Icons.clear),
-                            onPressed: () {
-                              _searchController.clear();
-                              _executarPesquisa();
-                            },
-                          )
-                        : IconButton(
-                            icon: const Icon(Icons.search),
-                            onPressed: _executarPesquisa,
-                          ),
+                        possuiTexto
+                            ? IconButton(
+                                icon: const Icon(Icons.clear),
+                                onPressed: () {
+                                  _searchController.clear();
+                                  _executarPesquisa();
+                                },
+                              )
+                            : IconButton(
+                                icon: const Icon(Icons.search),
+                                onPressed: _executarPesquisa,
+                              ),
                       ],
                     ),
                   ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gardien_tech/domain/enum/tipo_cargo.dart';
 import 'package:gardien_tech/presentation/viewmodels/selecionar_usuario_viewmodel.dart';
+import 'package:gardien_tech/utils/cores_gardien.dart';
 import 'package:provider/provider.dart';
 
 class SelecionarUsuarioScreen extends StatefulWidget {
@@ -37,8 +38,8 @@ class _SelecionarUsuarioScreenState extends State<SelecionarUsuarioScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Selecione o usuário'),
-        backgroundColor: const Color(0xFF2196F3),
-        foregroundColor: Colors.white,
+        backgroundColor: CoresGardien.azulClaro,
+        foregroundColor: CoresGardien.branco,
       ),
       body: Container(
         padding: EdgeInsets.all(12),
@@ -62,18 +63,18 @@ class _SelecionarUsuarioScreenState extends State<SelecionarUsuarioScreen> {
                     suffixIcon: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        possuiTexto ?
-                          IconButton(
-                            icon: const Icon(Icons.clear),
-                            onPressed: () {
-                              _searchController.clear();
-                              _executarPesquisa();
-                            },
-                          )
-                        : IconButton(
-                            icon: const Icon(Icons.search),
-                            onPressed: _executarPesquisa,
-                          ),
+                        possuiTexto
+                            ? IconButton(
+                                icon: const Icon(Icons.clear),
+                                onPressed: () {
+                                  _searchController.clear();
+                                  _executarPesquisa();
+                                },
+                              )
+                            : IconButton(
+                                icon: const Icon(Icons.search),
+                                onPressed: _executarPesquisa,
+                              ),
                       ],
                     ),
                   ),
@@ -127,14 +128,14 @@ class _SelecionarUsuarioScreenState extends State<SelecionarUsuarioScreen> {
                                 Navigator.pop(context, usuario);
                               },
                               style: IconButton.styleFrom(
-                                backgroundColor: Colors.green,
+                                backgroundColor: CoresGardien.verdeClaro,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadiusGeometry.circular(
                                     5,
                                   ),
                                 ),
                               ),
-                              icon: Icon(Icons.add, color: Colors.white),
+                              icon: Icon(Icons.add, color: CoresGardien.branco),
                             ),
                           ),
                         ),

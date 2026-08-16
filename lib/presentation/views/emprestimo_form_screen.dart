@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gardien_tech/utils/cores_gardien.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:gardien_tech/domain/entities/dispositivo.dart';
 import 'package:gardien_tech/domain/entities/usuario.dart';
@@ -87,8 +88,8 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
             return Scaffold(
               appBar: AppBar(
                 title: const Text('Empréstimo'),
-                backgroundColor: const Color(0xFF2196F3),
-                foregroundColor: Colors.white,
+                backgroundColor: CoresGardien.azulClaro,
+                foregroundColor: CoresGardien.branco,
               ),
               body: ListView(
                 controller: _scrollController,
@@ -152,9 +153,9 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
                   const SizedBox(height: 8),
                   SegmentedButton<OpcaoEmprestimo>(
                     style: SegmentedButton.styleFrom(
-                      foregroundColor: const Color(0xFF2196F3),
-                      selectedForegroundColor: Colors.white,
-                      selectedBackgroundColor: const Color(0xFF2196F3),
+                      foregroundColor: CoresGardien.azulClaro,
+                      selectedForegroundColor: CoresGardien.branco,
+                      selectedBackgroundColor: CoresGardien.azulClaro,
                     ),
                     segments: const <ButtonSegment<OpcaoEmprestimo>>[
                       ButtonSegment<OpcaoEmprestimo>(
@@ -194,8 +195,8 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
                       if (context.mounted) Navigator.pop(context);
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF4CAf50),
-                      foregroundColor: Colors.white,
+                      backgroundColor: CoresGardien.verdeClaro,
+                      foregroundColor: CoresGardien.branco,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -317,14 +318,14 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
                         child: Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            border: Border.all(color: Colors.orange),
+                            border: Border.all(color: CoresGardien.laranja),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: const Row(
                             children: [
                               Icon(
                                 Icons.warning_amber_rounded,
-                                color: Colors.orange,
+                                color: CoresGardien.laranja,
                                 size: 28,
                               ),
                               SizedBox(width: 8),
@@ -333,7 +334,7 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
                                   'Quantidade alta de dispositivos pode impactar na performance.',
                                   style: TextStyle(
                                     fontSize: 16,
-                                    color: Colors.orange,
+                                    color: CoresGardien.laranja,
                                   ),
                                 ),
                               ),
@@ -368,8 +369,8 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
               });
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF2196F3),
-              foregroundColor: Colors.white,
+              backgroundColor: CoresGardien.azulClaro,
+              foregroundColor: CoresGardien.branco,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -507,7 +508,7 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
           children: [
             const Row(
               children: [
-                Icon(Icons.error_outline, color: Colors.white),
+                Icon(Icons.error_outline, color: CoresGardien.branco),
                 SizedBox(width: 8),
                 Text(
                   'Verifique os campos:',
@@ -519,7 +520,7 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
             ...erros.map((erro) => Text('- $erro')),
           ],
         ),
-        backgroundColor: Colors.red,
+        backgroundColor: CoresGardien.vermelhoClaro,
       ),
     );
   }

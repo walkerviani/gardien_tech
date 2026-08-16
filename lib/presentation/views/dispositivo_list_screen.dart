@@ -5,6 +5,7 @@ import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
 import 'package:gardien_tech/presentation/viewmodels/dispositivo_list_viewmodel.dart';
 import 'package:gardien_tech/presentation/views/dispositivo_problema_list_screen.dart';
 import 'package:gardien_tech/presentation/views/dispositivo_form_screen.dart';
+import 'package:gardien_tech/utils/cores_gardien.dart';
 import 'package:provider/provider.dart';
 
 class DispositivoListScreen extends StatefulWidget {
@@ -71,7 +72,7 @@ class _DispositivoListScreenState extends State<DispositivoListScreen> {
             onPressed: () => Navigator.pop(context),
             child: const Text(
               'Cancelar',
-              style: TextStyle(color: Color(0xFF000000)),
+              style: TextStyle(color: CoresGardien.preto),
             ),
           ),
           TextButton(
@@ -86,12 +87,15 @@ class _DispositivoListScreenState extends State<DispositivoListScreen> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(viewModel.errorMessage ?? 'Erro ao excluir'),
-                    backgroundColor: Colors.red,
+                    backgroundColor: CoresGardien.vermelhoClaro,
                   ),
                 );
               }
             },
-            child: const Text('Excluir', style: TextStyle(color: Colors.red)),
+            child: const Text(
+              'Excluir',
+              style: TextStyle(color: CoresGardien.vermelhoClaro),
+            ),
           ),
         ],
       ),
@@ -103,8 +107,8 @@ class _DispositivoListScreenState extends State<DispositivoListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dispositivos'),
-        backgroundColor: const Color(0xFF2196F3),
-        foregroundColor: Colors.white,
+        backgroundColor: CoresGardien.azulClaro,
+        foregroundColor: CoresGardien.branco,
       ),
       body: Container(
         padding: const EdgeInsets.all(12),
@@ -116,8 +120,8 @@ class _DispositivoListScreenState extends State<DispositivoListScreen> {
             ElevatedButton(
               onPressed: () => _abrirFormulario(),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                foregroundColor: Colors.white,
+                backgroundColor: CoresGardien.verdeClaro,
+                foregroundColor: CoresGardien.branco,
                 minimumSize: const Size(double.infinity, 70),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(4),
@@ -152,18 +156,18 @@ class _DispositivoListScreenState extends State<DispositivoListScreen> {
                     suffixIcon: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        possuiTexto ?
-                          IconButton(
-                            icon: const Icon(Icons.clear),
-                            onPressed: () {
-                              _searchController.clear();
-                              _executarPesquisa();
-                            },
-                          )
-                        : IconButton(
-                            icon: const Icon(Icons.search),
-                            onPressed: _executarPesquisa,
-                          ),
+                        possuiTexto
+                            ? IconButton(
+                                icon: const Icon(Icons.clear),
+                                onPressed: () {
+                                  _searchController.clear();
+                                  _executarPesquisa();
+                                },
+                              )
+                            : IconButton(
+                                icon: const Icon(Icons.search),
+                                onPressed: _executarPesquisa,
+                              ),
                       ],
                     ),
                   ),
@@ -242,7 +246,9 @@ class _DispositivoListScreenState extends State<DispositivoListScreen> {
                                           TextSpan(
                                             text:
                                                 '${dispositivo.numPatrimonio} \n',
-                                            style: const TextStyle(fontSize: 13),
+                                            style: const TextStyle(
+                                              fontSize: 13,
+                                            ),
                                           ),
                                           TextSpan(
                                             text: 'NÚMERO DE SÉRIE \n',
@@ -253,7 +259,9 @@ class _DispositivoListScreenState extends State<DispositivoListScreen> {
                                           ),
                                           TextSpan(
                                             text: dispositivo.numSerie,
-                                            style: const TextStyle(fontSize: 13),
+                                            style: const TextStyle(
+                                              fontSize: 13,
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -307,8 +315,8 @@ class _DispositivoListScreenState extends State<DispositivoListScreen> {
                                       ),
                                     ),
                                     style: TextButton.styleFrom(
-                                      backgroundColor: const Color(0xFFe76f06),
-                                      foregroundColor: const Color(0xFFFFFFFF),
+                                      backgroundColor: CoresGardien.laranja,
+                                      foregroundColor: CoresGardien.branco,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8),
                                       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gardien_tech/presentation/views/ajuda_list_screen.dart';
 import 'package:gardien_tech/presentation/views/import_dispositivo_csv_screen.dart';
+import 'package:gardien_tech/utils/cores_gardien.dart';
 import 'package:provider/provider.dart';
 import 'package:gardien_tech/presentation/views/dispositivo_list_screen.dart';
 import 'package:gardien_tech/presentation/views/problema_list_screen.dart';
@@ -29,8 +30,8 @@ class FuncoesScreen extends StatelessWidget {
               );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF006dc4),
-              foregroundColor: const Color(0xFFFFFFFF),
+              backgroundColor: CoresGardien.azulEscuro,
+              foregroundColor: CoresGardien.branco,
               minimumSize: const Size(double.infinity, 70),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(4),
@@ -56,8 +57,8 @@ class FuncoesScreen extends StatelessWidget {
               );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF006dc4),
-              foregroundColor: const Color(0xFFFFFFFF),
+              backgroundColor: CoresGardien.azulEscuro,
+              foregroundColor: CoresGardien.branco,
               minimumSize: const Size(double.infinity, 70),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(4),
@@ -83,8 +84,8 @@ class FuncoesScreen extends StatelessWidget {
               );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF006dc4),
-              foregroundColor: Colors.white,
+              backgroundColor: CoresGardien.azulEscuro,
+              foregroundColor: CoresGardien.branco,
               minimumSize: const Size(double.infinity, 70),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(4),
@@ -113,8 +114,8 @@ class FuncoesScreen extends StatelessWidget {
               );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF006dc4),
-              foregroundColor: Colors.white,
+              backgroundColor: CoresGardien.azulEscuro,
+              foregroundColor: CoresGardien.branco,
               minimumSize: const Size(double.infinity, 70),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(4),
@@ -148,9 +149,9 @@ class FuncoesScreen extends StatelessWidget {
                   SnackBar(
                     content: Text(
                       backupViewModel.successMessage!,
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: CoresGardien.branco),
                     ),
-                    backgroundColor: Colors.green,
+                    backgroundColor: CoresGardien.verdeClaro,
                   ),
                 );
                 backupViewModel.clearMessages();
@@ -159,17 +160,17 @@ class FuncoesScreen extends StatelessWidget {
                   SnackBar(
                     content: Text(
                       backupViewModel.errorMessage!,
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: CoresGardien.branco),
                     ),
-                    backgroundColor: Colors.red,
+                    backgroundColor: CoresGardien.vermelhoClaro,
                   ),
                 );
                 backupViewModel.clearMessages();
               }
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF006dc4),
-              foregroundColor: Colors.white,
+              backgroundColor: CoresGardien.azulEscuro,
+              foregroundColor: CoresGardien.branco,
               minimumSize: const Size(double.infinity, 70),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(4),
@@ -193,7 +194,7 @@ class FuncoesScreen extends StatelessWidget {
                 context: context,
                 builder: (dialogContext) => AlertDialog(
                   title: const Text('Deseja restaurar um backup?'),
-                  backgroundColor: Colors.white,
+                  backgroundColor: CoresGardien.branco,
                   content: const Text(
                     'Tem certeza que deseja apagar os dados atuais e restaurar os dados salvos em um backup?',
                   ),
@@ -203,7 +204,7 @@ class FuncoesScreen extends StatelessWidget {
                       onPressed: () => Navigator.pop(dialogContext),
                       child: const Text(
                         'Cancelar',
-                        style: TextStyle(color: Colors.black),
+                        style: TextStyle(color: CoresGardien.preto),
                       ),
                     ),
                     TextButton(
@@ -219,7 +220,7 @@ class FuncoesScreen extends StatelessWidget {
                           barrierDismissible: false,
                           builder: (_) {
                             return AlertDialog(
-                              backgroundColor: Colors.white,
+                              backgroundColor: CoresGardien.branco,
                               content: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -242,9 +243,9 @@ class FuncoesScreen extends StatelessWidget {
                             SnackBar(
                               content: Text(
                                 backupViewModel.successMessage!,
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(color: CoresGardien.branco),
                               ),
-                              backgroundColor: Colors.green,
+                              backgroundColor: CoresGardien.verdeClaro,
                             ),
                           );
                           backupViewModel.clearMessages();
@@ -253,9 +254,9 @@ class FuncoesScreen extends StatelessWidget {
                             SnackBar(
                               content: Text(
                                 backupViewModel.errorMessage!,
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(color: CoresGardien.branco),
                               ),
-                              backgroundColor: Colors.red,
+                              backgroundColor: CoresGardien.vermelhoClaro,
                             ),
                           );
                           backupViewModel.clearMessages();
@@ -263,7 +264,7 @@ class FuncoesScreen extends StatelessWidget {
                       },
                       child: const Text(
                         'Restaurar',
-                        style: TextStyle(color: Colors.red),
+                        style: TextStyle(color: CoresGardien.vermelhoClaro),
                       ),
                     ),
                   ],
@@ -271,8 +272,8 @@ class FuncoesScreen extends StatelessWidget {
               );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF006dc4),
-              foregroundColor: Colors.white,
+              backgroundColor: CoresGardien.azulEscuro,
+              foregroundColor: CoresGardien.branco,
               minimumSize: const Size(double.infinity, 70),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(4),
@@ -298,8 +299,8 @@ class FuncoesScreen extends StatelessWidget {
               );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF006dc4),
-              foregroundColor: Colors.white,
+              backgroundColor: CoresGardien.azulEscuro,
+              foregroundColor: CoresGardien.branco,
               minimumSize: const Size(double.infinity, 70),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(4),
@@ -325,8 +326,8 @@ class FuncoesScreen extends StatelessWidget {
               );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF006dc4),
-              foregroundColor: Colors.white,
+              backgroundColor: CoresGardien.azulEscuro,
+              foregroundColor: CoresGardien.branco,
               minimumSize: const Size(double.infinity, 70),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(4),

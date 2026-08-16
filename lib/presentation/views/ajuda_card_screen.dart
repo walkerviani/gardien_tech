@@ -9,8 +9,8 @@ class AjudaCardScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Cor do cartão'),
-        backgroundColor: const Color(0xFF2196F3),
-        foregroundColor: Colors.white,
+        backgroundColor: CoresGardien.azulClaro,
+        foregroundColor: CoresGardien.branco,
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(15),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gardien_tech/domain/enum/tipo_dispositivo.dart';
 import 'package:gardien_tech/presentation/viewmodels/dispositivo_form_viewmodel.dart';
+import 'package:gardien_tech/utils/cores_gardien.dart';
 import 'package:provider/provider.dart';
 
 class DispositivoFormScreen extends StatefulWidget {
@@ -66,7 +67,7 @@ class _DispositivoFormScreenState extends State<DispositivoFormScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(viewModel.errorMessage ?? 'Erro desconhecido'),
-          backgroundColor: Colors.red,
+          backgroundColor: CoresGardien.vermelhoClaro,
         ),
       );
     }
@@ -78,8 +79,8 @@ class _DispositivoFormScreenState extends State<DispositivoFormScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(isEditing ? 'Editar dispositivo' : 'Criar dispositivo'),
-        backgroundColor: const Color(0xFF2196F3),
-        foregroundColor: Colors.white,
+        backgroundColor: CoresGardien.azulClaro,
+        foregroundColor: CoresGardien.branco,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -139,7 +140,7 @@ class _DispositivoFormScreenState extends State<DispositivoFormScreen> {
                                   onPressed: () => Navigator.pop(context),
                                   child: const Text(
                                     'Entendi',
-                                    style: TextStyle(color: Color(0xFF000000)),
+                                    style: TextStyle(color: CoresGardien.preto),
                                   ),
                                 ),
                               ],
@@ -199,7 +200,7 @@ class _DispositivoFormScreenState extends State<DispositivoFormScreen> {
                                   onPressed: () => Navigator.pop(context),
                                   child: const Text(
                                     'Entendi',
-                                    style: TextStyle(color: Color(0xFF000000)),
+                                    style: TextStyle(color: CoresGardien.preto),
                                   ),
                                 ),
                               ],
@@ -257,8 +258,8 @@ class _DispositivoFormScreenState extends State<DispositivoFormScreen> {
                   child: ElevatedButton(
                     onPressed: viewModel.isLoading ? null : _salvar,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF4CAF50),
-                      foregroundColor: const Color(0xFFFFFFFF),
+                      backgroundColor: CoresGardien.verdeClaro,
+                      foregroundColor: CoresGardien.branco,
                       minimumSize: const Size(double.infinity, 70),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(4),
@@ -266,7 +267,7 @@ class _DispositivoFormScreenState extends State<DispositivoFormScreen> {
                     ),
                     child: viewModel.isLoading
                         ? const CircularProgressIndicator(
-                            color: Color(0xFF4CAF50),
+                            color: CoresGardien.verdeClaro,
                           )
                         : Text(
                             isEditing ? 'Atualizar' : 'Salvar',

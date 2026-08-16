@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:gardien_tech/domain/enum/tipo_dispositivo.dart';
 import 'package:gardien_tech/presentation/viewmodels/selecionar_dispositivo_viewmodel.dart';
+import 'package:gardien_tech/utils/cores_gardien.dart';
 import 'package:provider/provider.dart';
 
 class SelecionarDispositivoScreen extends StatefulWidget {
   final int? idTipoDispositivo;
   final int idEmprestimo;
-  final List<int> idsParaIgnorar; // Lista de IDs para serem ignorados ao adicionar um novo dispositivo
+  final List<int>
+  idsParaIgnorar; // Lista de IDs para serem ignorados ao adicionar um novo dispositivo
 
   const SelecionarDispositivoScreen(
     this.idTipoDispositivo,
@@ -19,7 +21,8 @@ class SelecionarDispositivoScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _SelecionarDispositivoScreenState();
 }
 
-class _SelecionarDispositivoScreenState extends State<SelecionarDispositivoScreen> {
+class _SelecionarDispositivoScreenState
+    extends State<SelecionarDispositivoScreen> {
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -27,9 +30,9 @@ class _SelecionarDispositivoScreenState extends State<SelecionarDispositivoScree
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<SelecionarDispositivoViewmodel>().carregarDispositivos(
-            idTipoDispositivo: widget.idTipoDispositivo,
-            idsParaIgnorar: widget.idsParaIgnorar,
-          );
+        idTipoDispositivo: widget.idTipoDispositivo,
+        idsParaIgnorar: widget.idsParaIgnorar,
+      );
     });
   }
 
@@ -88,51 +91,51 @@ class _SelecionarDispositivoScreenState extends State<SelecionarDispositivoScree
     return Scaffold(
       appBar: AppBar(
         title: Text('Selecione o dispositivo'),
-        backgroundColor: const Color(0xFF2196F3),
-        foregroundColor: Colors.white,
+        backgroundColor: CoresGardien.azulClaro,
+        foregroundColor: CoresGardien.branco,
       ),
       body: Container(
         padding: EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-          /*
+            /*
           Campo de pesquisa de dispositivo
           */
-          ValueListenableBuilder<TextEditingValue>(
-            valueListenable: _searchController,
-            builder: (context, value, child) {
-              final possuiTexto = value.text.isNotEmpty;
+            ValueListenableBuilder<TextEditingValue>(
+              valueListenable: _searchController,
+              builder: (context, value, child) {
+                final possuiTexto = value.text.isNotEmpty;
 
-              return TextField(
-                controller: _searchController,
-                textInputAction: TextInputAction.search,
-                decoration: InputDecoration(
-                  hintText: 'Digite patrimônio ou série...',
-                  border: const OutlineInputBorder(),
-                  suffixIcon: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      possuiTexto ?
-                        IconButton(
-                          icon: const Icon(Icons.clear),
-                          onPressed: () {
-                            _searchController.clear();
-                            _executarPesquisa();
-                          },
-                        )
-                      : IconButton(
-                          icon: const Icon(Icons.search),
-                          onPressed: _executarPesquisa,
-                        ),
-                    ],
+                return TextField(
+                  controller: _searchController,
+                  textInputAction: TextInputAction.search,
+                  decoration: InputDecoration(
+                    hintText: 'Digite patrimônio ou série...',
+                    border: const OutlineInputBorder(),
+                    suffixIcon: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        possuiTexto
+                            ? IconButton(
+                                icon: const Icon(Icons.clear),
+                                onPressed: () {
+                                  _searchController.clear();
+                                  _executarPesquisa();
+                                },
+                              )
+                            : IconButton(
+                                icon: const Icon(Icons.search),
+                                onPressed: _executarPesquisa,
+                              ),
+                      ],
+                    ),
                   ),
-                ),
-                onSubmitted: (_) => _executarPesquisa(),
-              );
-            },
-          ),
-          const SizedBox(height: 12),
+                  onSubmitted: (_) => _executarPesquisa(),
+                );
+              },
+            ),
+            const SizedBox(height: 12),
             Expanded(
               child: Consumer<SelecionarDispositivoViewmodel>(
                 builder: (context, viewmodel, child) {
@@ -184,14 +187,14 @@ class _SelecionarDispositivoScreenState extends State<SelecionarDispositivoScree
                                 });
                               },
                               style: IconButton.styleFrom(
-                                backgroundColor: Colors.green,
+                                backgroundColor: CoresGardien.verdeClaro,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadiusGeometry.circular(
                                     5,
                                   ),
                                 ),
                               ),
-                              icon: Icon(Icons.add, color: Colors.white),
+                              icon: Icon(Icons.add, color: CoresGardien.branco),
                             ),
                           ),
                         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gardien_tech/utils/cores_gardien.dart';
 
 class AjudaTipoEmprestimoScreen extends StatelessWidget {
   const AjudaTipoEmprestimoScreen({super.key});
@@ -8,8 +9,8 @@ class AjudaTipoEmprestimoScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tipo de empréstimo'),
-        backgroundColor: const Color(0xFF2196F3),
-        foregroundColor: Colors.white,
+        backgroundColor: CoresGardien.azulClaro,
+        foregroundColor: CoresGardien.branco,
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(15),
@@ -33,7 +34,7 @@ class AjudaTipoEmprestimoScreen extends StatelessWidget {
               Text(
                 'POR QUANTIDADE',
                 style: TextStyle(
-                  color: const Color(0xFF2196F3),
+                  color: CoresGardien.azulClaro,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -55,7 +56,7 @@ class AjudaTipoEmprestimoScreen extends StatelessWidget {
               Text(
                 'POR UNIDADE',
                 style: TextStyle(
-                  color: const Color(0xFF2196F3),
+                  color: CoresGardien.azulClaro,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -75,7 +76,7 @@ class AjudaTipoEmprestimoScreen extends StatelessWidget {
               Text(
                 "Observação: Apesar de houver dois métodos de criação, o método 'Por Unidade' é o mais recomendado por possuir mais vericidade nos dados.",
                 style: TextStyle(
-                  color: Colors.red,
+                  color: CoresGardien.vermelhoClaro,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
@@ -84,7 +85,7 @@ class AjudaTipoEmprestimoScreen extends StatelessWidget {
               Text(
                 "O método 'Por Quantidade' foi criado com o objetivo de ajudar o usuário em casos de empréstimos grandes que podem acabar tomando muito tempo para serem criados.",
                 style: TextStyle(
-                  color: Colors.red,
+                  color: CoresGardien.vermelhoClaro,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),

@@ -4,6 +4,7 @@ import 'package:gardien_tech/domain/enum/tipo_dispositivo.dart';
 import 'package:gardien_tech/domain/repositories/problema_repository.dart';
 import 'package:gardien_tech/presentation/viewmodels/problema_list_viewmodel.dart';
 import 'package:gardien_tech/presentation/views/problema_form_screen.dart';
+import 'package:gardien_tech/utils/cores_gardien.dart';
 import 'package:provider/provider.dart';
 
 class ProblemaListScreen extends StatefulWidget {
@@ -54,7 +55,7 @@ class _ProblemaListScreenState extends State<ProblemaListScreen> {
             onPressed: () => Navigator.pop(context),
             child: const Text(
               'Cancelar',
-              style: TextStyle(color: Color(0xFF000000)),
+              style: TextStyle(color: CoresGardien.preto),
             ),
           ),
           TextButton(
@@ -73,7 +74,10 @@ class _ProblemaListScreenState extends State<ProblemaListScreen> {
                 );
               }
             },
-            child: const Text('Excluir', style: TextStyle(color: Colors.red)),
+            child: const Text(
+              'Excluir',
+              style: TextStyle(color: CoresGardien.vermelhoClaro),
+            ),
           ),
         ],
       ),
@@ -85,8 +89,8 @@ class _ProblemaListScreenState extends State<ProblemaListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Problemas ativos'),
-        backgroundColor: const Color(0xFF2196F3),
-        foregroundColor: Colors.white,
+        backgroundColor: CoresGardien.azulClaro,
+        foregroundColor: CoresGardien.branco,
       ),
       body: Container(
         padding: EdgeInsets.all(12),
@@ -105,7 +109,7 @@ class _ProblemaListScreenState extends State<ProblemaListScreen> {
                 return Container(
                   padding: EdgeInsets.all(5),
                   decoration: BoxDecoration(
-                    border: Border.all(color: const Color(0xFF000000)),
+                    border: Border.all(color: CoresGardien.preto),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Align(
