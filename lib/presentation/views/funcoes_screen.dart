@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gardien_tech/presentation/views/ajuda_list_screen.dart';
 import 'package:gardien_tech/presentation/views/import_dispositivo_csv_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:gardien_tech/presentation/views/dispositivo_list_screen.dart';
@@ -312,6 +313,30 @@ class FuncoesScreen extends StatelessWidget {
                   'Importar dispositivos por CSV',
                   style: TextStyle(fontSize: 18),
                 ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => AjudaListScreen()),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF006dc4),
+              foregroundColor: Colors.white,
+              minimumSize: const Size(double.infinity, 70),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.help, size: 30),
+                SizedBox(width: 20),
+                Text('Ajuda e informações', style: TextStyle(fontSize: 18)),
               ],
             ),
           ),
