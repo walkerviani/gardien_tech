@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gardien_tech/utils/cor_cartoes.dart';
+import 'package:gardien_tech/utils/cores_gardien.dart';
 
 class AjudaCardScreen extends StatelessWidget {
   const AjudaCardScreen({super.key});
@@ -13,7 +13,7 @@ class AjudaCardScreen extends StatelessWidget {
         foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(12),
+        padding: EdgeInsets.all(15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -30,7 +30,7 @@ class AjudaCardScreen extends StatelessWidget {
             Text(
               'ATIVO',
               style: TextStyle(
-                color: CorCartoes.ativo,
+                color: CoresGardien.statusAtivo,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
@@ -44,7 +44,7 @@ class AjudaCardScreen extends StatelessWidget {
             Text(
               'EM OBSERVAÇÃO',
               style: TextStyle(
-                color: CorCartoes.emObservacao,
+                color: CoresGardien.statusEmObservacao,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
@@ -58,7 +58,7 @@ class AjudaCardScreen extends StatelessWidget {
             Text(
               'CONCLUÍDO',
               style: TextStyle(
-                color: CorCartoes.concluido,
+                color: CoresGardien.statusConcluido,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
@@ -72,7 +72,7 @@ class AjudaCardScreen extends StatelessWidget {
             Text(
               'SEM CORRESPONDÊNCIA',
               style: TextStyle(
-                color: CorCartoes.semCorrespondencia,
+                color: CoresGardien.statusSemCorrespondencia,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
@@ -86,7 +86,7 @@ class AjudaCardScreen extends StatelessWidget {
             Text(
               'ERRO',
               style: TextStyle(
-                color: CorCartoes.erro,
+                color: CoresGardien.statusErro,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),

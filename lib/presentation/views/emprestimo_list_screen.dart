@@ -9,7 +9,7 @@ import 'package:gardien_tech/domain/services/emprestimo_service.dart';
 import 'package:gardien_tech/presentation/viewmodels/emprestimo_detalhe_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/emprestimo_list_viewmodel.dart';
 import 'package:gardien_tech/presentation/views/emprestimo_detalhe_screen.dart';
-import 'package:gardien_tech/utils/cor_cartoes.dart';
+import 'package:gardien_tech/utils/cores_gardien.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -37,15 +37,15 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
   Color _colorStatus(int statusId) {
     switch (statusId) {
       case 1:
-        return CorCartoes.ativo;
+        return CoresGardien.statusAtivo;
       case 2:
-        return CorCartoes.emObservacao;
+        return CoresGardien.statusEmObservacao;
       case 3:
-        return CorCartoes.concluido;
+        return CoresGardien.statusConcluido;
       case 4:
-        return CorCartoes.semCorrespondencia;
+        return CoresGardien.statusSemCorrespondencia;
       default:
-        return CorCartoes.erro;
+        return CoresGardien.statusErro;
     }
   }
 
