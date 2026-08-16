@@ -9,6 +9,7 @@ import 'package:gardien_tech/domain/services/emprestimo_service.dart';
 import 'package:gardien_tech/presentation/viewmodels/emprestimo_detalhe_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/emprestimo_list_viewmodel.dart';
 import 'package:gardien_tech/presentation/views/emprestimo_detalhe_screen.dart';
+import 'package:gardien_tech/utils/cor_cartoes.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -36,15 +37,15 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
   Color _colorStatus(int statusId) {
     switch (statusId) {
       case 1:
-        return Colors.green;
+        return CorCartoes.ativo;
       case 2:
-        return Colors.deepOrangeAccent;
+        return CorCartoes.emObservacao;
       case 3:
-        return Colors.blueGrey;
+        return CorCartoes.concluido;
       case 4:
-        return const Color(0xFFAB1308);
+        return CorCartoes.semCorrespondencia;
       default:
-        return Colors.black;
+        return CorCartoes.erro;
     }
   }
 
@@ -151,126 +152,6 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                 ),
               ),
             ],
-          ),
-          const SizedBox(height: 10),
-          /*
-            Container de informação sobre os status do empréstimo
-          */
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(5),
-            ),
-            padding: EdgeInsets.all(4),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('Entenda a cor de cada cartão: '),
-                IconButton(
-                  onPressed: () => showDialog(
-                    context: context,
-                    builder: (_) => AlertDialog(
-                      title: const Text('Status do Empréstimo'),
-                      content: RichText(
-                        text: TextSpan(
-                          text:
-                              'O status é apresentado através da cor do cartão:\n\n',
-                          style: TextStyle(color: Colors.black, fontSize: 17),
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: 'Ativo ',
-                              style: TextStyle(
-                                color: _colorStatus(1),
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            TextSpan(
-                              text: '- O empréstimo está em aberto.\n',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 17,
-                              ),
-                            ),
-                            TextSpan(
-                              text: 'Em Observação ',
-                              style: TextStyle(
-                                color: _colorStatus(2),
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            TextSpan(
-                              text: '- O empréstimo já passou de um dia.\n',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 17,
-                              ),
-                            ),
-                            TextSpan(
-                              text: 'Concluído ',
-                              style: TextStyle(
-                                color: _colorStatus(3),
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            TextSpan(
-                              text: '- O empréstimo foi finalizado.\n',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 17,
-                              ),
-                            ),
-                            TextSpan(
-                              text: 'Sem Correspondência ',
-                              style: TextStyle(
-                                color: _colorStatus(4),
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            TextSpan(
-                              text:
-                                  '- Há dispositivos que não foram vinculados e atualmente não há como identificar os dispositivos que estavam no empréstimo.\n',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 17,
-                              ),
-                            ),
-                            TextSpan(
-                              text: 'Erro ',
-                              style: TextStyle(
-                                color: _colorStatus(0),
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            TextSpan(
-                              text: '- Algo deu errado.\n',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 17,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text(
-                            'Entendi',
-                            style: TextStyle(color: Color(0xFF000000)),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  icon: Icon(Icons.help_outline),
-                ),
-              ],
-            ),
           ),
           const SizedBox(height: 10),
           Expanded(
