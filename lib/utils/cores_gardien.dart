@@ -9,10 +9,11 @@ class CoresGardien {
   static const vermelhoEscuro = Color(0xFFB00303);
   static const vermelhoClaro = Colors.red;
   static const branco = Colors.white;
+  static const cinza = Colors.grey;
   static const cinzaClaro = Colors.blueGrey;
   static const preto = Color(0xFF000000);
   static const laranja = Color(0xFFe76f06);
-  static const amarelo = Color(0xFFFfde21);
+  static const amarelo = Color(0xFFEDB80C);
   // Status Empréstimo
   static const statusAtivo = Colors.green;
   static const statusEmObservacao = Colors.deepOrangeAccent;
