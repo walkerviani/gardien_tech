@@ -11,6 +11,7 @@ import 'package:gardien_tech/domain/repositories/emprestimo_repository.dart';
 import 'package:gardien_tech/domain/services/emprestimo_service.dart';
 
 import 'package:collection/collection.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EmprestimoServiceImpl implements EmprestimoService {
   final EmprestimoItemRepository _emprestimoItemRepository;
@@ -264,5 +265,35 @@ class EmprestimoServiceImpl implements EmprestimoService {
         return EmprestimoRelatorioDTO(emprestimo, itens);
       }),
     );
+  }
+
+  @override
+  Future<bool> verificarSemCorrespondencia(int idEmprestimo) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    bool possuiSemVinculo = false;
+
+    final lista = await _emprestimoItemRepository
+        .buscarEmprestimoItemComDispositivo(idEmprestimo);
+
+    for (final dto in lista) {
+      for (final empDisp in dto.dispositivos) {
+        // Dispositivo sem vínculo
+        if (empDisp.idDispositivo == null) {
+          possuiSemVinculo = true;
+          continue;
+        }
+
+        // Dispositivo vinculado precisa estar marcado como devolvido
+        final chave = 'devolvido_emp${idEmprestimo}_${empDisp.id}';
+        final devolvido = prefs.getBool(chave) ?? false;
+
+        if (!devolvido) {
+          return false;
+        }
+      }
+    }
+
+    return possuiSemVinculo;
   }
 }

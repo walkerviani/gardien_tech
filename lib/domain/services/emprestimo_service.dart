@@ -28,4 +28,6 @@ abstract class EmprestimoService {
   Future<List<EmprestimoRelatorioDTO>> buscarEmprestimoPorUsuario(
     int idUsuario,
   );
+
+  Future<bool> verificarSemCorrespondencia(int idEmprestimo);
 }
