@@ -252,10 +252,13 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                                           idEmprestimo: emprestimo.idEmprestimo,
                                           dataHoraEfetuado:
                                               emprestimo.dataHoraEfetuado,
+
                                           nomeResponsavel:
                                               emprestimo.nomeUsuario,
                                           idStatus:
                                               emprestimo.idStatusEmprestimo,
+                                          dataHoraConcluido:
+                                              emprestimo.dataHoraConcluido,
                                         ),
                                       ),
                                     ),
