@@ -143,7 +143,11 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                 ),
                 child: Text(
                   _dataFormatada(_dataController),
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
                 ),
               ),
             ],
