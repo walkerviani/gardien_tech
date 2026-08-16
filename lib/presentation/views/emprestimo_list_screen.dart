@@ -33,9 +33,6 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
     });
   }
 
-  String get dataSelecionada =>
-      DateFormat('dd/MM/yyyy').format(_dataController);
-
   Color _colorStatus(int statusId) {
     switch (statusId) {
       case 1:
@@ -53,6 +50,10 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
 
   String _dataFormatada(DateTime data) {
     return DateFormat('dd/MM/yyyy').format(data);
+  }
+
+  String _dataHoraFormatada(DateTime data) {
+    return DateFormat('dd/MM/yyyy - HH:mm').format(data);
   }
 
   @override
@@ -141,7 +142,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                   ),
                 ),
                 child: Text(
-                  dataSelecionada,
+                  _dataFormatada(_dataController),
                   style: TextStyle(color: Colors.white),
                 ),
               ),
@@ -293,7 +294,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                         ? 'Dispositivos'
                         : 'Dispositivo';
                     String nomeCortado = emprestimo.nomeUsuario.length > 15
-                        ? '${emprestimo.nomeUsuario.substring(0, 12)}...'
+                        ? '${emprestimo.nomeUsuario.substring(0, 20)}...'
                         : emprestimo.nomeUsuario;
                     return Card(
                       color: _colorStatus(emprestimo.idStatusEmprestimo),
@@ -309,7 +310,17 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      '${_dataFormatada(emprestimo.dataHoraEfetuado)} - $nomeCortado',
+                                      _dataHoraFormatada(
+                                        emprestimo.dataHoraEfetuado,
+                                      ),
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                    Text(
+                                      nomeCortado,
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
@@ -378,6 +389,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                                   'Clique aqui para mais detalhes',
                                   style: TextStyle(
                                     color: Colors.white,
+                                    fontWeight: FontWeight.bold,
                                     fontStyle: FontStyle.italic,
                                   ),
                                 ),
