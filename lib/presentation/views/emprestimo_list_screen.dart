@@ -101,8 +101,23 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                           maximumYear: DateTime.now().year + 3,
                         ),
                       ),
-                      actionsAlignment: MainAxisAlignment.center,
+                      actionsAlignment: MainAxisAlignment.spaceEvenly,
                       actions: [
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              _dataController = DateTime.now();
+                            });
+                            context
+                                .read<EmprestimoListViewmodel>()
+                                .carregarEmprestimosDoDia(_dataController);
+                            Navigator.pop(context);
+                          },
+                          child: const Text(
+                            'Selecionar Dia Atual',
+                            style: TextStyle(color: Color(0xFF2196F3)),
+                          ),
+                        ),
                         TextButton(
                           onPressed: () {
                             context
@@ -110,7 +125,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                                 .carregarEmprestimosDoDia(_dataController);
                             Navigator.pop(context);
                           },
-                          child: Text(
+                          child: const Text(
                             'Selecionar',
                             style: TextStyle(color: Color(0xFF000000)),
                           ),
