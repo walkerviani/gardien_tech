@@ -34,7 +34,7 @@ class AjudaListScreen extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.rectangle_rounded, size: 30),
+                  Icon(Icons.palette, size: 30),
                   SizedBox(width: 20),
                   Text('Cor do cartão', style: TextStyle(fontSize: 18)),
                 ],
@@ -60,7 +60,7 @@ class AjudaListScreen extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.type_specimen, size: 30),
+                  Icon(Icons.list_alt, size: 30),
                   SizedBox(width: 20),
                   Text('Tipo de empréstimo', style: TextStyle(fontSize: 18)),
                 ],
