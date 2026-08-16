@@ -33,9 +33,6 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
     });
   }
 
-  String get dataSelecionada =>
-      DateFormat('dd/MM/yyyy').format(_dataController);
-
   Color _colorStatus(int statusId) {
     switch (statusId) {
       case 1:
@@ -44,13 +41,19 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
         return Colors.deepOrangeAccent;
       case 3:
         return Colors.blueGrey;
+      case 4:
+        return const Color(0xFFAB1308);
       default:
-        return Colors.red;
+        return Colors.black;
     }
   }
 
   String _dataFormatada(DateTime data) {
     return DateFormat('dd/MM/yyyy').format(data);
+  }
+
+  String _dataHoraFormatada(DateTime data) {
+    return DateFormat('dd/MM/yyyy - HH:mm').format(data);
   }
 
   @override
@@ -99,8 +102,23 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                           maximumYear: DateTime.now().year + 3,
                         ),
                       ),
-                      actionsAlignment: MainAxisAlignment.center,
+                      actionsAlignment: MainAxisAlignment.spaceEvenly,
                       actions: [
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              _dataController = DateTime.now();
+                            });
+                            context
+                                .read<EmprestimoListViewmodel>()
+                                .carregarEmprestimosDoDia(_dataController);
+                            Navigator.pop(context);
+                          },
+                          child: const Text(
+                            'Selecionar Dia Atual',
+                            style: TextStyle(color: Color(0xFF2196F3)),
+                          ),
+                        ),
                         TextButton(
                           onPressed: () {
                             context
@@ -108,7 +126,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                                 .carregarEmprestimosDoDia(_dataController);
                             Navigator.pop(context);
                           },
-                          child: Text(
+                          child: const Text(
                             'Selecionar',
                             style: TextStyle(color: Color(0xFF000000)),
                           ),
@@ -124,8 +142,12 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                   ),
                 ),
                 child: Text(
-                  dataSelecionada,
-                  style: TextStyle(color: Colors.white),
+                  _dataFormatada(_dataController),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
                 ),
               ),
             ],
@@ -164,7 +186,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                               ),
                             ),
                             TextSpan(
-                              text: '- O empréstimo está em aberto\n',
+                              text: '- O empréstimo está em aberto.\n',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 17,
@@ -179,7 +201,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                               ),
                             ),
                             TextSpan(
-                              text: '- O empréstimo já passou de um dia\n',
+                              text: '- O empréstimo já passou de um dia.\n',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 17,
@@ -194,7 +216,23 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                               ),
                             ),
                             TextSpan(
-                              text: '- O empréstimo foi finalizado\n',
+                              text: '- O empréstimo foi finalizado.\n',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 17,
+                              ),
+                            ),
+                            TextSpan(
+                              text: 'Sem Correspondência ',
+                              style: TextStyle(
+                                color: _colorStatus(4),
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextSpan(
+                              text:
+                                  '- Há dispositivos que não foram vinculados e atualmente não há como identificar os dispositivos que estavam no empréstimo.\n',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 17,
@@ -209,7 +247,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                               ),
                             ),
                             TextSpan(
-                              text: '- Algo deu errado\n',
+                              text: '- Algo deu errado.\n',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 17,
@@ -260,7 +298,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                         ? 'Dispositivos'
                         : 'Dispositivo';
                     String nomeCortado = emprestimo.nomeUsuario.length > 15
-                        ? '${emprestimo.nomeUsuario.substring(0, 12)}...'
+                        ? '${emprestimo.nomeUsuario.substring(0, 20)}...'
                         : emprestimo.nomeUsuario;
                     return Card(
                       color: _colorStatus(emprestimo.idStatusEmprestimo),
@@ -276,7 +314,17 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      '${_dataFormatada(emprestimo.dataHoraEfetuado)} - $nomeCortado',
+                                      _dataHoraFormatada(
+                                        emprestimo.dataHoraEfetuado,
+                                      ),
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                    Text(
+                                      nomeCortado,
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
@@ -301,13 +349,24 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (_) => ChangeNotifierProvider(
-                                        create: (context) => EmprestimoDetalheViewmodel(
-                                          context.read<EmprestimoItemRepository>(),
-                                          context.read<EmprestimoRepository>(),
-                                          context.read<EmprestimoService>(),
-                                          context.read<DispositivoRepository>(),
-                                          context.read<EmprestimoDispositivoRepository>(),
-                                        ),
+                                        create: (context) =>
+                                            EmprestimoDetalheViewmodel(
+                                              context
+                                                  .read<
+                                                    EmprestimoItemRepository
+                                                  >(),
+                                              context
+                                                  .read<EmprestimoRepository>(),
+                                              context.read<EmprestimoService>(),
+                                              context
+                                                  .read<
+                                                    DispositivoRepository
+                                                  >(),
+                                              context
+                                                  .read<
+                                                    EmprestimoDispositivoRepository
+                                                  >(),
+                                            ),
                                         child: EmprestimoDetalheScreen(
                                           idEmprestimo: emprestimo.idEmprestimo,
                                           dataHoraEfetuado:
@@ -334,6 +393,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                                   'Clique aqui para mais detalhes',
                                   style: TextStyle(
                                     color: Colors.white,
+                                    fontWeight: FontWeight.bold,
                                     fontStyle: FontStyle.italic,
                                   ),
                                 ),

@@ -232,6 +232,17 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
   }
 
   @override
+  Future<void> definirSemCorrespondencia(int idEmprestimo) async {
+    await (_database.update(
+      _database.emprestimos,
+    )..where((emprestimo) => emprestimo.id.equals(idEmprestimo))).write(
+      EmprestimosCompanion(
+        idStatus: Value(EmprestimoStatus.semCorrespondencia.id),
+      ),
+    );
+  }
+
+  @override
   Future<List<EmprestimoComDetalhesDTO>> buscarPorUsuarioComDetalhes(
     int idUsuario,
   ) async {
