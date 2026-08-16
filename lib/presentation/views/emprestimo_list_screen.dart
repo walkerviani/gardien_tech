@@ -44,8 +44,10 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
         return Colors.deepOrangeAccent;
       case 3:
         return Colors.blueGrey;
+      case 4:
+        return const Color(0xFFAB1308);
       default:
-        return Colors.red;
+        return Colors.black;
     }
   }
 
@@ -164,7 +166,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                               ),
                             ),
                             TextSpan(
-                              text: '- O empréstimo está em aberto\n',
+                              text: '- O empréstimo está em aberto.\n',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 17,
@@ -179,7 +181,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                               ),
                             ),
                             TextSpan(
-                              text: '- O empréstimo já passou de um dia\n',
+                              text: '- O empréstimo já passou de um dia.\n',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 17,
@@ -194,7 +196,23 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                               ),
                             ),
                             TextSpan(
-                              text: '- O empréstimo foi finalizado\n',
+                              text: '- O empréstimo foi finalizado.\n',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 17,
+                              ),
+                            ),
+                            TextSpan(
+                              text: 'Sem Correspondência ',
+                              style: TextStyle(
+                                color: _colorStatus(4),
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextSpan(
+                              text:
+                                  '- Há dispositivos que não foram vinculados e atualmente não há como identificar os dispositivos que estavam no empréstimo.\n',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 17,
@@ -209,7 +227,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                               ),
                             ),
                             TextSpan(
-                              text: '- Algo deu errado\n',
+                              text: '- Algo deu errado.\n',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 17,
@@ -301,13 +319,24 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (_) => ChangeNotifierProvider(
-                                        create: (context) => EmprestimoDetalheViewmodel(
-                                          context.read<EmprestimoItemRepository>(),
-                                          context.read<EmprestimoRepository>(),
-                                          context.read<EmprestimoService>(),
-                                          context.read<DispositivoRepository>(),
-                                          context.read<EmprestimoDispositivoRepository>(),
-                                        ),
+                                        create: (context) =>
+                                            EmprestimoDetalheViewmodel(
+                                              context
+                                                  .read<
+                                                    EmprestimoItemRepository
+                                                  >(),
+                                              context
+                                                  .read<EmprestimoRepository>(),
+                                              context.read<EmprestimoService>(),
+                                              context
+                                                  .read<
+                                                    DispositivoRepository
+                                                  >(),
+                                              context
+                                                  .read<
+                                                    EmprestimoDispositivoRepository
+                                                  >(),
+                                            ),
                                         child: EmprestimoDetalheScreen(
                                           idEmprestimo: emprestimo.idEmprestimo,
                                           dataHoraEfetuado:
