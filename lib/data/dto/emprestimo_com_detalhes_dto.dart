@@ -6,6 +6,7 @@ class EmprestimoComDetalhesDTO {
   int idStatusEmprestimo;
   int qtdSolicitada;
   DateTime dataHoraEfetuado;
+  DateTime? dataHoraConcluido;
   String nomeUsuario;
 
   EmprestimoComDetalhesDTO({
@@ -16,6 +17,7 @@ class EmprestimoComDetalhesDTO {
     required this.idStatusEmprestimo,
     required this.qtdSolicitada,
     required this.dataHoraEfetuado,
+    required this.dataHoraConcluido,
     required this.nomeUsuario,
   });
 }
