@@ -120,423 +120,425 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
             .firstOrNull
             ?.nomeStatus ??
         'Status não encontrado';
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Detalhes do empréstimo'),
-        backgroundColor: const Color(0xFF2196F3),
-        foregroundColor: Colors.white,
-      ),
-      body: Container(
-        padding: EdgeInsets.all(12),
-        child: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(5),
-              ),
-              padding: EdgeInsets.all(4),
-              child:
-                  /*
-                  Informações adicionais do empréstimo selecionado
-                  */
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text.rich(
-                        TextSpan(
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: 'Empréstimo atual\n',
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            TextSpan(
-                              text: 'Responsável: ${widget.nomeResponsavel}\n',
-                              style: TextStyle(fontSize: 13),
-                            ),
-                            TextSpan(
-                              text: 'Hora efetuada: $horaFormatada\n',
-                              style: TextStyle(fontSize: 13),
-                            ),
-                            TextSpan(
-                              text: 'Status atual: $statusStr',
-                              style: TextStyle(fontSize: 13),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-            ),
-            const SizedBox(height: 12),
-            Expanded(
-              child: Consumer<EmprestimoDetalheViewmodel>(
-                builder: ((context, viewmodel, child) {
-                  if (viewmodel.isLoading) {
-                    return const EmprestimoDetalheSkeleton();
-                  }
-                  if (viewmodel.dispositivosDoEmprestimo.isEmpty) {
-                    return const Text('Nenhum dispositivo encontrado');
-                  }
-
-                  final tiposMap = {
-                    for (var t in TipoDispositivo.values) t.id: t.nomeTipo,
-                  };
-
-                  return Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: Row(
-                          children: [
-                            if (!viewmodel.empFinalizado) ...[
-                              Expanded(
-                                child: ElevatedButton.icon(
-                                  onPressed: () async {
-                                    await viewmodel.marcarTodos(
-                                      widget.idEmprestimo,
-                                    );
-
-                                    if (!context.mounted) return;
-
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                          'Todos os dispositivos foram marcados como devolvidos.',
-                                        ),
-                                        backgroundColor: Colors.green,
-                                      ),
-                                    );
-                                  },
-                                  icon: const Icon(
-                                    Icons.done_all,
-                                    color: Colors.white,
-                                  ),
-                                  label: const Text(
-                                    'Devolver todos',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  style: TextButton.styleFrom(
-                                    backgroundColor: const Color(0xFF2196F3),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    minimumSize: const Size(double.infinity, 40),
-                                  ),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Detalhes do empréstimo'),
+          backgroundColor: const Color(0xFF2196F3),
+          foregroundColor: Colors.white,
+        ),
+        body: Container(
+          padding: EdgeInsets.all(12),
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                padding: EdgeInsets.all(4),
+                child:
+                    /*
+                    Informações adicionais do empréstimo selecionado
+                    */
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text.rich(
+                          TextSpan(
+                            children: <TextSpan>[
+                              TextSpan(
+                                text: 'Empréstimo atual\n',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: ElevatedButton.icon(
-                                  onPressed: () async {
-                                    final sucesso = await viewmodel
-                                        .desmarcarTodos(widget.idEmprestimo);
+                              TextSpan(
+                                text: 'Responsável: ${widget.nomeResponsavel}\n',
+                                style: TextStyle(fontSize: 13),
+                              ),
+                              TextSpan(
+                                text: 'Hora efetuada: $horaFormatada\n',
+                                style: TextStyle(fontSize: 13),
+                              ),
+                              TextSpan(
+                                text: 'Status atual: $statusStr',
+                                style: TextStyle(fontSize: 13),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+              ),
+              const SizedBox(height: 12),
+              Expanded(
+                child: Consumer<EmprestimoDetalheViewmodel>(
+                  builder: ((context, viewmodel, child) {
+                    if (viewmodel.isLoading) {
+                      return const EmprestimoDetalheSkeleton();
+                    }
+                    if (viewmodel.dispositivosDoEmprestimo.isEmpty) {
+                      return const Text('Nenhum dispositivo encontrado');
+                    }
 
-                                    if (!context.mounted) return;
+                    final tiposMap = {
+                      for (var t in TipoDispositivo.values) t.id: t.nomeTipo,
+                    };
 
-                                    if (sucesso) {
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
+                    return Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Row(
+                            children: [
+                              if (!viewmodel.empFinalizado) ...[
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                    onPressed: () async {
+                                      await viewmodel.marcarTodos(
+                                        widget.idEmprestimo,
+                                      );
+
+                                      if (!context.mounted) return;
+
+                                      ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(
                                           content: Text(
-                                            'Todos os dispositivos foram desmarcados.',
+                                            'Todos os dispositivos foram marcados como devolvidos.',
                                           ),
                                           backgroundColor: Colors.green,
                                         ),
                                       );
-                                    } else {
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            viewmodel.errorMessage ??
-                                                'Erro ao desmarcar dispositivos.',
-                                          ),
-                                          backgroundColor: const Color(
-                                            0xFFB00303,
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                  },
-                                  icon: const Icon(
-                                    Icons.remove_done,
-                                    color: Colors.white,
-                                  ),
-                                  label: const Text(
-                                    'Desfazer devoluções',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  style: TextButton.styleFrom(
-                                    backgroundColor: const Color(0xFF2196F3),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
+                                    },
+                                    icon: const Icon(
+                                      Icons.done_all,
+                                      color: Colors.white,
                                     ),
-                                    minimumSize: const Size(double.infinity, 40),
+                                    label: const Text(
+                                      'Devolver todos',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: const Color(0xFF2196F3),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      minimumSize: const Size(double.infinity, 40),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount:viewmodel.dispositivosDoEmprestimo.length + 1,
-                          itemBuilder: (context, index) {
-                            if (index ==
-                                viewmodel.dispositivosDoEmprestimo.length) {
-                              if (!viewmodel.empFinalizado) {
-                                return Padding(
-                                  // Botão adicionar
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 20,
-                                  ),
-                                  child: Center(
-                                    child: ElevatedButton(
-                                      onPressed: () async {
-                                        final viewmodel = context
-                                            .read<EmprestimoDetalheViewmodel>();
-                                        final idsParaIgnorar =
-                                            _obterIdsDispositivosAtuais(); // Coleta IDs existentes para filtrar na hora de adicionar ao empréstimo
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                    onPressed: () async {
+                                      final sucesso = await viewmodel
+                                          .desmarcarTodos(widget.idEmprestimo);
 
-                                        final resultado =
-                                            await Navigator.push<
-                                              Map<String, dynamic>
-                                            >(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (_) =>
-                                                    SelecionarDispositivoScreen(
-                                                      null,
-                                                      widget.idEmprestimo,
-                                                      idsParaIgnorar:
-                                                          idsParaIgnorar,
-                                                    ),
-                                              ),
+                                      if (!context.mounted) return;
+
+                                      if (sucesso) {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                              'Todos os dispositivos foram desmarcados.',
+                                            ),
+                                            backgroundColor: Colors.green,
+                                          ),
+                                        );
+                                      } else {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              viewmodel.errorMessage ??
+                                                  'Erro ao desmarcar dispositivos.',
+                                            ),
+                                            backgroundColor: const Color(
+                                              0xFFB00303,
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    icon: const Icon(
+                                      Icons.remove_done,
+                                      color: Colors.white,
+                                    ),
+                                    label: const Text(
+                                      'Desfazer devoluções',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: const Color(0xFF2196F3),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      minimumSize: const Size(double.infinity, 40),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount:viewmodel.dispositivosDoEmprestimo.length + 1,
+                            itemBuilder: (context, index) {
+                              if (index ==
+                                  viewmodel.dispositivosDoEmprestimo.length) {
+                                if (!viewmodel.empFinalizado) {
+                                  return Padding(
+                                    // Botão adicionar
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 20,
+                                    ),
+                                    child: Center(
+                                      child: ElevatedButton(
+                                        onPressed: () async {
+                                          final viewmodel = context
+                                              .read<EmprestimoDetalheViewmodel>();
+                                          final idsParaIgnorar =
+                                              _obterIdsDispositivosAtuais(); // Coleta IDs existentes para filtrar na hora de adicionar ao empréstimo
+
+                                          final resultado =
+                                              await Navigator.push<
+                                                Map<String, dynamic>
+                                              >(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (_) =>
+                                                      SelecionarDispositivoScreen(
+                                                        null,
+                                                        widget.idEmprestimo,
+                                                        idsParaIgnorar:
+                                                            idsParaIgnorar,
+                                                      ),
+                                                ),
+                                              );
+
+                                          if (!mounted) return;
+
+                                          if (resultado != null) {
+                                            final idDispositivo =
+                                                resultado['idDispositivo'] as int;
+
+                                            await viewmodel.adicionarDispositivo(
+                                              widget.idEmprestimo,
+                                              idDispositivo,
                                             );
 
-                                        if (!mounted) return;
-
-                                        if (resultado != null) {
-                                          final idDispositivo =
-                                              resultado['idDispositivo'] as int;
-
-                                          await viewmodel.adicionarDispositivo(
-                                            widget.idEmprestimo,
-                                            idDispositivo,
-                                          );
-
-                                          await viewmodel
-                                              .carregarDispositivosDoEmprestimo(
-                                                widget.idEmprestimo,
-                                              );
-                                        }
-                                      },
-                                      style: TextButton.styleFrom(
-                                        backgroundColor: const Color(
-                                          0xFF2196F3,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            8,
+                                            await viewmodel
+                                                .carregarDispositivosDoEmprestimo(
+                                                  widget.idEmprestimo,
+                                                );
+                                          }
+                                        },
+                                        style: TextButton.styleFrom(
+                                          backgroundColor: const Color(
+                                            0xFF2196F3,
                                           ),
-                                        ),
-                                        fixedSize: const Size(130, 30),
-                                      ),
-                                      child: const Text(
-                                        'Adicionar',
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }
-                              return const SizedBox(height: 100);
-                            }
-
-                            // Mapeia os dados para acelerar a busca de itens e usa Column para otimizar a renderização.
-                            final itemDoDTO = viewmodel.dispositivosDoEmprestimo[index];
-                            final emprestimoItem = itemDoDTO.item;
-                            final tipoDispositivo =
-                                tiposMap[emprestimoItem.idTipoDispositivo] ??
-                                'Tipo não encontrado';
-
-                            final dispObjMap = {
-                              for (var d in itemDoDTO.dispositivosObj) d.id: d,
-                            };
-
-                            return Column(
-                              children: itemDoDTO.dispositivos.map((emprDisp) {
-                                final dispositivo =
-                                    dispObjMap[emprDisp.idDispositivo];
-
-                                return Card(
-                                  key: ValueKey(emprDisp.id),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10),
-                                    child: viewmodel.empFinalizado
-                                        ? _cardFinalizado(
-                                            dispositivo!,
-                                            tipoDispositivo,
-                                          )
-                                        : _cardItens(
-                                            itemDoDTO,
-                                            emprestimoItem,
-                                            tipoDispositivo,
-                                            dispositivo,
-                                            emprDisp,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
                                           ),
-                                  ),
-                                );
-                              }).toList(),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  );
-                }),
-              ),
-            ),
-          ],
-        ),
-      ),
-      /*
-      Botões Excluir e Finalizar
-      */
-      bottomNavigationBar: Consumer<EmprestimoDetalheViewmodel>(
-        builder: (context, viewmodel, _) {
-          // Verifica se está finalizado
-          final bool isFinalizado =
-              widget.idStatus == EmprestimoStatus.concluido.id ||
-              viewmodel.empFinalizado;
-
-          if (isFinalizado) {
-            return SizedBox.shrink();
-          }
-
-          return SafeArea(
-            child: Container(
-              padding: EdgeInsets.all(10),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Botão Excluir Empréstimo
-                  ElevatedButton(
-                    onPressed: () async {
-                      return showDialog(
-                        context: context,
-                        builder: (_) => AlertDialog(
-                          title: const Text("Excluir Empréstimo"),
-                          content: const Text(
-                            "Tem certeza que deseja excluir o empréstimo?",
-                          ),
-                          actionsAlignment: MainAxisAlignment.spaceEvenly,
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text(
-                                'Cancelar',
-                                style: TextStyle(color: Color(0xFF000000)),
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () async {
-                                Navigator.pop(context);
-                                final sucesso = await viewmodel
-                                    .excluirEmprestimo(widget.idEmprestimo);
-                                if (!context.mounted) return;
-                                if (sucesso) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                        'Empréstimo excluído com sucesso',
+                                          fixedSize: const Size(130, 30),
+                                        ),
+                                        child: const Text(
+                                          'Adicionar',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
                                       ),
-                                      backgroundColor: Colors.blueGrey,
-                                    ),
-                                  );
-                                  Navigator.pop(context, true);
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        viewmodel.errorMessage ??
-                                            'Erro ao excluir o empréstimo',
-                                      ),
-                                      backgroundColor: Colors.red,
                                     ),
                                   );
                                 }
-                              },
-                              child: const Text(
-                                'Excluir',
-                                style: TextStyle(color: Colors.red),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFB00303),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      fixedSize: const Size(300, 50),
-                    ),
-                    child: Text(
-                      'Excluir empréstimo',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  // Botão Finalizar
-                  ElevatedButton(
-                    onPressed: () async {
-                      final sucesso = await viewmodel.finalizarEmprestimo(
-                        widget.idEmprestimo,
-                      );
-                      if (!context.mounted) return;
+                                return const SizedBox(height: 100);
+                              }
 
-                      if (!sucesso) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
+                              // Mapeia os dados para acelerar a busca de itens e usa Column para otimizar a renderização.
+                              final itemDoDTO = viewmodel.dispositivosDoEmprestimo[index];
+                              final emprestimoItem = itemDoDTO.item;
+                              final tipoDispositivo =
+                                  tiposMap[emprestimoItem.idTipoDispositivo] ??
+                                  'Tipo não encontrado';
+
+                              final dispObjMap = {
+                                for (var d in itemDoDTO.dispositivosObj) d.id: d,
+                              };
+
+                              return Column(
+                                children: itemDoDTO.dispositivos.map((emprDisp) {
+                                  final dispositivo =
+                                      dispObjMap[emprDisp.idDispositivo];
+
+                                  return Card(
+                                    key: ValueKey(emprDisp.id),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10),
+                                      child: viewmodel.empFinalizado
+                                          ? _cardFinalizado(
+                                              dispositivo!,
+                                              tipoDispositivo,
+                                            )
+                                          : _cardItens(
+                                              itemDoDTO,
+                                              emprestimoItem,
+                                              tipoDispositivo,
+                                              dispositivo,
+                                              emprDisp,
+                                            ),
+                                    ),
+                                  );
+                                }).toList(),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  }),
+                ),
+              ),
+            ],
+          ),
+        ),
+        /*
+        Botões Excluir e Finalizar
+        */
+        bottomNavigationBar: Consumer<EmprestimoDetalheViewmodel>(
+          builder: (context, viewmodel, _) {
+            // Verifica se está finalizado
+            final bool isFinalizado =
+                widget.idStatus == EmprestimoStatus.concluido.id ||
+                viewmodel.empFinalizado;
+
+            if (isFinalizado) {
+              return SizedBox.shrink();
+            }
+
+            return SafeArea(
+              child: Container(
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Botão Excluir Empréstimo
+                    ElevatedButton(
+                      onPressed: () async {
+                        return showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            title: const Text("Excluir Empréstimo"),
                             content: const Text(
-                              "Verifique se todos os dispositivos foram devolvidos",
+                              "Tem certeza que deseja excluir o empréstimo?",
                             ),
-                            backgroundColor: Colors.red,
+                            actionsAlignment: MainAxisAlignment.spaceEvenly,
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text(
+                                  'Cancelar',
+                                  style: TextStyle(color: Color(0xFF000000)),
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () async {
+                                  Navigator.pop(context);
+                                  final sucesso = await viewmodel
+                                      .excluirEmprestimo(widget.idEmprestimo);
+                                  if (!context.mounted) return;
+                                  if (sucesso) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Empréstimo excluído com sucesso',
+                                        ),
+                                        backgroundColor: Colors.blueGrey,
+                                      ),
+                                    );
+                                    Navigator.pop(context, true);
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          viewmodel.errorMessage ??
+                                              'Erro ao excluir o empréstimo',
+                                        ),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                  }
+                                },
+                                child: const Text(
+                                  'Excluir',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              ),
+                            ],
                           ),
                         );
-                      } else {
-                        viewmodel.carregarDispositivosDoEmprestimo(
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFB00303),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        fixedSize: const Size(300, 50),
+                      ),
+                      child: Text(
+                        'Excluir empréstimo',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    // Botão Finalizar
+                    ElevatedButton(
+                      onPressed: () async {
+                        final sucesso = await viewmodel.finalizarEmprestimo(
                           widget.idEmprestimo,
                         );
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        if (!context.mounted) return;
+
+                        if (!sucesso) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: const Text(
+                                "Verifique se todos os dispositivos foram devolvidos",
+                              ),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        } else {
+                          viewmodel.carregarDispositivosDoEmprestimo(
+                            widget.idEmprestimo,
+                          );
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        fixedSize: const Size(300, 50),
                       ),
-                      fixedSize: const Size(300, 50),
+                      child: Text(
+                        'Finalizar',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
-                    child: Text(
-                      'Finalizar',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          );
-        },
-      ),
+            );
+          },
+        ),
+      )
     );
   }
 

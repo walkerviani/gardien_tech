@@ -454,12 +454,10 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
               ],
             ),
             const SizedBox(height: 8),
-            ...erros.map((erro) => Text('• $erro')),
+            ...erros.map((erro) => Text('- $erro')),
           ],
         ),
         backgroundColor: Colors.red,
-        duration: const Duration(seconds: 4),
-        behavior: SnackBarBehavior.floating,
       ),
     );
   }
