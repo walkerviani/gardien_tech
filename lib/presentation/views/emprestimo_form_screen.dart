@@ -107,18 +107,29 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
                       color: Theme.of(context).scaffoldBackgroundColor,
                       selectionColor: Theme.of(context).scaffoldBackgroundColor,
                       hoverColor: Theme.of(context).scaffoldBackgroundColor,
-                      border: Border.all(color: Theme.of(context).scaffoldBackgroundColor,),
+                      border: Border.all(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                      ),
                     ),
                     onSearchTextChanged: (query) async {
-                      final resultados = await viewModel.buscarResponsavel(query);
+                      final resultados = await viewModel.buscarResponsavel(
+                        query,
+                      );
                       return resultados
                           .map(
                             (e) => SearchFieldListItem<Usuario>(
                               e.nome,
                               item: e,
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-                                child: Text(e.nome, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 18),),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 2,
+                                ),
+                                child: Text(
+                                  e.nome,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(fontSize: 18),
+                                ),
                               ),
                             ),
                           )
@@ -190,7 +201,13 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    child: const Text('Confirmar', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    child: const Text(
+                      'Confirmar',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -201,7 +218,10 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
     );
   }
 
-  Widget _buildPorQuantidade(BuildContext context, EmprestimoFormViewModel viewModel) {
+  Widget _buildPorQuantidade(
+    BuildContext context,
+    EmprestimoFormViewModel viewModel,
+  ) {
     return Column(
       children: [
         ...List.generate(viewModel.itensQuantidade.length, (index) {
@@ -214,21 +234,41 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
                 contentPadding: const EdgeInsets.all(12),
                 title: Row(
                   children: [
-                    const Text('Tipo de dispositivo:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    const Text(
+                      'Tipo de dispositivo:',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: DropdownMenuFormField<TipoDispositivo>(
                         label: const Text('Tipo'),
                         menuHeight: 200,
                         dropdownMenuEntries: TipoDispositivo.values
-                            .where((t) =>
-                                t.nomeTipo == viewModel.itensQuantidade[index].tipoDisp ||
-                                !viewModel.itensQuantidade.any((item) => item.tipoDisp == t.nomeTipo))
+                            .where(
+                              (t) =>
+                                  t.nomeTipo ==
+                                      viewModel
+                                          .itensQuantidade[index]
+                                          .tipoDisp ||
+                                  !viewModel.itensQuantidade.any(
+                                    (item) => item.tipoDisp == t.nomeTipo,
+                                  ),
+                            )
                             .map((t) {
-                          return DropdownMenuEntry(value: t, label: t.nomeTipo);
-                        }).toList(),
+                              return DropdownMenuEntry(
+                                value: t,
+                                label: t.nomeTipo,
+                              );
+                            })
+                            .toList(),
                         onSelected: (valor) {
-                          viewModel.atualizarTipoDispositivo(index, valor?.nomeTipo);
+                          viewModel.atualizarTipoDispositivo(
+                            index,
+                            valor?.nomeTipo,
+                          );
                         },
                       ),
                     ),
@@ -240,20 +280,32 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        const Text('Informe a quantidade:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                        const Text(
+                          'Informe a quantidade:',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: TextFormField(
-                            controller: viewModel.itensQuantidade[index].quantidade,
+                            controller:
+                                viewModel.itensQuantidade[index].quantidade,
                             decoration: const InputDecoration(
                               border: OutlineInputBorder(),
                               labelText: "Quantidade",
                             ),
                             textAlign: TextAlign.center,
                             keyboardType: TextInputType.number,
-                            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
                             onChanged: (value) {
-                              viewModel.atualizarAvisoQuantidade(index, int.tryParse(value) ?? 0);
+                              viewModel.atualizarAvisoQuantidade(
+                                index,
+                                int.tryParse(value) ?? 0,
+                              );
                             },
                           ),
                         ),
@@ -318,7 +370,10 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF2196F3),
               foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              minimumSize: Size(double.infinity, 50),
             ),
             label: const Text('Adicionar'),
           ),
@@ -327,7 +382,10 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
     );
   }
 
-  Widget _buildPorUnidade(BuildContext context, EmprestimoFormViewModel viewModel) {
+  Widget _buildPorUnidade(
+    BuildContext context,
+    EmprestimoFormViewModel viewModel,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -347,7 +405,9 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
             color: Theme.of(context).scaffoldBackgroundColor,
             selectionColor: Theme.of(context).scaffoldBackgroundColor,
             hoverColor: Theme.of(context).scaffoldBackgroundColor,
-            border: Border.all(color: Theme.of(context).scaffoldBackgroundColor,),
+            border: Border.all(
+              color: Theme.of(context).scaffoldBackgroundColor,
+            ),
           ),
           onSearchTextChanged: (query) async {
             final resultados = await viewModel.buscarDispositivo(query);
@@ -357,7 +417,10 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
                     dispositivo.numSerie,
                     item: dispositivo,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
+                      ),
                       child: Row(
                         children: [
                           Icon(_selecionarIcone(dispositivo.idTipoDispositivo)),
@@ -407,17 +470,16 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
                 leading: Icon(_selecionarIcone(item.idTipoDispositivo ?? 0)),
                 title: Text(
                   item.tipoDisp ?? '',
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Número Patrimônio: ${item.numPatrimonio ?? '-'}',
-                    ),
-                    Text(
-                      'Número Série: ${item.numSerie ?? '-'}',
-                    ),
+                    Text('Número Patrimônio: ${item.numPatrimonio ?? '-'}'),
+                    Text('Número Série: ${item.numSerie ?? '-'}'),
                   ],
                 ),
                 trailing: IconButton(
