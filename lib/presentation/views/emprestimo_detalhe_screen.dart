@@ -15,6 +15,7 @@ import 'package:provider/provider.dart';
 class EmprestimoDetalheScreen extends StatefulWidget {
   final int idEmprestimo;
   final DateTime dataHoraEfetuado;
+  final DateTime? dataHoraConcluido;
   final String nomeResponsavel;
   final int idStatus;
 
@@ -24,6 +25,7 @@ class EmprestimoDetalheScreen extends StatefulWidget {
     required this.dataHoraEfetuado,
     required this.nomeResponsavel,
     required this.idStatus,
+    required this.dataHoraConcluido,
   });
 
   @override
@@ -242,11 +244,16 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
     await viewmodel.carregarDispositivosDoEmprestimo(widget.idEmprestimo);
   }
 
+  String _horaFormatada(DateTime? data) {
+    if (data == null) {
+      return '-----';
+    }
+    final String horaFormatada = DateFormat('HH:mm').format(data);
+    return horaFormatada;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final String horaFormatada = DateFormat(
-      'HH:mm',
-    ).format(widget.dataHoraEfetuado);
     final statusStr =
         EmprestimoStatus.values
             .where((status) => status.id == widget.idStatus)
@@ -294,9 +301,16 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                               style: TextStyle(fontSize: 13),
                             ),
                             TextSpan(
-                              text: 'Hora efetuada: $horaFormatada\n',
+                              text:
+                                  'Hora efetuada: ${_horaFormatada(widget.dataHoraEfetuado)}\n',
                               style: TextStyle(fontSize: 13),
                             ),
+                            if (widget.dataHoraConcluido != null)
+                              TextSpan(
+                                text:
+                                    'Hora concluído: ${_horaFormatada(widget.dataHoraConcluido)}\n',
+                                style: TextStyle(fontSize: 13),
+                              ),
                             TextSpan(
                               text: 'Status atual: $statusStr',
                               style: TextStyle(fontSize: 13),
