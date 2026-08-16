@@ -54,7 +54,7 @@ class RelatoriosScreen extends StatelessWidget {
                         },
                         backgroundColor: CoresGardien.branco,
                         minimumYear: DateTime.now().year - 3,
-                        maximumYear: DateTime.now().year + 3,
+                        maximumYear: DateTime.now().year,
                       ),
                     ),
                     actionsAlignment: MainAxisAlignment.center,
