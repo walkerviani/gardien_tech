@@ -137,24 +137,6 @@ class FuncoesScreen extends StatelessWidget {
               final messenger = ScaffoldMessenger.of(context);
               final navigator = Navigator.of(context);
 
-              showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (_) {
-                  return AlertDialog(
-                    backgroundColor: Colors.white,
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CircularProgressIndicator(),
-                        SizedBox(height: 16),
-                        Text('Exportando backup...'),
-                      ],
-                    ),
-                  );
-                },
-              );
-
               await backupViewModel.exportarBackup();
               if (navigator.canPop()) {
                 navigator.pop();
