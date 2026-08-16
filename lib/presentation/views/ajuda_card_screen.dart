@@ -38,6 +38,7 @@ class AjudaCardScreen extends StatelessWidget {
             Text(
               'O empréstimo está aberto para o usuário realizar alterações.',
               style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.justify,
             ),
             const SizedBox(height: 5),
             Text(
@@ -51,6 +52,7 @@ class AjudaCardScreen extends StatelessWidget {
             Text(
               'O empréstimo possui mais de um dia aberto e requer atenção, mas ainda está aberto para o usuário realizar alterações.',
               style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.justify,
             ),
             const SizedBox(height: 5),
             Text(
@@ -64,6 +66,7 @@ class AjudaCardScreen extends StatelessWidget {
             Text(
               'O empréstimo foi finalizado e não pode mais ser alterado, o usuário só tem disponibilidade de ler os dados.',
               style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.justify,
             ),
             const SizedBox(height: 5),
             Text(
@@ -77,6 +80,7 @@ class AjudaCardScreen extends StatelessWidget {
             Text(
               'É quando o empréstimo foi definido como sem correspôndencia, ou seja, o empréstimo está em observação e por algum acaso não há mais como identificar quais eram os dispositivos daquele empréstimo.',
               style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.justify,
             ),
             const SizedBox(height: 5),
             Text(
@@ -90,6 +94,7 @@ class AjudaCardScreen extends StatelessWidget {
             Text(
               'Houve alguma falha no sistema ao identificar o status real do empréstimo.',
               style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.justify,
             ),
           ],
         ),
