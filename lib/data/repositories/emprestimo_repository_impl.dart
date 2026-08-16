@@ -113,6 +113,7 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
             idStatusEmprestimo: emprestimo.idStatus,
             qtdSolicitada: emprestimoItem.qtdSolicitada,
             dataHoraEfetuado: emprestimo.dataHoraEfetuado,
+            dataHoraConcluido: emprestimo.dataHoraConcluido,
             nomeUsuario: usuario.nome,
           );
         }
@@ -178,6 +179,7 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
             idStatusEmprestimo: emprestimo.idStatus,
             qtdSolicitada: emprestimoItem.qtdSolicitada,
             dataHoraEfetuado: emprestimo.dataHoraEfetuado,
+            dataHoraConcluido: emprestimo.dataHoraConcluido,
             nomeUsuario: usuario.nome,
           );
         }
@@ -233,13 +235,12 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
 
   @override
   Future<void> definirSemCorrespondencia(int idEmprestimo) async {
-    await (_database.update(
-      _database.emprestimos,
-    )..where((emprestimo) => emprestimo.id.equals(idEmprestimo))).write(
-      EmprestimosCompanion(
-        idStatus: Value(EmprestimoStatus.semCorrespondencia.id),
-      ),
-    );
+    final emprestimo = await buscarPorId(idEmprestimo);
+    if (emprestimo == null) throw ArgumentError('Empréstimo não encontrado');
+
+    emprestimo.dataHoraConcluido = DateTime.now();
+    emprestimo.idStatus = EmprestimoStatus.semCorrespondencia.id;
+    await atualizar(emprestimo);
   }
 
   @override
@@ -277,6 +278,7 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
           idStatusEmprestimo: emprestimo.idStatus,
           qtdSolicitada: emprestimoItem.qtdSolicitada,
           dataHoraEfetuado: emprestimo.dataHoraEfetuado,
+          dataHoraConcluido: emprestimo.dataHoraConcluido,
           nomeUsuario: usuario.nome,
         );
       }
