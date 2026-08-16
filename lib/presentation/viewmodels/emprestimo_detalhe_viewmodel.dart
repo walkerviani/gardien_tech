@@ -235,7 +235,9 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
         idEmprestimo,
       );
       if (!sucesso) {
-        errorMessage = 'Não é possível definir como Sem Correspondência';
+        errorMessage =
+            "Não é possível definir como 'Sem Correspondência'.\n"
+            'Verifique se todos os dispositivos vinculados estão devolvidos e há dispositivos não vinculados.';
         return false;
       }
 
