@@ -537,37 +537,30 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                               for (var d in itemDoDTO.dispositivosObj) d.id: d,
                             };
 
-                            return Padding(
-                              padding: EdgeInsets.only(
-                                bottom: viewmodel.empFinalizado ? 100 : 10,
-                              ),
-                              child: Column(
-                                children: itemDoDTO.dispositivos.map((
-                                  emprDisp,
-                                ) {
-                                  final dispositivo =
-                                      dispObjMap[emprDisp.idDispositivo];
+                            return Column(
+                              children: itemDoDTO.dispositivos.map((emprDisp) {
+                                final dispositivo =
+                                    dispObjMap[emprDisp.idDispositivo];
 
-                                  return Card(
-                                    key: ValueKey(emprDisp.id),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10),
-                                      child: viewmodel.empFinalizado
-                                          ? _cardFinalizado(
-                                              dispositivo,
-                                              tipoDispositivo,
-                                            )
-                                          : _cardItens(
-                                              itemDoDTO,
-                                              emprestimoItem,
-                                              tipoDispositivo,
-                                              dispositivo,
-                                              emprDisp,
-                                            ),
-                                    ),
-                                  );
-                                }).toList(),
-                              ),
+                                return Card(
+                                  key: ValueKey(emprDisp.id),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: viewmodel.empFinalizado
+                                        ? _cardFinalizado(
+                                            dispositivo,
+                                            tipoDispositivo,
+                                          )
+                                        : _cardItens(
+                                            itemDoDTO,
+                                            emprestimoItem,
+                                            tipoDispositivo,
+                                            dispositivo,
+                                            emprDisp,
+                                          ),
+                                  ),
+                                );
+                              }).toList(),
                             );
                           },
                         ),
