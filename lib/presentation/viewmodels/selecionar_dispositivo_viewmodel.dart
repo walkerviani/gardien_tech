@@ -74,6 +74,12 @@ class SelecionarDispositivoViewmodel extends ChangeNotifier {
         if (_idsParaIgnorarFiltro.contains(dispositivo.id)) {
           return false;
         }
+
+        // Filtrar dispositivos que estão em uso (status 3) em outros empréstimos
+        if (dispositivo.idStatus == 3) {
+          return false;
+        }
+
         
         return true;
       }).toList();
