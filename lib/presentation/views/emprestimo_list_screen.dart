@@ -178,7 +178,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                     final dispositivoStr = emprestimo.qtdSolicitada > 1
                         ? 'Dispositivos'
                         : 'Dispositivo';
-                    String nomeCortado = emprestimo.nomeUsuario.length > 15
+                    String nomeCortado = emprestimo.nomeUsuario.length > 20
                         ? '${emprestimo.nomeUsuario.substring(0, 20)}...'
                         : emprestimo.nomeUsuario;
                     return Card(

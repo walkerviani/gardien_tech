@@ -260,8 +260,8 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
             .firstOrNull
             ?.nomeStatus ??
         'Status não encontrado';
-    String nomeCortado = widget.nomeResponsavel.length > 15
-        ? '${widget.nomeResponsavel.substring(0, 17)}...'
+    String nomeCortado = widget.nomeResponsavel.length > 20
+        ? '${widget.nomeResponsavel.substring(0, 20)}...'
         : widget.nomeResponsavel;
     return Scaffold(
       appBar: AppBar(
