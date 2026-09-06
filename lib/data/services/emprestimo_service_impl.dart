@@ -171,7 +171,6 @@ class EmprestimoServiceImpl implements EmprestimoService {
           dispositivo.idTipoDispositivo,
           0,
           qtdDevolvida: 0,
-          estaResolvido: false,
         ),
       );
       empItem = await _emprestimoItemRepository.buscarPorId(novoEmpItemId);
@@ -212,7 +211,6 @@ class EmprestimoServiceImpl implements EmprestimoService {
           idTipoDispositivo,
           0,
           qtdDevolvida: 0,
-          estaResolvido: false,
         ),
       );
       empItem = await _emprestimoItemRepository.buscarPorId(novoEmpItemId);
