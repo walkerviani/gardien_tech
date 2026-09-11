@@ -40,7 +40,7 @@ class AjudaTipoEmprestimoScreen extends StatelessWidget {
                 ),
               ),
               Text(
-                'O usuário informa o tipo de dispositivo e a quantidade que será emprestada no momento de criação (podendo registrar mais de um tipo de dispositivo por empréstimo).'
+                'O usuário informa o tipo de dispositivo e a quantidade que será emprestada no momento de criação (podendo registrar mais de um tipo de dispositivo por empréstimo). '
                 'No momento de finalizar o empréstimo, o usuário precisará vincular cada um dos dispositivos que estavam naquele empréstimo.\n'
                 '(Será criado um cartão para cada um dos dispositivos selecionados na criação, porém é possível adicionar mais dispositivos depois de criado o empréstimo)',
                 style: TextStyle(fontSize: 16),

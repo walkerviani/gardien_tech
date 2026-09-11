@@ -5,7 +5,6 @@ class EmprestimoItem {
   final int _idTipoDispositivo;
   int qtdSolicitada;
   int qtdDevolvida;
-  bool estaResolvido; // estaResolvido rastreia se o EmprestimoItem tem todos os dispositivos necessários já vinculados
 
   // Construtor
   EmprestimoItem(
@@ -13,7 +12,7 @@ class EmprestimoItem {
     this._idEmprestimo,
     this._idTipoDispositivo,
     this.qtdSolicitada,
-    {this.qtdDevolvida = 0, this.estaResolvido = false}
+    {this.qtdDevolvida = 0}
   );
 
   // Getters
@@ -29,7 +28,6 @@ class EmprestimoItem {
       'idTipoDispositivo': _idTipoDispositivo,
       'qtdSolicitada': qtdSolicitada,
       'qtdDevolvida': qtdDevolvida,
-      'estaResolvido': estaResolvido,
     };
   }
   factory EmprestimoItem.fromJson(Map<String, dynamic> json) {
@@ -39,7 +37,6 @@ class EmprestimoItem {
       json['idTipoDispositivo'] as int,
       json['qtdSolicitada'] as int,
       qtdDevolvida: json['qtdDevolvida'] as int,
-      estaResolvido: json['estaResolvido'] as bool,
     );
   }
 }

@@ -20,18 +20,19 @@ class DispositivoRepositoryImpl implements DispositivoRepository {
 
   @override
   Future<List<Dispositivo>> buscarTodos() async {
-    final dispositivos = await (_database.select(_database.dispositivos)
-      ..orderBy([(d) => OrderingTerm.asc(d.numPatrimonio)])).get();
-    return dispositivos.map((d) => d.toEntity()).toList();
+    final dispositivos = await _database.select(_database.dispositivos).get();
+    final lista = dispositivos.map((d) => d.toEntity()).toList();
+    lista.sort(Dispositivo.compararPorPatrimonio);
+    return lista;
   }
 
   @override
   Future<List<Dispositivo>> buscarPorTipo(int idTipoDispositivo) async {
     final dispositivos = await (_database.select(_database.dispositivos)
-      ..where((d) => d.idTipoDispositivo.equals(idTipoDispositivo))
-      ..orderBy([(d) => OrderingTerm.asc(d.numPatrimonio)]))
-        .get();
-    return dispositivos.map((d) => d.toEntity()).toList();
+      ..where((d) => d.idTipoDispositivo.equals(idTipoDispositivo))).get();
+    final lista = dispositivos.map((d) => d.toEntity()).toList();
+    lista.sort(Dispositivo.compararPorPatrimonio);
+    return lista;
   }
 
   @override
@@ -41,10 +42,7 @@ class DispositivoRepositoryImpl implements DispositivoRepository {
     if (f.isEmpty) return [];
 
     final query = _database.select(_database.dispositivos)
-      ..where((d) =>
-          d.numPatrimonio.contains(f) |
-          d.numSerie.contains(f))
-      ..orderBy([(d) => OrderingTerm.asc(d.numPatrimonio)]);
+      ..where((d) => d.numPatrimonio.contains(f) | d.numSerie.contains(f));
 
     final rows = await query.get();
     final dispositivos = rows.map((d) => d.toEntity()).toList();
@@ -70,7 +68,7 @@ class DispositivoRepositoryImpl implements DispositivoRepository {
         final aPat = a.numPatrimonio.contains(f) ? 0 : (a.numSerie.contains(f) ? 1 : 2);
         final bPat = b.numPatrimonio.contains(f) ? 0 : (b.numSerie.contains(f) ? 1 : 2);
         if (aPat != bPat) return aPat - bPat;
-        return a.numPatrimonio.compareTo(b.numPatrimonio);
+        return Dispositivo.compararPorPatrimonio(a, b);
       });
     }
 
@@ -79,7 +77,10 @@ class DispositivoRepositoryImpl implements DispositivoRepository {
       final pa = prioridade(a.key, a.value);
       final pb = prioridade(b.key, b.value);
       if (pa != pb) return pa - pb;
-      return a.key.compareTo(b.key);
+      return Dispositivo.compararPorPatrimonio(
+        Dispositivo(null, 0, '', a.key),
+        Dispositivo(null, 0, '', b.key),
+      );
     });
 
     // Achata em uma lista ordenada
@@ -163,8 +164,7 @@ class DispositivoRepositoryImpl implements DispositivoRepository {
   @override
   Future<List<Dispositivo>> buscarDisponiveisExcluindo({int? idTipoDispositivo, List<int> idsParaIgnorar = const []}) async {
     final query = _database.select(_database.dispositivos)
-      ..where((d) => d.idStatus.equals(DispositivoStatus.disponivel.id))
-      ..orderBy([(d) => OrderingTerm.asc(d.numPatrimonio)]);
+      ..where((d) => d.idStatus.equals(DispositivoStatus.disponivel.id));
 
     // Filtra por tipo, se informado
     if (idTipoDispositivo != null) {
@@ -177,6 +177,8 @@ class DispositivoRepositoryImpl implements DispositivoRepository {
     }
 
     final result = await query.get();
-    return result.map((d) => d.toEntity()).toList();
+    final lista = result.map((d) => d.toEntity()).toList();
+    lista.sort(Dispositivo.compararPorPatrimonio);
+    return lista;
   }
 }
