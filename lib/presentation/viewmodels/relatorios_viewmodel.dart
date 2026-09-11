@@ -28,7 +28,7 @@ class RelatoriosViewmodel extends ChangeNotifier {
         errorMessage = 'Não foi encontrado nenhum empréstimo nessa data';
         return null;
       }
-      return _relatorioPdfService.gerarPdfEmprestimoDia(relatorios, data);
+      return await _relatorioPdfService.gerarPdfEmprestimoDia(relatorios, data);
     } catch (e) {
       errorMessage = 'Erro ao gerar relatório';
       return null;
@@ -46,7 +46,7 @@ class RelatoriosViewmodel extends ChangeNotifier {
         errorMessage = 'Não foi encontrado nenhum empréstimo para esse usuário';
         return null;
       }
-      return _relatorioPdfService.gerarPdfEmprestimoUsuario(
+      return await _relatorioPdfService.gerarPdfEmprestimoUsuario(
         relatorios,
         usuario,
       );
@@ -66,7 +66,7 @@ class RelatoriosViewmodel extends ChangeNotifier {
         errorMessage = 'Não foi encontrado nenhum problema';
         return null;
       }
-      return _relatorioPdfService.gerarPdfProblemas(problemas);
+      return await _relatorioPdfService.gerarPdfProblemas(problemas);
     } catch (e) {
       errorMessage = 'Erro ao gerar relatório';
       return null;
@@ -82,7 +82,7 @@ class RelatoriosViewmodel extends ChangeNotifier {
         errorMessage = 'Não foi encontrado nenhum dispositivo';
         return null;
       }
-      return _relatorioPdfService.gerarPdfDispositivos(dispositivos);
+      return await _relatorioPdfService.gerarPdfDispositivos(dispositivos);
     } catch (e) {
       errorMessage = 'Erro ao gerar relatório';
       return null;
