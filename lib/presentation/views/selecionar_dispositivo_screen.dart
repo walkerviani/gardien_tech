@@ -7,8 +7,7 @@ import 'package:provider/provider.dart';
 class SelecionarDispositivoScreen extends StatefulWidget {
   final int? idTipoDispositivo;
   final int idEmprestimo;
-  final List<int>
-  idsParaIgnorar; // Lista de IDs para serem ignorados ao adicionar um novo dispositivo
+  final List<int> idsParaIgnorar; // Lista de IDs para serem ignorados ao adicionar um novo dispositivo
 
   const SelecionarDispositivoScreen(
     this.idTipoDispositivo,
@@ -21,8 +20,7 @@ class SelecionarDispositivoScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _SelecionarDispositivoScreenState();
 }
 
-class _SelecionarDispositivoScreenState
-    extends State<SelecionarDispositivoScreen> {
+class _SelecionarDispositivoScreenState extends State<SelecionarDispositivoScreen> {
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -142,7 +140,7 @@ class _SelecionarDispositivoScreenState
                   if (viewmodel.isLoading) {
                     return const Center(child: CircularProgressIndicator());
                   }
-                  if (viewmodel.dispositivos.isEmpty) {
+                  if (viewmodel.dispositivosSelecionados.isEmpty) {
                     return Center(
                       child: const Text(
                         'Nenhum dispositivo encontrado',
@@ -152,9 +150,9 @@ class _SelecionarDispositivoScreenState
                   }
 
                   return ListView.builder(
-                    itemCount: viewmodel.dispositivos.length,
+                    itemCount: viewmodel.dispositivosSelecionados.length,
                     itemBuilder: (context, index) {
-                      final dispositivo = viewmodel.dispositivos[index];
+                      final dispositivo = viewmodel.dispositivosSelecionados[index];
                       final idTipo = dispositivo.idTipoDispositivo;
                       final tipoDispositivoStr =
                           TipoDispositivo.values

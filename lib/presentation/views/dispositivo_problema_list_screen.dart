@@ -22,8 +22,7 @@ class DispositivoProblemaListScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _DispositivoProblemaListScreenState();
 }
 
-class _DispositivoProblemaListScreenState
-    extends State<DispositivoProblemaListScreen> {
+class _DispositivoProblemaListScreenState extends State<DispositivoProblemaListScreen> {
   @override
   void initState() {
     super.initState();

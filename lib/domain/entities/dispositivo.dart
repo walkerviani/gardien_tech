@@ -17,8 +17,7 @@ class Dispositivo {
     {this.idStatus = 1} // 1 - Disponível
   );
 
-  TipoDispositivo get tipo =>
-      TipoDispositivo.values.firstWhere((t) => t.id == _idTipoDispositivo);
+  TipoDispositivo get tipo => TipoDispositivo.values.firstWhere((t) => t.id == _idTipoDispositivo);
 
   static int compararPorPatrimonio(Dispositivo a, Dispositivo b) {
     return _compararStringsNaturais(a.numPatrimonio, b.numPatrimonio);
