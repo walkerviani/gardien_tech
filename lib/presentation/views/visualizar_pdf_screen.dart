@@ -38,6 +38,7 @@ class VisualizarPdfScreen extends StatelessWidget {
           allowSharing: true,
           canChangeOrientation: false,
           canChangePageFormat: false,
+          canDebug: false,
         ),
       ),
     );
