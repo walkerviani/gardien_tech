@@ -82,7 +82,7 @@ class EmprestimoFormViewModel extends ChangeNotifier {
       return [];
     }
 
-    return await _usuarioRepository.buscarNome(value);
+    return await _usuarioRepository.buscarPorNome(value);
   }
 
   void selecionarResponsavel(Usuario usuario) {

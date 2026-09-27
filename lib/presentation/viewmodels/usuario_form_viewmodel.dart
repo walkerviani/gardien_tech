@@ -46,7 +46,7 @@ class UsuarioFormViewmodel extends ChangeNotifier {
     try {
       // Se já existir um usuário com o mesmo nome e não está editando,
       // então não permita criar um usuário com o mesmo nome
-      final jaExiste = await _repository.buscarPorNome(nome);
+      final jaExiste = await _repository.buscarPorNomeExato(nome);
 
       if (jaExiste != null && jaExiste.id != id) {
         errorMessage = 'Já existe um usuário com esse nome';

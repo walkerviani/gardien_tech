@@ -30,15 +30,11 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
     this._empDispositivoRepository,
   );
 
-  bool isLoading =
-      true; // true por padrão para permitir a renderização do Shimmer
+  bool isLoading = true; // true por padrão para permitir a renderização do Shimmer
   String? errorMessage;
-  List<EmprestimoItemComDispositivoDTO> dispositivosDoEmprestimo =
-      []; // Lista dos dispositivos presente no emprestimo
-  List<EmprestimoItem> empItens =
-      []; // Lista usada para verificar a devolução dos dispositivos de cada emprestimo_item
-  bool empFinalizado =
-      false; // Usado para controlar a visualização da lista na tela (entre edição e leitura)
+  List<EmprestimoItemComDispositivoDTO> dispositivosDoEmprestimo = []; // Lista dos dispositivos presente no emprestimo
+  List<EmprestimoItem> empItens = []; // Lista usada para verificar a devolução dos dispositivos de cada emprestimo_item
+  bool empFinalizado =  false; // Usado para controlar a visualização da lista na tela (entre edição e leitura)
   bool empSemCorrespondencia = false;
 
   // Restaura na memória local o estado das marcações de devolução (checkboxes) dos dispositivos de um empréstimo

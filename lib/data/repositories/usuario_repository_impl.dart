@@ -18,7 +18,7 @@ class UsuarioRepositoryImpl implements UsuarioRepository {
   }
 
   @override
-  Future<Usuario?> buscarPorNome(String nome) async {
+  Future<Usuario?> buscarPorNomeExato(String nome) async {
     final usuario = await (_database.select(_database.usuarios)
       ..where((u) => u.nome.equals(nome))).getSingleOrNull();
 
@@ -26,7 +26,7 @@ class UsuarioRepositoryImpl implements UsuarioRepository {
   }
 
   @override
-  Future<List<Usuario>> buscarNome(String filtro) async {
+  Future<List<Usuario>> buscarPorNome(String filtro) async {
     final f = filtro.trim();
 
     if (f.isEmpty) return [];

@@ -6,8 +6,8 @@ abstract class EmprestimoItemRepository {
   Future<List<EmprestimoItem>> buscarTodos();
   Future<List<EmprestimoItemComDispositivoDTO>> buscarEmprestimoItemComDispositivo(int idEmprestimo);
   Future<EmprestimoItem?> buscarPorId(int id);
-  Future<int> criar(EmprestimoItem item);
-  Future<void> atualizar(EmprestimoItem item);
+  Future<int> criar(EmprestimoItem ei);
+  Future<void> atualizar(EmprestimoItem ei);
   Future<void> deletar(int id);
   Future<void> aumentarQntSolicitada(int idEmprestimoItem, int qtd);
   Future<void> diminuirQntSolicitada(int idEmprestimoItem, int qtd);

@@ -9,7 +9,7 @@ class SelecionarDispositivoViewmodel extends ChangeNotifier {
   bool isLoading = false;
   String? errorMessage;
 
-  List<Dispositivo> dispositivos = [];
+  List<Dispositivo> dispositivosSelecionados = [];
   List<Dispositivo> todosDispositivos = [];
   String termoBusca = '';
   
@@ -28,14 +28,14 @@ class SelecionarDispositivoViewmodel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      dispositivos = await _dispositivoRepository.buscarDisponiveisExcluindo(
+      dispositivosSelecionados = await _dispositivoRepository.buscarDisponiveisExcluindo(
         idTipoDispositivo: idTipoDispositivo,
         idsParaIgnorar: idsParaIgnorar,
       );
-      todosDispositivos = dispositivos;
+      todosDispositivos = dispositivosSelecionados;
     } catch (e) {
       errorMessage = 'Erro ao carregar os dispositivos';
-      dispositivos = [];
+      dispositivosSelecionados = [];
       todosDispositivos = [];
     } finally {
       isLoading = false;
@@ -43,8 +43,8 @@ class SelecionarDispositivoViewmodel extends ChangeNotifier {
     }
   }
 
-  Future<void> pesquisar(String termo) async {
-    final query = termo.trim();
+  Future<void> pesquisar(String pesquisa) async {
+    final query = pesquisa.trim();
 
     if (query.isEmpty) {
       // Se campo vazio, recarregar com os filtros originais
@@ -64,7 +64,7 @@ class SelecionarDispositivoViewmodel extends ChangeNotifier {
       var resultados = await _dispositivoRepository.buscarDescricao(query);
       
       // Aplicar os mesmos filtros que foram aplicados inicialmente
-      dispositivos = resultados.where((dispositivo) {
+      dispositivosSelecionados = resultados.where((dispositivo) {
         // Filtrar por tipo se foi especificado
         if (_idTipoDispositivoFiltro != null && dispositivo.idTipoDispositivo != _idTipoDispositivoFiltro) {
           return false;
@@ -85,7 +85,7 @@ class SelecionarDispositivoViewmodel extends ChangeNotifier {
       }).toList();
     } catch (e) {
       errorMessage = 'Erro ao pesquisar os dispositivos';
-      dispositivos = [];
+      dispositivosSelecionados = [];
     } finally {
       isLoading = false;
       notifyListeners();
