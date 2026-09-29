@@ -12,12 +12,11 @@ class AjudaTipoEmprestimoScreen extends StatelessWidget {
         backgroundColor: CoresGardien.azulClaro,
         foregroundColor: CoresGardien.branco,
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(15),
-        child: Padding(
-          padding: EdgeInsets.only(bottom: 70),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(15),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 'Quais são os tipos de criação dos empréstimos e o que cada um deles quer dizer?',
@@ -35,7 +34,7 @@ class AjudaTipoEmprestimoScreen extends StatelessWidget {
                 'POR QUANTIDADE',
                 style: TextStyle(
                   color: CoresGardien.azulClaro,
-                  fontSize: 18,
+                  fontSize: 25,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -43,13 +42,13 @@ class AjudaTipoEmprestimoScreen extends StatelessWidget {
                 'O usuário informa o tipo de dispositivo e a quantidade que será emprestada no momento de criação (podendo registrar mais de um tipo de dispositivo por empréstimo). '
                 'No momento de finalizar o empréstimo, o usuário precisará vincular cada um dos dispositivos que estavam naquele empréstimo.\n'
                 '(Será criado um cartão para cada um dos dispositivos selecionados na criação, porém é possível adicionar mais dispositivos depois de criado o empréstimo)',
-                style: TextStyle(fontSize: 16),
+                style: TextStyle(fontSize: 18),
                 textAlign: TextAlign.justify,
               ),
               const SizedBox(height: 5),
               Text(
                 "O método 'Por Quantidade' é ideal para momentos em que o usuário não tem muito tempo e há muitos dispositivos a serem anotados, ao invés de anotar tudo naquele momento, ele deixa para anotar no final do empréstimo.",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.justify,
               ),
               const SizedBox(height: 10),
@@ -57,19 +56,19 @@ class AjudaTipoEmprestimoScreen extends StatelessWidget {
                 'POR UNIDADE',
                 style: TextStyle(
                   color: CoresGardien.azulClaro,
-                  fontSize: 18,
+                  fontSize: 25,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               Text(
                 'O usuário no momento de criação do empréstimo já informa quais são os dispositivos presente no empréstimo.',
-                style: TextStyle(fontSize: 16),
+                style: TextStyle(fontSize: 18),
                 textAlign: TextAlign.justify,
               ),
               const SizedBox(height: 5),
               Text(
                 "O método 'Por Unidade' é ideal para momentos em que o usuário está livre para anotar todos os dispositivos no momento ou o empréstimo é composto de poucos dispositivos.",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.justify,
               ),
               const SizedBox(height: 10),
@@ -77,7 +76,7 @@ class AjudaTipoEmprestimoScreen extends StatelessWidget {
                 "Observação: Apesar de houver dois métodos de criação, o método 'Por Unidade' é o mais recomendado por possuir mais vericidade nos dados.",
                 style: TextStyle(
                   color: CoresGardien.vermelhoClaro,
-                  fontSize: 16,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.justify,
@@ -86,7 +85,7 @@ class AjudaTipoEmprestimoScreen extends StatelessWidget {
                 "O método 'Por Quantidade' foi criado com o objetivo de ajudar o usuário em casos de empréstimos grandes que podem acabar tomando muito tempo para serem criados.",
                 style: TextStyle(
                   color: CoresGardien.vermelhoClaro,
-                  fontSize: 16,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.justify,
