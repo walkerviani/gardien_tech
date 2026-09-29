@@ -126,9 +126,10 @@ class AjudaCardScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [_infoEmprestimo()],
             ),
+            const SizedBox(height: 5),
             Center(
               child: Text(
-                'Clique aqui para mais detalhes',
+                'Clique para mais detalhes',
                 style: TextStyle(
                   color: CoresGardien.branco,
                   fontWeight: FontWeight.bold,
