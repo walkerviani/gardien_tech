@@ -222,22 +222,23 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
   Widget _cardEmprestimo(EmprestimoComDetalhesDTO emprestimo) {
     return Card(
       color: _colorStatus(emprestimo.idStatusEmprestimo),
-      child: Padding(
-        padding: EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [_infoEmprestimo(emprestimo)],
-            ),
-            Center(
-              child: TextButton(
-                onPressed: () {
-                  _abrirEmprestimo(emprestimo);
-                },
+      child: InkWell(
+        onTap: () {
+          _abrirEmprestimo(emprestimo);
+        },
+        child: Padding(
+          padding: EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [_infoEmprestimo(emprestimo)],
+              ),
+              const SizedBox(height: 5),
+              Center(
                 child: Text(
-                  'Clique aqui para mais detalhes',
+                  'Clique para mais detalhes',
                   style: TextStyle(
                     color: CoresGardien.branco,
                     fontWeight: FontWeight.bold,
@@ -245,8 +246,8 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
