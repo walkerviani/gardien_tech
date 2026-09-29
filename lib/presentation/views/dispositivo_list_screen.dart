@@ -176,10 +176,8 @@ class _DispositivoListScreenState extends State<DispositivoListScreen> {
               },
             ),
             const SizedBox(height: 12),
+            // Espaço onde aparece os dispositivos criados
             Expanded(
-              /*
-              Espaço onde aparece os dispositivos criados
-              */
               child: Consumer<DispositivoListViewmodel>(
                 builder: (context, viewModel, child) {
                   if (viewModel.isLoading) {
@@ -194,145 +192,122 @@ class _DispositivoListScreenState extends State<DispositivoListScreen> {
                     itemCount: viewModel.dispositivos.length,
                     itemBuilder: (context, index) {
                       final dispositivo = viewModel.dispositivos[index];
-                      final dispositivoTipo =
-                          TipoDispositivo.values
-                              .where(
-                                (tipoDisp) =>
-                                    tipoDisp.id ==
-                                    dispositivo.idTipoDispositivo,
-                              )
-                              .firstOrNull
-                              ?.nomeTipo ??
-                          'Cargo não encontrado';
-
-                      /*
-                      Card de cada dispositivo
-                      */
-
-                      return Card(
-                        key: ValueKey(dispositivo.id),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 6,
-                          ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              /* 
-                              Parte Esquerda - número de patrimonio, número de serie e tipo dispositivo
-                              */
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text.rich(
-                                      TextSpan(
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                            text: '$dispositivoTipo \n',
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text: 'PATRIMÔNIO \n',
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 13,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text:
-                                                '${dispositivo.numPatrimonio} \n',
-                                            style: const TextStyle(
-                                              fontSize: 13,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text: 'NÚMERO DE SÉRIE \n',
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 13,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text: dispositivo.numSerie,
-                                            style: const TextStyle(
-                                              fontSize: 13,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(width: 20),
-
-                              /* 
-                              Parte Direita - Botões de editar, excluir e problemas
-                              */
-                              Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      IconButton(
-                                        onPressed: () => _abrirFormulario(
-                                          dispositivo: dispositivo,
-                                        ),
-                                        icon: const Icon(Icons.edit),
-                                      ),
-                                      IconButton(
-                                        onPressed: () =>
-                                            _confirmarExcluir(dispositivo),
-                                        icon: const Icon(Icons.delete),
-                                      ),
-                                    ],
-                                  ),
-                                  TextButton(
-                                    onPressed: () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => ChangeNotifierProvider(
-                                          create: (context) =>
-                                              DispositivoListViewmodel(
-                                                context
-                                                    .read<
-                                                      DispositivoRepository
-                                                    >(),
-                                              ),
-                                          child: DispositivoProblemaListScreen(
-                                            idDispositivo: dispositivo.id!,
-                                            numSerie: dispositivo.numSerie,
-                                            numPatrimonio:
-                                                dispositivo.numPatrimonio,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    style: TextButton.styleFrom(
-                                      backgroundColor: CoresGardien.laranja,
-                                      foregroundColor: CoresGardien.branco,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
-                                    child: const Text('Problemas relatados'),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
+                      return _cardDispositivo(dispositivo);
                     },
                   );
                 },
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _cardDispositivo(Dispositivo dispositivo) {
+    final dispositivoTipo =
+        TipoDispositivo.values
+            .where((tipoDisp) => tipoDisp.id == dispositivo.idTipoDispositivo)
+            .firstOrNull
+            ?.nomeTipo ??
+        'Cargo não encontrado';
+
+    return Card(
+      key: ValueKey(dispositivo.id),
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text.rich(
+                    TextSpan(
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: '$dispositivoTipo \n',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                        TextSpan(
+                          text: 'N° PATRIMÔNIO \n',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                          ),
+                        ),
+                        TextSpan(
+                          text: '${dispositivo.numPatrimonio} \n',
+                          style: const TextStyle(fontSize: 13),
+                        ),
+                        TextSpan(
+                          text: 'N° SÉRIE \n',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+
+                            fontSize: 13,
+                          ),
+                        ),
+                        TextSpan(
+                          text: dispositivo.numSerie,
+                          style: const TextStyle(fontSize: 13),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(width: 20),
+
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      onPressed: () =>
+                          _abrirFormulario(dispositivo: dispositivo),
+                      icon: const Icon(Icons.edit),
+                    ),
+                    IconButton(
+                      onPressed: () => _confirmarExcluir(dispositivo),
+                      icon: const Icon(Icons.delete),
+                    ),
+                  ],
+                ),
+                TextButton(
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ChangeNotifierProvider(
+                        create: (context) => DispositivoListViewmodel(
+                          context.read<DispositivoRepository>(),
+                        ),
+                        child: DispositivoProblemaListScreen(
+                          idDispositivo: dispositivo.id!,
+                          numSerie: dispositivo.numSerie,
+                          numPatrimonio: dispositivo.numPatrimonio,
+                        ),
+                      ),
+                    ),
+                  ),
+                  style: TextButton.styleFrom(
+                    backgroundColor: CoresGardien.azulEscuro,
+                    foregroundColor: CoresGardien.branco,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: const Text('Problemas relatados'),
+                ),
+              ],
             ),
           ],
         ),
