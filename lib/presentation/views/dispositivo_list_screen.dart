@@ -205,13 +205,6 @@ class _DispositivoListScreenState extends State<DispositivoListScreen> {
   }
 
   Widget _cardDispositivo(Dispositivo dispositivo) {
-    final dispositivoTipo =
-        TipoDispositivo.values
-            .where((tipoDisp) => tipoDisp.id == dispositivo.idTipoDispositivo)
-            .firstOrNull
-            ?.nomeTipo ??
-        'Cargo não encontrado';
-
     return Card(
       key: ValueKey(dispositivo.id),
       child: Padding(
@@ -219,99 +212,110 @@ class _DispositivoListScreenState extends State<DispositivoListScreen> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text.rich(
-                    TextSpan(
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: '$dispositivoTipo \n',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
-                        ),
-                        TextSpan(
-                          text: 'N° PATRIMÔNIO \n',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 13,
-                          ),
-                        ),
-                        TextSpan(
-                          text: '${dispositivo.numPatrimonio} \n',
-                          style: const TextStyle(fontSize: 13),
-                        ),
-                        TextSpan(
-                          text: 'N° SÉRIE \n',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-
-                            fontSize: 13,
-                          ),
-                        ),
-                        TextSpan(
-                          text: dispositivo.numSerie,
-                          style: const TextStyle(fontSize: 13),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
+            _infoDispositivo(dispositivo),
             const SizedBox(width: 20),
-
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      onPressed: () =>
-                          _abrirFormulario(dispositivo: dispositivo),
-                      icon: const Icon(Icons.edit),
-                    ),
-                    IconButton(
-                      onPressed: () => _confirmarExcluir(dispositivo),
-                      icon: const Icon(Icons.delete),
-                    ),
-                  ],
-                ),
-                TextButton(
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ChangeNotifierProvider(
-                        create: (context) => DispositivoListViewmodel(
-                          context.read<DispositivoRepository>(),
-                        ),
-                        child: DispositivoProblemaListScreen(
-                          idDispositivo: dispositivo.id!,
-                          numSerie: dispositivo.numSerie,
-                          numPatrimonio: dispositivo.numPatrimonio,
-                        ),
-                      ),
-                    ),
-                  ),
-                  style: TextButton.styleFrom(
-                    backgroundColor: CoresGardien.azulEscuro,
-                    foregroundColor: CoresGardien.branco,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text('Problemas relatados'),
-                ),
-              ],
-            ),
+            _botoesDispositivo(dispositivo),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _infoDispositivo(Dispositivo dispositivo) {
+    final dispositivoTipo =
+        TipoDispositivo.values
+            .where((tipoDisp) => tipoDisp.id == dispositivo.idTipoDispositivo)
+            .firstOrNull
+            ?.nomeTipo ??
+        'Cargo não encontrado';
+
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text.rich(
+            TextSpan(
+              children: <TextSpan>[
+                TextSpan(
+                  text: '$dispositivoTipo \n',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+                TextSpan(
+                  text: 'N° PATRIMÔNIO \n',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
+                ),
+                TextSpan(
+                  text: '${dispositivo.numPatrimonio} \n',
+                  style: const TextStyle(fontSize: 15),
+                ),
+                TextSpan(
+                  text: 'N° SÉRIE \n',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
+                ),
+                TextSpan(
+                  text: dispositivo.numSerie,
+                  style: const TextStyle(fontSize: 15),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _botoesDispositivo(Dispositivo dispositivo) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              onPressed: () => _abrirFormulario(dispositivo: dispositivo),
+              icon: const Icon(Icons.edit),
+            ),
+            IconButton(
+              onPressed: () => _confirmarExcluir(dispositivo),
+              icon: const Icon(Icons.delete),
+            ),
+          ],
+        ),
+        TextButton(
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ChangeNotifierProvider(
+                create: (context) => DispositivoListViewmodel(
+                  context.read<DispositivoRepository>(),
+                ),
+                child: DispositivoProblemaListScreen(
+                  idDispositivo: dispositivo.id!,
+                  numSerie: dispositivo.numSerie,
+                  numPatrimonio: dispositivo.numPatrimonio,
+                ),
+              ),
+            ),
+          ),
+          style: TextButton.styleFrom(
+            backgroundColor: CoresGardien.azulEscuro,
+            foregroundColor: CoresGardien.branco,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          child: const Text('Problemas relatados'),
+        ),
+      ],
     );
   }
 }
