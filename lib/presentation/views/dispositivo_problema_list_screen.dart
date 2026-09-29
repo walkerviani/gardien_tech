@@ -22,7 +22,8 @@ class DispositivoProblemaListScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _DispositivoProblemaListScreenState();
 }
 
-class _DispositivoProblemaListScreenState extends State<DispositivoProblemaListScreen> {
+class _DispositivoProblemaListScreenState
+    extends State<DispositivoProblemaListScreen> {
   @override
   void initState() {
     super.initState();
@@ -178,7 +179,11 @@ class _DispositivoProblemaListScreenState extends State<DispositivoProblemaListS
                   }
                   if (viewModel.problemas.isEmpty) {
                     return const Center(
-                      child: Text('Nenhum problema encontrado'),
+                      child: Text(
+                        'Nenhum problema encontrado',
+                        style: TextStyle(fontSize: 18),
+                        textAlign: TextAlign.center,
+                      ),
                     );
                   }
                   return ListView.builder(

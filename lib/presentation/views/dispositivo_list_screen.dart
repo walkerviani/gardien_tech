@@ -185,7 +185,11 @@ class _DispositivoListScreenState extends State<DispositivoListScreen> {
                   }
                   if (viewModel.dispositivos.isEmpty) {
                     return const Center(
-                      child: Text('Nenhum dispositivo encontrado'),
+                      child: Text(
+                        'Nenhum dispositivo encontrado',
+                        style: TextStyle(fontSize: 18),
+                        textAlign: TextAlign.center,
+                      ),
                     );
                   }
                   return ListView.builder(

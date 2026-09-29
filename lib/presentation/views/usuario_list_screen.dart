@@ -177,7 +177,11 @@ class _UsuarioListScreenState extends State<UsuarioListScreen> {
                   }
                   if (viewModel.usuarios.isEmpty) {
                     return const Center(
-                      child: Text('Nenhum usuário encontrado'),
+                      child: Text(
+                        'Nenhum usuário encontrado',
+                        style: TextStyle(fontSize: 18),
+                        textAlign: TextAlign.center,
+                      ),
                     );
                   }
                   return ListView.builder(

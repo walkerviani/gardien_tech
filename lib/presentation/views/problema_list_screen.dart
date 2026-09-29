@@ -117,7 +117,11 @@ class _ProblemaListScreenState extends State<ProblemaListScreen> {
 
                   if (viewModel.problemasAtivos.isEmpty) {
                     return const Center(
-                      child: Text('Nenhum problema encontrado'),
+                      child: Text(
+                        'Nenhum problema encontrado',
+                        style: TextStyle(fontSize: 18),
+                        textAlign: TextAlign.center,
+                      ),
                     );
                   }
                   return ListView.builder(
