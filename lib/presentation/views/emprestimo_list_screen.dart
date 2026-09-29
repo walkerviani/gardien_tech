@@ -139,10 +139,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
                   return const Center(
                     child: Text(
                       'Nenhum empréstimo encontrado no dia atual',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(fontSize: 18),
                       textAlign: TextAlign.center,
                     ),
                   );
