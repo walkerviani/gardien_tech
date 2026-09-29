@@ -96,42 +96,14 @@ class _ProblemaListScreenState extends State<ProblemaListScreen> {
         padding: EdgeInsets.all(12),
         child: Column(
           children: [
-            /*
-            Informações do dispositivo selecionado
-            */
+            // Informações do dispositivo selecionado
             Consumer<ProblemaListViewmodel>(
-              builder: (context, viewModel, child) {
-                if (viewModel.problemasAtivos.isEmpty) {
+              builder: (context, viewmodel, child) {
+                if (viewmodel.problemasAtivos.isEmpty) {
                   // Se a lista estiver vazia não apresente as informações
                   return SizedBox.shrink();
                 }
-
-                return Container(
-                  padding: EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: CoresGardien.preto),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Text.rich(
-                      TextSpan(
-                        children: <TextSpan>[
-                          TextSpan(
-                            text:
-                                'Problemas atuais: ${viewModel.problemasAtivos.length} \n',
-                            style: TextStyle(fontSize: 13),
-                          ),
-                          TextSpan(
-                            text:
-                                'Dispositivos com problema: ${viewModel.quantidadeTotalDisponiveisComProblemas()}',
-                            style: TextStyle(fontSize: 13),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
+                return _cabecalho(viewmodel);
               },
             ),
             const SizedBox(height: 10),
@@ -152,122 +124,7 @@ class _ProblemaListScreenState extends State<ProblemaListScreen> {
                     itemCount: viewModel.problemasAtivos.length,
                     itemBuilder: (context, index) {
                       final problemasAtivos = viewModel.problemasAtivos[index];
-                      final dispositivoTipo =
-                          TipoDispositivo.values
-                              .where(
-                                (tipoDisp) =>
-                                    tipoDisp.id ==
-                                    problemasAtivos.idTipoDispositivo,
-                              )
-                              .firstOrNull
-                              ?.nomeTipo ??
-                          'Cargo não encontrado';
-                      /* 
-                      Card de cada problema
-                      */
-
-                      return Card(
-                        key: ValueKey(problemasAtivos.idProblema),
-                        child: Padding(
-                          padding: EdgeInsets.all(12),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              /* 
-                              Parte Esquerda - Info
-                              */
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text.rich(
-                                      TextSpan(
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                            text: '${index + 1} \n',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text: '$dispositivoTipo \n',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text: 'PATRIMÔNIO \n',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 13,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text:
-                                                '${problemasAtivos.numPatrimonio} \n',
-                                            style: TextStyle(fontSize: 13),
-                                          ),
-                                          TextSpan(
-                                            text: 'NÚMERO DE SÉRIE \n',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 13,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text:
-                                                '${problemasAtivos.numSerie} \n',
-                                            style: TextStyle(fontSize: 13),
-                                          ),
-                                          TextSpan(
-                                            text: 'DESCRIÇÃO \n',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 13,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text: problemasAtivos.descricao,
-                                            style: TextStyle(fontSize: 13),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(width: 20),
-
-                              /* 
-                              Parte Direita - Botões de editar e excluir
-                              */
-                              Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      IconButton(
-                                        onPressed: () => _abrirFormulario(
-                                          problema: problemasAtivos,
-                                        ),
-                                        icon: const Icon(Icons.edit),
-                                      ),
-                                      IconButton(
-                                        onPressed: () =>
-                                            _confirmarExcluir(problemasAtivos),
-                                        icon: const Icon(Icons.delete),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
+                      return _cardProblema(problemasAtivos, index);
                     },
                   );
                 },
@@ -276,6 +133,140 @@ class _ProblemaListScreenState extends State<ProblemaListScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _cabecalho(ProblemaListViewmodel viewmodel) {
+    return Container(
+      padding: EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        border: Border.all(color: CoresGardien.preto),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: Text.rich(
+          TextSpan(
+            children: <TextSpan>[
+              TextSpan(
+                text:
+                    'Problemas atuais: ${viewmodel.problemasAtivos.length} \n',
+                style: TextStyle(fontSize: 15),
+              ),
+              TextSpan(
+                text:
+                    'Dispositivos com problema: ${viewmodel.quantidadeTotalDisponiveisComProblemas()}',
+                style: TextStyle(fontSize: 15),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _cardProblema(DispositivoComProblemaDTO problema, int index) {
+    return Tooltip(
+      preferBelow: false,
+      message: problema.descricao,
+      textStyle: TextStyle(fontSize: 18),
+      textAlign: TextAlign.center,
+      verticalOffset: 100,
+      margin: EdgeInsets.all(5),
+      decoration: BoxDecoration(
+        color: CoresGardien.azulEscuro,
+        borderRadius: BorderRadius.circular(5),
+      ),
+      showDuration: const Duration(milliseconds: 3),
+      child: Card(
+        key: ValueKey(problema.idProblema),
+        child: Padding(
+          padding: EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  _infoProblema(problema, index),
+                  const SizedBox(width: 20),
+                  _botoesProblema(problema),
+                ],
+              ),
+              const SizedBox(height: 5),
+              Center(
+                child: Text(
+                  'Clique e segure para ler a descrição',
+                  style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _infoProblema(DispositivoComProblemaDTO problema, int index) {
+    final dispositivoTipo =
+        TipoDispositivo.values
+            .where((tipoDisp) => tipoDisp.id == problema.idTipoDispositivo)
+            .firstOrNull
+            ?.nomeTipo ??
+        'Cargo não encontrado';
+
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text.rich(
+            TextSpan(
+              children: <TextSpan>[
+                TextSpan(
+                  text: '${index + 1} - $dispositivoTipo\n',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                ),
+                TextSpan(
+                  text: 'N° PATRIMÔNIO \n',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                ),
+                TextSpan(
+                  text: '${problema.numPatrimonio} \n',
+                  style: TextStyle(fontSize: 15),
+                ),
+                TextSpan(
+                  text: 'N° SÉRIE \n',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                ),
+                TextSpan(
+                  text: problema.numSerie,
+                  style: TextStyle(fontSize: 15),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _botoesProblema(DispositivoComProblemaDTO problema) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              onPressed: () => _abrirFormulario(problema: problema),
+              icon: const Icon(Icons.edit),
+            ),
+            IconButton(
+              onPressed: () => _confirmarExcluir(problema),
+              icon: const Icon(Icons.delete),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
