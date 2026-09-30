@@ -1,6 +1,7 @@
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gardien_tech/domain/enum/tipo_dispositivo.dart';
 import 'package:gardien_tech/presentation/viewmodels/import_dispositivo_csv_viewmodel.dart';
 import 'package:gardien_tech/utils/cores_gardien.dart';
 import 'package:provider/provider.dart';
@@ -55,34 +56,97 @@ class _ImportDispositivoCsvScreenState
     const tipoCsv = XTypeGroup(label: 'CSV', extensions: ['csv']);
 
     final arquivo = await openFile(acceptedTypeGroups: [tipoCsv]);
-
     if (arquivo == null) {
       return;
     }
-
     if (!mounted) return;
 
     final viewmodel = context.read<ImportDispositivoCsvViewmodel>();
-
     bool sucesso = await viewmodel.importarDispositivosCsv(arquivo);
 
     if (!mounted) return;
 
-    if (sucesso) {
+    // Falha total (arquivo inválido, nenhum dispositivo salvo etc.)
+    if (!sucesso) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Importação de dispositivos realizado com sucesso'),
-          backgroundColor: CoresGardien.verdeClaro,
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(viewmodel.errorMessage ?? 'Erro desconhecido'),
+          content: Text(
+            viewmodel.errorMessage ?? 'Nenhum dispositivo foi importado',
+          ),
           backgroundColor: CoresGardien.vermelhoClaro,
         ),
       );
+      // Se houver erros detalhados, mostra na tela
+      if (viewmodel.erros.isNotEmpty) {
+        await _mostrarResultado(viewmodel.sucessos, viewmodel.erros);
+      }
+      return;
     }
+    // Sucesso sem nenhum erro
+    if (viewmodel.erros.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${viewmodel.sucessos} dispositivos importados'),
+          backgroundColor: CoresGardien.verdeClaro,
+        ),
+      );
+      return;
+    }
+    // Sucesso parcial: mostra o resumo com os erros
+    await _mostrarResultado(viewmodel.sucessos, viewmodel.erros);
+  }
+
+  Future<void> _mostrarResultado(int sucessos, List<String> erros) {
+    return showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text(
+          'Importação concluída',
+          style: TextStyle(
+            fontSize: 25,
+            color: CoresGardien.preto,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '$sucessos importados, ${erros.length} ignorados',
+                style: const TextStyle(fontSize: 18, color: CoresGardien.preto),
+              ),
+              const SizedBox(height: 12),
+              Flexible(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: erros.length,
+                  itemBuilder: (_, i) => Text(
+                    '• ${erros[i]}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: CoresGardien.preto,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              'Entendi',
+              style: TextStyle(color: CoresGardien.preto),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -95,190 +159,19 @@ class _ImportDispositivoCsvScreenState
         backgroundColor: CoresGardien.azulClaro,
         foregroundColor: CoresGardien.branco,
       ),
-      body: Container(
-        padding: EdgeInsets.all(12),
-        child: viewmodel.isLoading
-            ? const CircularProgressIndicator(color: CoresGardien.azulClaro)
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Instruções',
-                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    '1. Adicione os dados abaixo na tabela da aba Dispositivos.',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        'Número de Patrimônio',
-                        style: TextStyle(
-                          fontSize: 17,
-                          color: CoresGardien.laranja,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (_) => AlertDialog(
-                              title: const Text(
-                                'Número de Patrimônio',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              content: const Text(
-                                'Código de registro único colocado em um bem físico.\n\n(Empresas e órgãos públicos implementam esse número para controlar e localizar seus bens).',
-                                style: TextStyle(fontSize: 17),
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: const Text(
-                                    'Entendi',
-                                    style: TextStyle(color: CoresGardien.preto),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                        icon: const Icon(Icons.help_outline),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        'Número de Série',
-                        style: TextStyle(
-                          fontSize: 17,
-                          color: CoresGardien.azulClaro,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (_) => AlertDialog(
-                              title: const Text(
-                                'Número de Série',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              content: const Text(
-                                'Código único formado por letras e números.\n\n(Ele é definido pelo fabricante durante a produção)',
-                                style: TextStyle(fontSize: 17),
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: const Text(
-                                    'Entendi',
-                                    style: TextStyle(color: CoresGardien.preto),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                        icon: const Icon(Icons.help_outline),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        'Tipo de Dispositivo',
-                        style: TextStyle(
-                          fontSize: 17,
-                          color: CoresGardien.verdeClaro,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (_) => AlertDialog(
-                              title: const Text(
-                                'Tipo de Dispositivo',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              content: const Text(
-                                'Usado para diferenciar qual é o tipo do dispositivo.\n\n(No modelo: ao clicar na célula vazia do tipo de dispositivo, abra o menu ao lado direito da célula e selecione o tipo de dispositivo ideal)',
-                                style: TextStyle(fontSize: 17),
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: const Text(
-                                    'Entendi',
-                                    style: TextStyle(color: CoresGardien.preto),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                        icon: const Icon(Icons.help_outline),
-                      ),
-                    ],
-                  ),
-                  Text(
-                    '2. Converta o arquivo para csv ou no processo de salvar o arquivo selecione o tipo do arquivo para csv.',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    '3. Envie o arquivo csv no aplicativo.',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      const Text(
-                        '4. Atenção',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () => {
-                          showDialog(
-                            context: context,
-                            builder: (_) => AlertDialog(
-                              title: const Text(
-                                'Mais Informações',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              content: const Text(
-                                'O modelo serve para ajudar na importação, porém não é necessário o uso.\n\nNo entanto, para caso deseja realizar um arquivo csv à parte, os dados precisam estar na seguinte ordem:\n1-Número de Patrimônio,\n2-Número de Série\n3-Tipo do Dispositivo',
-                                style: TextStyle(fontSize: 17),
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: const Text(
-                                    'Entendi',
-                                    style: TextStyle(color: CoresGardien.preto),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        },
-                        icon: Icon(Icons.help_outline),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(15),
+          child: Column(
+            children: [
+              viewmodel.isLoading
+                  ? const CircularProgressIndicator(
+                      color: CoresGardien.azulClaro,
+                    )
+                  : _instrucoes(),
+            ],
+          ),
+        ),
       ),
       bottomNavigationBar: SafeArea(
         child: Container(
@@ -310,7 +203,9 @@ class _ImportDispositivoCsvScreenState
                   ],
                 ),
               ),
+
               const SizedBox(height: 10),
+
               ElevatedButton(
                 onPressed: viewmodel.isLoading ? null : _adicionarCsv,
 
@@ -336,6 +231,154 @@ class _ImportDispositivoCsvScreenState
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _instrucoes() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Instruções',
+          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 12),
+        _textoDescricao(
+          '1° Adicione os dados do dispositivo na ordem apresentada abaixo:',
+        ),
+        _infoCampo(
+          'Número de Patrimônio',
+          'Código de registro único colocado em um bem físico.\n\n(Empresas e órgãos públicos implementam esse número para controlar e localizar seus bens).',
+          CoresGardien.laranja,
+        ),
+        _infoCampo(
+          'Número de Série',
+          'Código único formado por letras e números.\n\n(Ele é definido pelo fabricante durante a produção)',
+          CoresGardien.azulClaro,
+        ),
+        _infoCampo(
+          'Tipo de Dispositivo',
+          'Usado para diferenciar qual é o tipo do dispositivo.\n\n'
+              'ATENÇÃO: No modelo, clique na célula vazia de tipo de dispositivo e use o menu que aparece ao lado direito para selecionar o tipo desejado.',
+          CoresGardien.verdeClaro,
+        ),
+        _textoDescricao(
+          'TIPO DE DISPOSITIVO: Você também pode adicionar os tipos pelo nome ou pelo número identificador, ambos precisam estar iguais apresentados no botão abaixo.',
+        ),
+        _infoTipoDisp(),
+        const SizedBox(height: 12),
+        _textoDescricao(
+          '2° Se você preencheu os dados no modelo de tabela ou em uma planilha própria (Excel, por exemplo), salve o arquivo no formato CSV antes de importá-lo.',
+        ),
+        const SizedBox(height: 12),
+        _textoDescricao(
+          '3° Verifique se os dados estão corretos e insira o arquivo CSV pelo botão verde abaixo.',
+        ),
+        const SizedBox(height: 12),
+        _textoDescricao(
+          'ATENÇÃO: O modelo existe para facilitar a importação, mas seu uso é opcional. Você pode preencher os dados no Excel, ou outro programa de planilhas, e depois salvar o arquivo como CSV, ou criar um arquivo CSV diretamente. Em ambos os casos, mantenha a mesma ordem de colunas do modelo.',
+        ),
+      ],
+    );
+  }
+
+  Widget _textoDescricao(String texto) {
+    return Text(
+      texto,
+      style: TextStyle(fontSize: 18),
+      textAlign: TextAlign.justify,
+    );
+  }
+
+  Widget _infoCampo(String campo, String descricao, Color cor) {
+    return Row(
+      children: [
+        Text(
+          campo,
+          style: TextStyle(
+            fontSize: 18,
+            color: cor,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        IconButton(
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (_) => AlertDialog(
+                title: Text(
+                  campo,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                content: Text(descricao, style: TextStyle(fontSize: 17)),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text(
+                      'Entendi',
+                      style: TextStyle(color: CoresGardien.preto),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+          icon: const Icon(Icons.help_outline),
+        ),
+      ],
+    );
+  }
+
+  Widget _infoTipoDisp() {
+    return TextButton(
+      onPressed: () {
+        _descricaoTipoDisp();
+      },
+      style: TextButton.styleFrom(
+        minimumSize: const Size(double.infinity, 40),
+        backgroundColor: CoresGardien.azulClaro,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadiusGeometry.circular(5),
+        ),
+      ),
+      child: Text(
+        'Tipos de dispositivo',
+        style: TextStyle(color: CoresGardien.branco),
+      ),
+    );
+  }
+
+  void _descricaoTipoDisp() {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(
+          'Tipos de dispositivo',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: TipoDispositivo.values
+              .map(
+                (tipo) => Text(
+                  '${tipo.id} - ${tipo.nomeTipo}',
+                  style: const TextStyle(fontSize: 17),
+                ),
+              )
+              .toList(),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              'Entendi',
+              style: TextStyle(color: CoresGardien.preto),
+            ),
+          ),
+        ],
       ),
     );
   }
