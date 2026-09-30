@@ -125,7 +125,7 @@ class _ImportDispositivoCsvScreenState
                   shrinkWrap: true,
                   itemCount: erros.length,
                   itemBuilder: (_, i) => Text(
-                    '• ${erros[i]}',
+                    '• ${erros[i]}\n',
                     style: const TextStyle(
                       fontSize: 16,
                       color: CoresGardien.preto,
