@@ -52,7 +52,9 @@ class DispositivosCsvService {
     }
 
     if (dispositivos.isEmpty) {
-      throw Exception('Nenhum dispositivo válido foi encontrado no arquivo.');
+      throw Exception(
+        'Nenhum dispositivo válido foi encontrado no arquivo, verifique os dados informados.',
+      );
     }
 
     return (dispositivos, erros);
