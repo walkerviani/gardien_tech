@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
-import 'package:gardien_tech/domain/entities/dispositivo.dart';
 import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
 import 'package:gardien_tech/utils/dispositivos_csv_service.dart';
 
@@ -13,25 +12,21 @@ class ImportDispositivoCsvViewmodel extends ChangeNotifier {
 
   bool isLoading = false;
   String? errorMessage;
-  List<Dispositivo> dispositivos = [];
+  int sucessos = 0;
+  List<String> erros = [];
 
   Future<bool> importarDispositivosCsv(XFile arquivo) async {
     errorMessage = null;
-
+    sucessos = 0;
+    erros = [];
     isLoading = true;
     notifyListeners();
 
     try {
-      final File arquivoConvertido = _xfileParaFile(arquivo);
-      dispositivos = await _csvService.importDispositivos(arquivoConvertido);
-
-      if (dispositivos.isEmpty) {
-        errorMessage = 'Lista de dispositivos vazia';
-        return false;
-      }
-
-      int qntDispCriados = 0;
-      int qntDispDescartados = 0; // Dispositivos já existentes
+      final (dispositivos, errosCsv) = await _csvService.importDispositivos(
+        File(arquivo.path),
+      );
+      erros.addAll(errosCsv);
 
       for (final dispositivo in dispositivos) {
         try {
@@ -42,44 +37,41 @@ class ImportDispositivoCsvViewmodel extends ChangeNotifier {
               );
 
           if (existe) {
-            qntDispDescartados++;
+            erros.add(
+              'Patrimônio: ${dispositivo.numPatrimonio} / Série: ${dispositivo.numSerie} já existe',
+            );
+            continue;
+          }
+          if (dispositivo.numSerie.trim().length >= 50) {
+            erros.add(
+              'Patrimônio: ${dispositivo.numPatrimonio} / Série: ${dispositivo.numSerie} possui um número de série maior que 50 caracteres',
+            );
+            continue;
+          }
+          if (dispositivo.numPatrimonio.trim().length >= 30) {
+            erros.add(
+              'Patrimônio: ${dispositivo.numPatrimonio} / Série: ${dispositivo.numSerie} possui um número de patrimônio maior que 30 caracteres',
+            );
             continue;
           }
 
           await _dispositivoRepository.criar(dispositivo);
-          qntDispCriados++;
+          sucessos++;
         } catch (e) {
-          errorMessage = 'Erro ao criar dispositivo';
-          return false;
+          erros.add(
+            'Patrimônio: ${dispositivo.numPatrimonio} / Série: ${dispositivo.numSerie}: falha ao salvar',
+          );
         }
       }
 
-      if (qntDispCriados == 0) {
-        errorMessage = qntDispDescartados > 0
-            ? 'Todos os dispositivos do arquivo já existem no sistema.'
-            : 'Nenhum dispositivo importado.';
-        return false;
-      }
-
-      if (qntDispCriados > 0) {
-        if (qntDispDescartados > 0) {
-          errorMessage =
-              'Dispositivos: $qntDispCriados criados e $qntDispDescartados já existiam';
-          return false;
-        }
-      }
-
-      return true;
+      return sucessos > 0;
     } catch (e) {
-      errorMessage = 'Erro ao importar os dispositivos';
+      final mensagem = e.toString().replaceFirst('Exception: ', '');
+      errorMessage = 'Erro ao importar: $mensagem';
       return false;
     } finally {
       isLoading = false;
       notifyListeners();
     }
-  }
-
-  File _xfileParaFile(XFile xfile) {
-    return File(xfile.path);
   }
 }
