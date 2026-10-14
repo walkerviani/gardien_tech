@@ -127,16 +127,16 @@ class _DispositivoProblemaListScreenState
                         text: 'Dispositivo atual \n',
                         style: TextStyle(
                           fontWeight: FontWeight(900),
-                          fontSize: 13,
+                          fontSize: 15,
                         ),
                       ),
                       TextSpan(
-                        text: 'Número de série: ${widget.numSerie} \n',
-                        style: TextStyle(fontSize: 13),
+                        text: 'N° Série: ${widget.numSerie} \n',
+                        style: TextStyle(fontSize: 15),
                       ),
                       TextSpan(
-                        text: 'Número de patrimônio: ${widget.numPatrimonio}',
-                        style: TextStyle(fontSize: 13),
+                        text: 'N° Patrimônio: ${widget.numPatrimonio}',
+                        style: TextStyle(fontSize: 15),
                       ),
                     ],
                   ),
@@ -151,7 +151,7 @@ class _DispositivoProblemaListScreenState
             ElevatedButton(
               onPressed: () => _abrirFormulario(),
               style: ElevatedButton.styleFrom(
-                backgroundColor: CoresGardien.laranja,
+                backgroundColor: CoresGardien.vermelhoEscuro,
                 foregroundColor: CoresGardien.branco,
                 minimumSize: const Size(double.infinity, 70),
                 shape: RoundedRectangleBorder(
