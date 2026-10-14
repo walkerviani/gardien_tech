@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gardien_tech/presentation/viewmodels/import_dispositivo_csv_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/selecionar_usuario_viewmodel.dart';
+import 'package:gardien_tech/utils/cores_gardien.dart';
 import 'package:gardien_tech/utils/dispositivos_csv_service.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
@@ -211,6 +212,22 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Gardien Tech',
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        useMaterial3: true,
+
+        textSelectionTheme: const TextSelectionThemeData(
+          cursorColor: CoresGardien.azulEscuro,
+          selectionColor: CoresGardien.azulMuitoClaro,
+          selectionHandleColor: CoresGardien.azulEscuro,
+        ),
+
+        inputDecorationTheme: const InputDecorationTheme(
+          floatingLabelStyle: TextStyle(color: CoresGardien.preto),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: CoresGardien.azulEscuro, width: 2.0),
+          ),
+        ),
+      ),
       home: const MainScreen(),
     );
   }
