@@ -47,7 +47,45 @@ class FuncoesScreen extends StatelessWidget {
     }
   }
 
-  void _restaurarBackup(BuildContext context) {
+  Future<void> _restaurarBackup(BuildContext context) async {
+    final backupViewModel = context.read<BackupViewmodel>();
+    final messenger = ScaffoldMessenger.of(context);
+    final navigator = Navigator.of(context);
+
+    await backupViewModel.restaurarBackup();
+
+    messenger.clearSnackBars();
+
+    if (navigator.canPop()) {
+      navigator.pop();
+    }
+
+    if (backupViewModel.successMessage != null) {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            backupViewModel.successMessage!,
+            style: TextStyle(color: CoresGardien.branco),
+          ),
+          backgroundColor: CoresGardien.verdeClaro,
+        ),
+      );
+      backupViewModel.clearMessages();
+    } else if (backupViewModel.errorMessage != null) {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            backupViewModel.errorMessage!,
+            style: TextStyle(color: CoresGardien.branco),
+          ),
+          backgroundColor: CoresGardien.vermelhoClaro,
+        ),
+      );
+      backupViewModel.clearMessages();
+    }
+  }
+
+  void _mostrarDialogoBackup(BuildContext context) {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -73,38 +111,11 @@ class FuncoesScreen extends StatelessWidget {
             onPressed: () async {
               Navigator.pop(dialogContext);
 
-              final backupViewModel = context.read<BackupViewmodel>();
-              final messenger = ScaffoldMessenger.of(context);
-              final navigator = Navigator.of(context);
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text('Carregando...')));
 
-              await backupViewModel.restaurarBackup();
-              if (navigator.canPop()) {
-                navigator.pop();
-              }
-
-              if (backupViewModel.successMessage != null) {
-                messenger.showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      backupViewModel.successMessage!,
-                      style: TextStyle(color: CoresGardien.branco),
-                    ),
-                    backgroundColor: CoresGardien.verdeClaro,
-                  ),
-                );
-                backupViewModel.clearMessages();
-              } else if (backupViewModel.errorMessage != null) {
-                messenger.showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      backupViewModel.errorMessage!,
-                      style: TextStyle(color: CoresGardien.branco),
-                    ),
-                    backgroundColor: CoresGardien.vermelhoClaro,
-                  ),
-                );
-                backupViewModel.clearMessages();
-              }
+              _restaurarBackup(context);
             },
             child: const Text(
               'Restaurar',
@@ -171,7 +182,7 @@ class FuncoesScreen extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           _botaoFuncao(
-            () => _restaurarBackup(context),
+            () => _mostrarDialogoBackup(context),
             Icons.backup_sharp,
             'Restaurar backup',
           ),
