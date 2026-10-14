@@ -72,60 +72,48 @@ class _ProblemaFormScreenState extends State<ProblemaFormScreen> {
           key: _formKey,
           child: Column(
             children: [
-              Padding(
-                padding: EdgeInsets.only(top: 10),
-                child: Column(
-                  children: [
-                    /*
-                    Campo da descrição
-                    */
-                    TextFormField(
-                      controller: _descricaoController,
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'A descrição não pode ser vazia';
-                        }
+              TextFormField(
+                controller: _descricaoController,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'A descrição não pode ser vazia';
+                  }
 
-                        if (value.trim().length < 3) {
-                          return 'Precisa ser maior que 3 caracteres';
-                        }
-                        return null;
-                      },
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Descrição',
-                      ),
-                      minLines: 3,
-                      maxLines: 5,
-                      maxLength: 255,
-                      keyboardType: TextInputType.multiline,
-                    ),
-                    const SizedBox(height: 10),
-
-                    /* 
-                    Botão de Salvar
-                    */
-                    ElevatedButton(
-                      onPressed: viewModel.isLoading ? null : _salvar,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: CoresGardien.verdeClaro,
-                        foregroundColor: CoresGardien.branco,
-                        minimumSize: const Size(double.infinity, 70),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
-                      child: viewModel.isLoading
-                          ? const CircularProgressIndicator(
-                              color: CoresGardien.verdeClaro,
-                            )
-                          : Text(
-                              isEditing ? 'Atualizar' : 'Salvar',
-                              style: TextStyle(fontSize: 18),
-                            ),
-                    ),
-                  ],
+                  if (value.trim().length < 3) {
+                    return 'Precisa ser maior que 3 caracteres';
+                  }
+                  return null;
+                },
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Descrição',
+                  counterText: '',
                 ),
+                minLines: 3,
+                maxLines: 5,
+                maxLength: 255,
+                keyboardType: TextInputType.multiline,
+              ),
+              const SizedBox(height: 20),
+
+              ElevatedButton(
+                onPressed: viewModel.isLoading ? null : _salvar,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: CoresGardien.verdeClaro,
+                  foregroundColor: CoresGardien.branco,
+                  minimumSize: const Size(double.infinity, 70),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                child: viewModel.isLoading
+                    ? const CircularProgressIndicator(
+                        color: CoresGardien.verdeClaro,
+                      )
+                    : Text(
+                        isEditing ? 'Atualizar' : 'Salvar',
+                        style: TextStyle(fontSize: 18),
+                      ),
               ),
             ],
           ),

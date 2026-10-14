@@ -80,85 +80,69 @@ class _UsuarioFormScreenState extends State<UsuarioFormScreen> {
           key: _formKey,
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
+              TextFormField(
+                controller: _nomeController,
+                maxLength: 50,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'O nome é obrigatório';
+                  }
 
-                /*
-                Campo do nome
-                */
-                child: TextFormField(
-                  controller: _nomeController,
-                  maxLength: 50,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'O nome é obrigatório';
-                    }
+                  final nome = value.trim();
 
-                    final nome = value.trim();
+                  if (nome.length > 50) {
+                    return 'O nome só pode ter até 50 caracteres';
+                  }
 
-                    if (nome.length > 50) {
-                      return 'O nome só pode ter até 50 caracteres';
-                    }
+                  if (nome.length < 3) {
+                    return 'O nome precisa ser maior que 3 caracteres';
+                  }
 
-                    if (nome.length < 3) {
-                      return 'O nome precisa ser maior que 3 caracteres';
-                    }
+                  // Permite apenas letras (com ou sem acento), espaços, hífen e apóstrofo.
+                  final regex = RegExp(r"^[a-zA-ZÀ-ÿ\s'-]+$");
+                  if (!regex.hasMatch(nome)) {
+                    return 'Apenas letras e espaços';
+                  }
 
-                    // Permite apenas letras (com ou sem acento), espaços, hífen e apóstrofo.
-                    final regex = RegExp(r"^[a-zA-ZÀ-ÿ\s'-]+$");
-                    if (!regex.hasMatch(nome)) {
-                      return 'Apenas letras e espaços';
-                    }
-
-                    return null;
-                  },
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Nome',
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: SizedBox(
-                  width: double.infinity,
-
-                  /* 
-                  DropdownMenu do cargo
-                  */
-                  child: DropdownMenuFormField<TipoCargo>(
-                    label: const Text('Cargo'),
-                    menuHeight: 200,
-                    validator: (cargo) {
-                      if (cargo == null) {
-                        return 'Selecione um cargo';
-                      }
-                      return null;
-                    },
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    initialSelection: _cargoSelecionado,
-                    dropdownMenuEntries: TipoCargo.values.map((cargo) {
-                      return DropdownMenuEntry(
-                        value: cargo,
-                        label: cargo.nomeCargo,
-                      );
-                    }).toList(),
-                    onSelected: (cargo) {
-                      setState(() => _cargoSelecionado = cargo);
-                    },
-                    onSaved: (cargo) {
-                      _cargoSelecionado = cargo;
-                    },
-                  ),
+                  return null;
+                },
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Nome',
+                  counterText: '',
                 ),
               ),
               const SizedBox(height: 20),
+              DropdownMenuFormField<TipoCargo>(
+                label: const Text('Cargo'),
+                expandedInsets: EdgeInsets.zero,
+                menuHeight: 200,
+                validator: (cargo) {
+                  if (cargo == null) {
+                    return 'Selecione um cargo';
+                  }
+                  return null;
+                },
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                initialSelection: _cargoSelecionado,
+                dropdownMenuEntries: TipoCargo.values.map((cargo) {
+                  return DropdownMenuEntry(
+                    value: cargo,
+                    label: cargo.nomeCargo,
+                  );
+                }).toList(),
+                onSelected: (cargo) {
+                  setState(() => _cargoSelecionado = cargo);
+                },
+                onSaved: (cargo) {
+                  _cargoSelecionado = cargo;
+                },
+              ),
+
+              const SizedBox(height: 20),
+
               SizedBox(
                 width: double.infinity,
-
-                /* 
-                Botão de Salvar
-                */
                 child: ElevatedButton(
                   onPressed: viewModel.isLoading ? null : _salvar,
                   style: ElevatedButton.styleFrom(

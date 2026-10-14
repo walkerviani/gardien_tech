@@ -68,7 +68,11 @@ class _UsuarioListScreenState extends State<UsuarioListScreen> {
             onPressed: () => Navigator.pop(context),
             child: const Text(
               'Cancelar',
-              style: TextStyle(color: CoresGardien.preto),
+              style: TextStyle(
+                color: CoresGardien.preto,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
           TextButton(
@@ -90,7 +94,11 @@ class _UsuarioListScreenState extends State<UsuarioListScreen> {
             },
             child: const Text(
               'Excluir',
-              style: TextStyle(color: CoresGardien.vermelhoClaro),
+              style: TextStyle(
+                color: CoresGardien.vermelhoClaro,
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],

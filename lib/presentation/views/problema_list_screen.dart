@@ -178,7 +178,7 @@ class _ProblemaListScreenState extends State<ProblemaListScreen> {
       verticalOffset: 100,
       margin: EdgeInsets.all(5),
       decoration: BoxDecoration(
-        color: CoresGardien.azulEscuro,
+        color: CoresGardien.cinzaClaro,
         borderRadius: BorderRadius.circular(5),
       ),
       showDuration: const Duration(milliseconds: 3),
