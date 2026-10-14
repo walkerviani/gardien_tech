@@ -298,7 +298,7 @@ class _ImportDispositivoCsvScreenState
   Widget _textoDescricao(String texto) {
     return Text(
       texto,
-      style: TextStyle(fontSize: 18),
+      style: TextStyle(fontSize: 19),
       textAlign: TextAlign.justify,
     );
   }
@@ -323,13 +323,17 @@ class _ImportDispositivoCsvScreenState
                   campo,
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                content: Text(descricao, style: TextStyle(fontSize: 17)),
+                content: Text(descricao, style: TextStyle(fontSize: 18)),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
                     child: const Text(
                       'Entendi',
-                      style: TextStyle(color: CoresGardien.preto),
+                      style: TextStyle(
+                        color: CoresGardien.preto,
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
