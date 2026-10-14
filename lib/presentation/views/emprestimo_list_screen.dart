@@ -35,7 +35,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
     });
   }
 
-  Color _colorStatus(int statusId) {
+  Color _colorStatusEmprestimo(int statusId) {
     switch (statusId) {
       case 1:
         return CoresGardien.statusAtivo;
@@ -94,56 +94,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
       padding: const EdgeInsets.all(12),
       child: Column(
         children: [
-          Container(
-            padding: EdgeInsets.all(5),
-            decoration: BoxDecoration(
-              border: Border.all(color: CoresGardien.branco, width: 2),
-              borderRadius: BorderRadius.circular(5),
-              color: CoresGardien.azulClaro,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Flexible(
-                  child: Text(
-                    'Data Atual:',
-                    style: TextStyle(
-                      color: CoresGardien.branco,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-
-                const SizedBox(width: 10),
-                // Botão da data selecionada
-                Flexible(
-                  child: TextButton.icon(
-                    onPressed: _abrirCalendario,
-                    icon: Icon(
-                      Icons.calendar_month,
-                      color: CoresGardien.branco,
-                      size: 20,
-                    ),
-                    style: TextButton.styleFrom(
-                      side: BorderSide(color: CoresGardien.branco, width: 1),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                    ),
-                    label: Text(
-                      _dataFormatada(_dataController),
-                      style: TextStyle(
-                        color: CoresGardien.branco,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          _containerDataSelecionada(),
 
           const SizedBox(height: 10),
 
@@ -216,8 +167,12 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
               Navigator.pop(context);
             },
             child: const Text(
-              'Selecionar Dia Atual',
-              style: TextStyle(color: CoresGardien.azulClaro),
+              'Hoje',
+              style: TextStyle(
+                color: CoresGardien.azulClaro,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
           TextButton(
@@ -227,9 +182,13 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
               );
               Navigator.pop(context);
             },
-            child: const Text(
-              'Selecionar',
-              style: TextStyle(color: CoresGardien.preto),
+            child: Text(
+              'Confirmar',
+              style: TextStyle(
+                color: CoresGardien.preto,
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],
@@ -239,7 +198,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
 
   Widget _cardEmprestimo(EmprestimoComDetalhesDTO emprestimo) {
     return Card(
-      color: _colorStatus(emprestimo.idStatusEmprestimo),
+      color: _colorStatusEmprestimo(emprestimo.idStatusEmprestimo),
       child: InkWell(
         onTap: () {
           _abrirEmprestimo(emprestimo);
@@ -308,6 +267,59 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
           style: TextStyle(color: CoresGardien.branco, fontSize: 16),
         ),
       ],
+    );
+  }
+
+  Widget _containerDataSelecionada() {
+    return Container(
+      padding: EdgeInsets.all(5),
+      decoration: BoxDecoration(
+        border: Border.all(color: CoresGardien.branco, width: 2),
+        borderRadius: BorderRadius.circular(5),
+        color: CoresGardien.azulClaro,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Flexible(
+            child: Text(
+              'Data Atual:',
+              style: TextStyle(
+                color: CoresGardien.branco,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+
+          const SizedBox(width: 10),
+          // Botão da data selecionada
+          Flexible(
+            child: TextButton.icon(
+              onPressed: _abrirCalendario,
+              icon: Icon(
+                Icons.calendar_month,
+                color: CoresGardien.branco,
+                size: 20,
+              ),
+              style: TextButton.styleFrom(
+                side: BorderSide(color: CoresGardien.branco, width: 1),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              ),
+              label: Text(
+                _dataFormatada(_dataController),
+                style: TextStyle(
+                  color: CoresGardien.branco,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
