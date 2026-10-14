@@ -11,6 +11,214 @@ import 'package:provider/provider.dart';
 class RelatoriosScreen extends StatelessWidget {
   const RelatoriosScreen({super.key});
 
+  Future<void> _carregarRelatorioDispositivos(
+    RelatoriosViewmodel viewmodel,
+    BuildContext context,
+  ) async {
+    final bytes = await viewmodel.gerarRelatorioDispositivos();
+
+    if (!context.mounted) return;
+
+    if (bytes == null) {
+      final messenger = ScaffoldMessenger.of(context);
+      messenger.clearSnackBars();
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            viewmodel.errorMessage ?? 'Não foi possível gerar o PDF',
+          ),
+          backgroundColor: CoresGardien.vermelhoClaro,
+        ),
+      );
+      return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => VisualizarPdfScreen(
+          'Dispositivos cadastrados',
+          (format) async => bytes,
+          'relatorio_dispositivos',
+        ),
+      ),
+    );
+  }
+
+  Future<void> _carregarRelatorioProblemas(
+    RelatoriosViewmodel viewmodel,
+    BuildContext context,
+  ) async {
+    final bytes = await viewmodel.gerarRelatorioProblemas();
+
+    if (!context.mounted) return;
+
+    if (bytes == null) {
+      final messenger = ScaffoldMessenger.of(context);
+      messenger.clearSnackBars();
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            viewmodel.errorMessage ?? 'Não foi possível gerar o PDF',
+          ),
+          backgroundColor: CoresGardien.vermelhoClaro,
+        ),
+      );
+      return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => VisualizarPdfScreen(
+          'Problemas relatados',
+          (format) async => bytes,
+          'relatorio_problemas',
+        ),
+      ),
+    );
+  }
+
+  Future<Usuario?> _buscarUsuario(BuildContext context) async {
+    final usuario = await Navigator.push<Usuario>(
+      context,
+      MaterialPageRoute(builder: (_) => SelecionarUsuarioScreen()),
+    );
+    return usuario;
+  }
+
+  Future<void> _carregarRelatorioUsuario(
+    RelatoriosViewmodel viewmodel,
+    BuildContext context,
+  ) async {
+    final usuario = await _buscarUsuario(context);
+
+    if (usuario == null) return;
+
+    final bytes = await viewmodel.gerarRelatorioEmpUsuario(usuario);
+    if (!context.mounted) return;
+    if (bytes == null) {
+      final messenger = ScaffoldMessenger.of(context);
+      messenger.clearSnackBars();
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            viewmodel.errorMessage ?? 'Não foi possível gerar o PDF',
+          ),
+          backgroundColor: CoresGardien.vermelhoClaro,
+        ),
+      );
+      return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => VisualizarPdfScreen(
+          'Empréstimos ${usuario.nome}',
+          (format) async => bytes,
+          'relatorio_emprestimos_${usuario.nome}',
+        ),
+      ),
+    );
+  }
+
+  Future<void> _carregarRelatorioData(
+    RelatoriosViewmodel viewmodel,
+    BuildContext context,
+  ) async {
+    DateTime? dataSelecionada = await _exibirSeletorData(context);
+
+    if (dataSelecionada == null) return;
+
+    String dataFormatada = DateFormat('dd/MM/yyyy').format(dataSelecionada);
+
+    final bytes = await viewmodel.gerarRelatorioEmpDia(dataSelecionada);
+
+    if (!context.mounted) return;
+
+    if (bytes == null) {
+      final messenger = ScaffoldMessenger.of(context);
+      messenger.clearSnackBars();
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            viewmodel.errorMessage ?? 'Não foi possível gerar o PDF',
+          ),
+          backgroundColor: CoresGardien.vermelhoClaro,
+        ),
+      );
+      return;
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => VisualizarPdfScreen(
+          'Empréstimos por data',
+          (format) async => bytes,
+          'relatorio_emprestimos_$dataFormatada',
+        ),
+      ),
+    );
+  }
+
+  Future<DateTime?> _exibirSeletorData(BuildContext context) async {
+    DateTime dataSelecionada = DateTime.now();
+
+    return await showDialog<DateTime>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text('Selecione a data'),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        backgroundColor: CoresGardien.branco,
+        content: Container(
+          height: 250,
+          width: 300,
+          color: CoresGardien.branco,
+          child: CupertinoDatePicker(
+            // Calendário
+            initialDateTime: dataSelecionada,
+            mode: CupertinoDatePickerMode.date,
+            dateOrder: DatePickerDateOrder.dmy,
+            onDateTimeChanged: (novaData) {
+              dataSelecionada = novaData;
+            },
+            backgroundColor: CoresGardien.branco,
+            minimumYear: DateTime.now().year - 3,
+            maximumYear: DateTime.now().year,
+          ),
+        ),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text(
+              'Cancelar',
+              style: TextStyle(
+                color: CoresGardien.preto,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(dialogContext, dataSelecionada);
+            },
+            child: Text(
+              'Selecionar',
+              style: TextStyle(
+                color: CoresGardien.azulClaro,
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final viewmodel = context.watch<RelatoriosViewmodel>();
@@ -25,248 +233,57 @@ class RelatoriosScreen extends StatelessWidget {
         padding: EdgeInsets.all(12),
         child: Column(
           children: [
-            ElevatedButton(
-              onPressed: () {
-                DateTime dataSelecionada = DateTime.now();
-                String dataFormatada = DateFormat(
-                  'dd/MM/yyyy',
-                ).format(dataSelecionada);
-
-                showDialog(
-                  context: context,
-                  builder: (dialogContext) => AlertDialog(
-                    title: Text('Selecione a data'),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    backgroundColor: CoresGardien.branco,
-                    content: Container(
-                      height: 250,
-                      width: 300,
-                      color: CoresGardien.branco,
-                      child: CupertinoDatePicker(
-                        // Calendário
-                        initialDateTime: dataSelecionada,
-                        mode: CupertinoDatePickerMode.date,
-                        dateOrder: DatePickerDateOrder.dmy,
-                        onDateTimeChanged: (novaData) {
-                          dataSelecionada = novaData;
-                        },
-                        backgroundColor: CoresGardien.branco,
-                        minimumYear: DateTime.now().year - 3,
-                        maximumYear: DateTime.now().year,
-                      ),
-                    ),
-                    actionsAlignment: MainAxisAlignment.center,
-                    actions: [
-                      TextButton(
-                        onPressed: () async {
-                          Navigator.pop(dialogContext);
-                          final bytes = await viewmodel.gerarRelatorioEmpDia(
-                            dataSelecionada,
-                          );
-
-                          if (!context.mounted) return;
-
-                          if (bytes == null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  viewmodel.errorMessage ??
-                                      'Não foi possível gerar o PDF',
-                                ),
-                                backgroundColor: CoresGardien.vermelhoClaro,
-                              ),
-                            );
-                            return;
-                          }
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => VisualizarPdfScreen(
-                                'Empréstimos por data',
-                                (format) async => bytes,
-                                'relatorio_emprestimos_$dataFormatada',
-                              ),
-                            ),
-                          );
-                        },
-                        child: Text(
-                          'Selecionar',
-                          style: TextStyle(color: CoresGardien.preto),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: CoresGardien.azulEscuro,
-                foregroundColor: CoresGardien.branco,
-                minimumSize: const Size(double.infinity, 70),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
-                ),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.calendar_month_outlined, size: 30),
-                  SizedBox(width: 20),
-                  Text('Empréstimos por data', style: TextStyle(fontSize: 18)),
-                ],
-              ),
+            _botaoFuncao(
+              () => _carregarRelatorioData(viewmodel, context),
+              Icons.calendar_month_outlined,
+              'Empréstimos por data',
             ),
+
             const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () async {
-                final usuario = await Navigator.push<Usuario>(
-                  context,
-                  MaterialPageRoute(builder: (_) => SelecionarUsuarioScreen()),
-                );
-                if (usuario == null) return;
 
-                final bytes = await viewmodel.gerarRelatorioEmpUsuario(usuario);
-                if (!context.mounted) return;
-                if (bytes == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        viewmodel.errorMessage ??
-                            'Não foi possível gerar o PDF',
-                      ),
-                      backgroundColor: CoresGardien.vermelhoClaro,
-                    ),
-                  );
-                  return;
-                }
-
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => VisualizarPdfScreen(
-                      'Empréstimos ${usuario.nome}',
-                      (format) async => bytes,
-                      'relatorio_emprestimos_${usuario.nome}',
-                    ),
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: CoresGardien.azulEscuro,
-                foregroundColor: CoresGardien.branco,
-                minimumSize: const Size(double.infinity, 70),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
-                ),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.content_paste_search_outlined, size: 30),
-                  SizedBox(width: 20),
-                  Text(
-                    'Empréstimos por usuário',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ],
-              ),
+            _botaoFuncao(
+              () => _carregarRelatorioUsuario(viewmodel, context),
+              Icons.content_paste_search_outlined,
+              'Empréstimos por usuário',
             ),
+
             const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () async {
-                final bytes = await viewmodel.gerarRelatorioProblemas();
 
-                if (!context.mounted) return;
-
-                if (bytes == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        viewmodel.errorMessage ??
-                            'Não foi possível gerar o PDF',
-                      ),
-                      backgroundColor: CoresGardien.vermelhoClaro,
-                    ),
-                  );
-                  return;
-                }
-
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => VisualizarPdfScreen(
-                      'Problemas relatados',
-                      (format) async => bytes,
-                      'relatorio_problemas',
-                    ),
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: CoresGardien.azulEscuro,
-                foregroundColor: CoresGardien.branco,
-                minimumSize: const Size(double.infinity, 70),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
-                ),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.report_problem_outlined, size: 30),
-                  SizedBox(width: 20),
-                  Text('Problemas relatados', style: TextStyle(fontSize: 18)),
-                ],
-              ),
+            _botaoFuncao(
+              () => _carregarRelatorioProblemas(viewmodel, context),
+              Icons.report_problem_outlined,
+              'Problemas relatados',
             ),
+
             const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () async {
-                final bytes = await viewmodel.gerarRelatorioDispositivos();
 
-                if (!context.mounted) return;
-
-                if (bytes == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        viewmodel.errorMessage ??
-                            'Não foi possível gerar o PDF',
-                      ),
-                      backgroundColor: CoresGardien.vermelhoClaro,
-                    ),
-                  );
-                  return;
-                }
-
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => VisualizarPdfScreen(
-                      'Dispositivos cadastrados',
-                      (format) async => bytes,
-                      'relatorio_dispositivos',
-                    ),
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: CoresGardien.azulEscuro,
-                foregroundColor: CoresGardien.branco,
-                minimumSize: const Size(double.infinity, 70),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
-                ),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.devices_rounded, size: 30),
-                  SizedBox(width: 20),
-                  Text(
-                    'Dispositivos cadastrados',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ],
-              ),
+            _botaoFuncao(
+              () => _carregarRelatorioDispositivos(viewmodel, context),
+              Icons.devices_rounded,
+              'Dispositivos cadastrados',
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _botaoFuncao(VoidCallback funcao, IconData icone, String descricao) {
+    return ElevatedButton(
+      onPressed: funcao,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: CoresGardien.azulEscuro,
+        foregroundColor: CoresGardien.branco,
+        minimumSize: const Size(double.infinity, 70),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+      ),
+      child: Padding(
+        padding: EdgeInsetsGeometry.all(5),
+        child: Row(
+          children: [
+            Icon(icone, size: 30),
+            SizedBox(width: 20),
+            Expanded(child: Text(descricao, style: TextStyle(fontSize: 18))),
           ],
         ),
       ),
