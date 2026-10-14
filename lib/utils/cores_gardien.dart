@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class CoresGardien {
   // Cores app
+  static const azulMuitoClaro = Color(0xFF97D0FE);
   static const azulClaro = Color(0xFF2196F3);
   static const azulEscuro = Color(0xFF006dc4);
   static const ciano = Color(0xFF00bcd4);
