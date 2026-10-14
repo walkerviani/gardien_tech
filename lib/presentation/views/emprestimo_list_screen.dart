@@ -94,37 +94,55 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
       padding: const EdgeInsets.all(12),
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Data de visualização atual: ',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-
-              const SizedBox(width: 10),
-
-              // Botão da data selecionada
-              TextButton(
-                onPressed: () {
-                  _abrirCalendario();
-                },
-                style: TextButton.styleFrom(
-                  backgroundColor: CoresGardien.azulClaro,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+          Container(
+            padding: EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              border: Border.all(color: CoresGardien.branco, width: 2),
+              borderRadius: BorderRadius.circular(5),
+              color: CoresGardien.azulClaro,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(
+                  child: Text(
+                    'Data Atual:',
+                    style: TextStyle(
+                      color: CoresGardien.branco,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-                child: Text(
-                  _dataFormatada(_dataController),
-                  style: TextStyle(
-                    color: CoresGardien.branco,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+
+                const SizedBox(width: 10),
+                // Botão da data selecionada
+                Flexible(
+                  child: TextButton.icon(
+                    onPressed: _abrirCalendario,
+                    icon: Icon(
+                      Icons.calendar_month,
+                      color: CoresGardien.branco,
+                      size: 20,
+                    ),
+                    style: TextButton.styleFrom(
+                      side: BorderSide(color: CoresGardien.branco, width: 1),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                    label: Text(
+                      _dataFormatada(_dataController),
+                      style: TextStyle(
+                        color: CoresGardien.branco,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
 
           const SizedBox(height: 10),
