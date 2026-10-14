@@ -48,7 +48,9 @@ class _ProblemaFormScreenState extends State<ProblemaFormScreen> {
     if (sucesso) {
       Navigator.pop(context);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
+      final messenger = ScaffoldMessenger.of(context);
+      messenger.clearSnackBars();
+      messenger.showSnackBar(
         SnackBar(
           content: Text(viewModel.errorMessage ?? 'Erro desconhecido'),
           backgroundColor: CoresGardien.vermelhoClaro,
@@ -94,6 +96,7 @@ class _ProblemaFormScreenState extends State<ProblemaFormScreen> {
                 maxLength: 255,
                 keyboardType: TextInputType.multiline,
               ),
+
               const SizedBox(height: 20),
 
               ElevatedButton(

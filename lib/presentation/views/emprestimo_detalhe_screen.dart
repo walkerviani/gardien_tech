@@ -51,6 +51,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
 
   Future<void> _excluirItemEmprestimo(int idEmprestimoDispositivo) async {
     final viewmodel = context.read<EmprestimoDetalheViewmodel>();
+    final messenger = ScaffoldMessenger.of(context);
 
     viewmodel
         .resetState(); // Reseta o estado na memória e garante isLoading = true do viewmodel
@@ -84,7 +85,8 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
       if (!mounted) return;
 
       if (excluido) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        messenger.clearSnackBars();
+        messenger.showSnackBar(
           const SnackBar(
             content: Text('Empréstimo sem itens removido.'),
             backgroundColor: CoresGardien.cinzaClaro,
@@ -96,7 +98,8 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
       }
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
+    messenger.clearSnackBars();
+    messenger.showSnackBar(
       const SnackBar(
         content: Text('Item removido com sucesso'),
         backgroundColor: CoresGardien.cinzaClaro,
@@ -146,9 +149,10 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
     final sucesso = await viewmodel.excluirEmprestimo(widget.idEmprestimo);
 
     if (!context.mounted) return;
-
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.clearSnackBars();
     if (sucesso) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         const SnackBar(
           content: Text('Empréstimo excluído com sucesso'),
           backgroundColor: CoresGardien.cinzaClaro,
@@ -156,7 +160,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
       );
       Navigator.pop(context, true);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         SnackBar(
           content: Text(
             viewmodel.errorMessage ?? 'Erro ao excluir o empréstimo',
@@ -175,7 +179,9 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
     if (!context.mounted) return;
 
     if (!sucesso) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      final messenger = ScaffoldMessenger.of(context);
+      messenger.clearSnackBars();
+      messenger.showSnackBar(
         SnackBar(
           content: Text(
             viewmodel.errorMessage ??
@@ -232,7 +238,9 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
     );
     if (!context.mounted) return;
     if (!sucesso) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      final messenger = ScaffoldMessenger.of(context);
+      messenger.clearSnackBars();
+      messenger.showSnackBar(
         SnackBar(
           content: Text(
             viewmodel.errorMessage ??
@@ -351,8 +359,11 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                                     );
 
                                     if (!context.mounted) return;
-
-                                    ScaffoldMessenger.of(context).showSnackBar(
+                                    final messenger = ScaffoldMessenger.of(
+                                      context,
+                                    );
+                                    messenger.clearSnackBars();
+                                    messenger.showSnackBar(
                                       const SnackBar(
                                         content: Text(
                                           'Todos os dispositivos foram marcados como devolvidos.',
@@ -392,11 +403,12 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                                         .desmarcarTodos(widget.idEmprestimo);
 
                                     if (!context.mounted) return;
-
+                                    final messenger = ScaffoldMessenger.of(
+                                      context,
+                                    );
+                                    messenger.clearSnackBars();
                                     if (sucesso) {
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
+                                      messenger.showSnackBar(
                                         const SnackBar(
                                           content: Text(
                                             'Todos os dispositivos foram marcados como em uso.',
@@ -406,9 +418,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                                         ),
                                       );
                                     } else {
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
+                                      messenger.showSnackBar(
                                         SnackBar(
                                           content: Text(
                                             viewmodel.errorMessage ??
@@ -805,7 +815,9 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
 
                       // Bloqueia tentar desmarcar se está em outro empréstimo
                       if (!value && dispositivo.idStatus == 3) {
-                        ScaffoldMessenger.of(context).showSnackBar(
+                        final messenger = ScaffoldMessenger.of(context);
+                        messenger.clearSnackBars();
+                        messenger.showSnackBar(
                           SnackBar(
                             content: Text(
                               'Este dispositivo está sendo usado em outro empréstimo.',
@@ -829,6 +841,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
 
                       if (!mounted) return;
 
+                      messenger.clearSnackBars();
                       if (sucesso) {
                         // Recarrega a lista para refletir alterações
                         await viewmodel.carregarDispositivosDoEmprestimo(

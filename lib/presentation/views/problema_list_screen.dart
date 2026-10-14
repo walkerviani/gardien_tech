@@ -55,7 +55,11 @@ class _ProblemaListScreenState extends State<ProblemaListScreen> {
             onPressed: () => Navigator.pop(context),
             child: const Text(
               'Cancelar',
-              style: TextStyle(color: CoresGardien.preto),
+              style: TextStyle(
+                color: CoresGardien.preto,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
           TextButton(
@@ -67,7 +71,9 @@ class _ProblemaListScreenState extends State<ProblemaListScreen> {
               if (sucesso) {
                 viewmodel.carregarDispositivosComProblemas();
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(
+                final messenger = ScaffoldMessenger.of(context);
+                messenger.clearSnackBars();
+                messenger.showSnackBar(
                   SnackBar(
                     content: Text(viewmodel.errorMessage ?? 'Erro ao excluir'),
                   ),
@@ -76,7 +82,11 @@ class _ProblemaListScreenState extends State<ProblemaListScreen> {
             },
             child: const Text(
               'Excluir',
-              style: TextStyle(color: CoresGardien.vermelhoClaro),
+              style: TextStyle(
+                color: CoresGardien.vermelhoClaro,
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],
@@ -96,7 +106,6 @@ class _ProblemaListScreenState extends State<ProblemaListScreen> {
         padding: EdgeInsets.all(12),
         child: Column(
           children: [
-            // Informações do dispositivo selecionado
             Consumer<ProblemaListViewmodel>(
               builder: (context, viewmodel, child) {
                 if (viewmodel.problemasAtivos.isEmpty) {
@@ -128,6 +137,7 @@ class _ProblemaListScreenState extends State<ProblemaListScreen> {
                     itemCount: viewModel.problemasAtivos.length,
                     itemBuilder: (context, index) {
                       final problemasAtivos = viewModel.problemasAtivos[index];
+
                       return _cardProblema(problemasAtivos, index);
                     },
                   );

@@ -245,6 +245,7 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: DropdownMenuFormField<TipoDispositivo>(
+                        expandedInsets: EdgeInsets.zero,
                         label: const Text('Tipo de dispositivo'),
                         menuHeight: 200,
                         dropdownMenuEntries: TipoDispositivo.values
@@ -295,7 +296,7 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
                                 viewModel.itensQuantidade[index].quantidade,
                             decoration: const InputDecoration(
                               border: OutlineInputBorder(),
-                              labelText: "Informe a quantidade",
+                              labelText: "Quantidade",
                             ),
                             textAlign: TextAlign.center,
                             keyboardType: TextInputType.number,
@@ -498,9 +499,10 @@ class _EmprestimoFormScreenState extends State<EmprestimoFormScreen> {
   }
 
   void exibirErros(List<String> erros) {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.hideCurrentSnackBar();
 
-    ScaffoldMessenger.of(context).showSnackBar(
+    messenger.showSnackBar(
       SnackBar(
         content: Column(
           mainAxisSize: MainAxisSize.min,

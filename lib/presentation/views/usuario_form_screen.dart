@@ -56,7 +56,9 @@ class _UsuarioFormScreenState extends State<UsuarioFormScreen> {
     if (sucesso) {
       Navigator.pop(context);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
+      final messenger = ScaffoldMessenger.of(context);
+      messenger.clearSnackBars();
+      messenger.showSnackBar(
         SnackBar(
           content: Text(viewModel.errorMessage ?? 'Erro desconhecido'),
           backgroundColor: CoresGardien.vermelhoClaro,
@@ -141,27 +143,24 @@ class _UsuarioFormScreenState extends State<UsuarioFormScreen> {
 
               const SizedBox(height: 20),
 
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: viewModel.isLoading ? null : _salvar,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: CoresGardien.verdeClaro,
-                    foregroundColor: CoresGardien.branco,
-                    minimumSize: const Size(double.infinity, 70),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
-                    ),
+              ElevatedButton(
+                onPressed: viewModel.isLoading ? null : _salvar,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: CoresGardien.verdeClaro,
+                  foregroundColor: CoresGardien.branco,
+                  minimumSize: const Size(double.infinity, 70),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
                   ),
-                  child: viewModel.isLoading
-                      ? const CircularProgressIndicator(
-                          color: CoresGardien.verdeClaro,
-                        )
-                      : Text(
-                          isEditing ? 'Atualizar' : 'Salvar',
-                          style: TextStyle(fontSize: 18),
-                        ),
                 ),
+                child: viewModel.isLoading
+                    ? const CircularProgressIndicator(
+                        color: CoresGardien.verdeClaro,
+                      )
+                    : Text(
+                        isEditing ? 'Atualizar' : 'Salvar',
+                        style: TextStyle(fontSize: 18),
+                      ),
               ),
             ],
           ),

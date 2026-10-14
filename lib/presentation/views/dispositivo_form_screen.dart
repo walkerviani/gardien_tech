@@ -64,7 +64,9 @@ class _DispositivoFormScreenState extends State<DispositivoFormScreen> {
     if (sucesso) {
       Navigator.pop(context);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
+      final messenger = ScaffoldMessenger.of(context);
+      messenger.clearSnackBars();
+      messenger.showSnackBar(
         SnackBar(
           content: Text(viewModel.errorMessage ?? 'Erro desconhecido'),
           backgroundColor: CoresGardien.vermelhoClaro,

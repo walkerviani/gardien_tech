@@ -17,7 +17,11 @@ class ImportDispositivoCsvScreen extends StatefulWidget {
 class _ImportDispositivoCsvScreenState
     extends State<ImportDispositivoCsvScreen> {
   Future<void> _salvarModeloCsv() async {
+    final messenger = ScaffoldMessenger.of(context);
+
     try {
+      final messenger = ScaffoldMessenger.of(context);
+      messenger.clearSnackBars();
       final data = await rootBundle.load(
         'assets/file/modelo_importacao_dispositivos.xlsx',
       );
@@ -33,8 +37,10 @@ class _ImportDispositivoCsvScreenState
       );
 
       if (!mounted) return;
+
+      messenger.clearSnackBars();
       if (resultado != null && resultado.isSuccess) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        messenger.showSnackBar(
           const SnackBar(
             content: Text('Arquivo modelo salvo com sucesso'),
             backgroundColor: CoresGardien.verdeClaro,
@@ -43,7 +49,9 @@ class _ImportDispositivoCsvScreenState
       }
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
+
+      messenger.clearSnackBars();
+      messenger.showSnackBar(
         SnackBar(
           content: Text('Erro ao salvar o arquivo'),
           backgroundColor: CoresGardien.vermelhoClaro,
@@ -65,9 +73,11 @@ class _ImportDispositivoCsvScreenState
     bool sucesso = await viewmodel.importarDispositivosCsv(arquivo);
 
     if (!mounted) return;
+    final messenger = ScaffoldMessenger.of(context);
 
     // Falha total (arquivo inválido, nenhum dispositivo salvo etc.)
     if (!sucesso) {
+      messenger.clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -84,6 +94,7 @@ class _ImportDispositivoCsvScreenState
     }
     // Sucesso sem nenhum erro
     if (viewmodel.erros.isEmpty) {
+      messenger.clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('${viewmodel.sucessos} dispositivos importados'),

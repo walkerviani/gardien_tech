@@ -72,7 +72,11 @@ class _DispositivoListScreenState extends State<DispositivoListScreen> {
             onPressed: () => Navigator.pop(context),
             child: const Text(
               'Cancelar',
-              style: TextStyle(color: CoresGardien.preto),
+              style: TextStyle(
+                color: CoresGardien.preto,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
           TextButton(
@@ -84,7 +88,9 @@ class _DispositivoListScreenState extends State<DispositivoListScreen> {
               if (sucesso) {
                 viewModel.carregarDispositivos();
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(
+                final messenger = ScaffoldMessenger.of(context);
+                messenger.clearSnackBars();
+                messenger.showSnackBar(
                   SnackBar(
                     content: Text(viewModel.errorMessage ?? 'Erro ao excluir'),
                     backgroundColor: CoresGardien.vermelhoClaro,
@@ -94,7 +100,11 @@ class _DispositivoListScreenState extends State<DispositivoListScreen> {
             },
             child: const Text(
               'Excluir',
-              style: TextStyle(color: CoresGardien.vermelhoClaro),
+              style: TextStyle(
+                color: CoresGardien.vermelhoClaro,
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],
@@ -114,9 +124,6 @@ class _DispositivoListScreenState extends State<DispositivoListScreen> {
         padding: const EdgeInsets.all(12),
         child: Column(
           children: [
-            /*
-            Botão de criar novo dispositivo
-            */
             ElevatedButton(
               onPressed: () => _abrirFormulario(),
               style: ElevatedButton.styleFrom(
@@ -127,21 +134,24 @@ class _DispositivoListScreenState extends State<DispositivoListScreen> {
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
-              child: Row(
-                children: [
-                  Icon(Icons.add_to_queue, size: 30),
-                  SizedBox(width: 20),
-                  Text(
-                    'Adicionar novo dispositivo',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ],
+              child: Padding(
+                padding: EdgeInsetsGeometry.all(5),
+                child: Row(
+                  children: [
+                    Icon(Icons.add_to_queue, size: 30),
+                    SizedBox(width: 20),
+                    Expanded(
+                      child: Text(
+                        'Adicionar novo dispositivo',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 12),
-            /*
-            Campo de pesquisa de dispositivo
-            */
+
             ValueListenableBuilder<TextEditingValue>(
               valueListenable: _searchController,
               builder: (context, value, child) {
@@ -176,7 +186,7 @@ class _DispositivoListScreenState extends State<DispositivoListScreen> {
               },
             ),
             const SizedBox(height: 12),
-            // Espaço onde aparece os dispositivos criados
+
             Expanded(
               child: Consumer<DispositivoListViewmodel>(
                 builder: (context, viewModel, child) {
@@ -196,6 +206,7 @@ class _DispositivoListScreenState extends State<DispositivoListScreen> {
                     itemCount: viewModel.dispositivos.length,
                     itemBuilder: (context, index) {
                       final dispositivo = viewModel.dispositivos[index];
+
                       return _cardDispositivo(dispositivo);
                     },
                   );

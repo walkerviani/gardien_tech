@@ -67,7 +67,11 @@ class _DispositivoProblemaListScreenState
             onPressed: () => Navigator.pop(context),
             child: const Text(
               'Cancelar',
-              style: TextStyle(color: CoresGardien.preto),
+              style: TextStyle(
+                color: CoresGardien.preto,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
           TextButton(
@@ -80,7 +84,9 @@ class _DispositivoProblemaListScreenState
               if (sucesso) {
                 viewmodel.carregarProblemasPorDisp(widget.idDispositivo);
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(
+                final messenger = ScaffoldMessenger.of(context);
+                messenger.clearSnackBars();
+                messenger.showSnackBar(
                   SnackBar(
                     content: Text(viewmodel.errorMessage ?? 'Erro ao excluir'),
                   ),
@@ -89,7 +95,11 @@ class _DispositivoProblemaListScreenState
             },
             child: const Text(
               'Excluir',
-              style: TextStyle(color: CoresGardien.vermelhoClaro),
+              style: TextStyle(
+                color: CoresGardien.vermelhoClaro,
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],
@@ -109,45 +119,10 @@ class _DispositivoProblemaListScreenState
         padding: const EdgeInsets.all(12),
         child: Column(
           children: [
-            /*
-            Informações do dispositivo selecionado
-            */
-            Container(
-              padding: EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                border: Border.all(color: CoresGardien.preto),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: Text.rich(
-                  TextSpan(
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: 'Dispositivo atual \n',
-                        style: TextStyle(
-                          fontWeight: FontWeight(900),
-                          fontSize: 15,
-                        ),
-                      ),
-                      TextSpan(
-                        text: 'N° Série: ${widget.numSerie} \n',
-                        style: TextStyle(fontSize: 15),
-                      ),
-                      TextSpan(
-                        text: 'N° Patrimônio: ${widget.numPatrimonio}',
-                        style: TextStyle(fontSize: 15),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            _infoDispositivo(),
+
             const SizedBox(height: 10),
 
-            /*
-            Botão de relatar novo problema
-            */
             ElevatedButton(
               onPressed: () => _abrirFormulario(),
               style: ElevatedButton.styleFrom(
@@ -166,11 +141,9 @@ class _DispositivoProblemaListScreenState
                 ],
               ),
             ),
+
             const SizedBox(height: 12),
 
-            /*
-            Espaço dos problemas salvos
-            */
             Expanded(
               child: Consumer<DispositivoProblemaListViewmodel>(
                 builder: (context, viewModel, child) {
@@ -191,46 +164,73 @@ class _DispositivoProblemaListScreenState
                     itemBuilder: (context, index) {
                       final problema = viewModel.problemas[index];
 
-                      /* 
-                      Card de cada problema
-                      */
-
-                      return Card(
-                        key: ValueKey(problema.id),
-                        child: Padding(
-                          padding: EdgeInsets.all(12),
-                          child: ListTile(
-                            title: Text(
-                              '${index + 1}',
-                              style: TextStyle(
-                                fontWeight: FontWeight(900),
-                                fontSize: 18,
-                              ),
-                            ),
-                            subtitle: Text(problema.descricao),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  onPressed: () =>
-                                      _abrirFormulario(problema: problema),
-                                  icon: const Icon(Icons.edit),
-                                ),
-                                IconButton(
-                                  onPressed: () => _confirmarExcluir(problema),
-                                  icon: const Icon(Icons.delete),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
+                      return _cardProblema(problema, index);
                     },
                   );
                 },
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _infoDispositivo() {
+    return Container(
+      padding: EdgeInsets.all(5),
+      decoration: BoxDecoration(
+        border: Border.all(color: CoresGardien.preto),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: Text.rich(
+          TextSpan(
+            children: <TextSpan>[
+              TextSpan(
+                text: 'Dispositivo atual \n',
+                style: TextStyle(fontWeight: FontWeight(900), fontSize: 15),
+              ),
+              TextSpan(
+                text: 'N° Série: ${widget.numSerie} \n',
+                style: TextStyle(fontSize: 15),
+              ),
+              TextSpan(
+                text: 'N° Patrimônio: ${widget.numPatrimonio}',
+                style: TextStyle(fontSize: 15),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _cardProblema(Problema problema, int index) {
+    return Card(
+      key: ValueKey(problema.id),
+      child: Padding(
+        padding: EdgeInsets.all(12),
+        child: ListTile(
+          title: Text(
+            '${index + 1}',
+            style: TextStyle(fontWeight: FontWeight(900), fontSize: 18),
+          ),
+          subtitle: Text(problema.descricao),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                onPressed: () => _abrirFormulario(problema: problema),
+                icon: const Icon(Icons.edit),
+              ),
+              IconButton(
+                onPressed: () => _confirmarExcluir(problema),
+                icon: const Icon(Icons.delete),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -84,6 +84,8 @@ class _UsuarioListScreenState extends State<UsuarioListScreen> {
               if (sucesso) {
                 viewModel.carregarUsuarios();
               } else {
+                final messenger = ScaffoldMessenger.of(context);
+                messenger.clearSnackBars();
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(viewModel.errorMessage ?? 'Erro ao excluir'),
@@ -128,21 +130,25 @@ class _UsuarioListScreenState extends State<UsuarioListScreen> {
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
-              child: Row(
-                children: [
-                  Icon(Icons.person_add, size: 30),
-                  SizedBox(width: 20),
-                  Text(
-                    'Adicionar novo usuário',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ],
+              child: Padding(
+                padding: EdgeInsetsGeometry.all(5),
+                child: Row(
+                  children: [
+                    Icon(Icons.person_add, size: 30),
+                    SizedBox(width: 20),
+                    Expanded(
+                      child: Text(
+                        'Adicionar novo usuário',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
+
             const SizedBox(height: 12),
-            /*
-            Campo de pesquisa de usuário
-            */
+
             ValueListenableBuilder<TextEditingValue>(
               valueListenable: _searchController,
               builder: (context, value, child) {
@@ -176,7 +182,9 @@ class _UsuarioListScreenState extends State<UsuarioListScreen> {
                 );
               },
             ),
+
             const SizedBox(height: 12),
+
             Expanded(
               child: Consumer<UsuarioListViewmodel>(
                 builder: (context, viewModel, child) {
@@ -196,40 +204,45 @@ class _UsuarioListScreenState extends State<UsuarioListScreen> {
                     itemCount: viewModel.usuarios.length,
                     itemBuilder: (context, index) {
                       final usuario = viewModel.usuarios[index];
-                      final usuarioCargo =
-                          TipoCargo.values
-                              .where((cargo) => cargo.id == usuario.idTipoCargo)
-                              .firstOrNull
-                              ?.nomeCargo ??
-                          'Cargo não encontrado';
-                      return Card(
-                        key: ValueKey(usuario.id),
-                        child: ListTile(
-                          title: Text(
-                            usuario.nome,
-                            style: TextStyle(fontWeight: FontWeight(600)),
-                          ),
-                          subtitle: Text(usuarioCargo),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                onPressed: () =>
-                                    _abrirFormulario(usuario: usuario),
-                                icon: const Icon(Icons.edit),
-                              ),
-                              IconButton(
-                                onPressed: () => _confirmarExcluir(usuario),
-                                icon: const Icon(Icons.delete),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
+
+                      return _cardUsuario(usuario);
                     },
                   );
                 },
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _cardUsuario(Usuario usuario) {
+    final usuarioCargo =
+        TipoCargo.values
+            .where((cargo) => cargo.id == usuario.idTipoCargo)
+            .firstOrNull
+            ?.nomeCargo ??
+        'Cargo não encontrado';
+
+    return Card(
+      key: ValueKey(usuario.id),
+      child: ListTile(
+        title: Text(
+          usuario.nome,
+          style: TextStyle(fontWeight: FontWeight(600)),
+        ),
+        subtitle: Text(usuarioCargo),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              onPressed: () => _abrirFormulario(usuario: usuario),
+              icon: const Icon(Icons.edit),
+            ),
+            IconButton(
+              onPressed: () => _confirmarExcluir(usuario),
+              icon: const Icon(Icons.delete),
             ),
           ],
         ),
