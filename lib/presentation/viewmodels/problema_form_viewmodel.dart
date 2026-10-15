@@ -25,7 +25,7 @@ class ProblemaFormViewmodel extends ChangeNotifier {
     }
 
     if (descricao.trim().length < 3) {
-      errorMessage = 'Precisa ser maior que 3 caracteres';
+      errorMessage = 'Precisa ter no mínimo 3 caracteres';
       return false;
     }
 

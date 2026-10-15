@@ -82,7 +82,7 @@ class _ProblemaFormScreenState extends State<ProblemaFormScreen> {
                   }
 
                   if (value.trim().length < 3) {
-                    return 'Precisa ser maior que 3 caracteres';
+                    return 'Precisa ter no mínimo 3 caracteres';
                   }
                   return null;
                 },

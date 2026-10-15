@@ -102,11 +102,11 @@ class _DispositivoFormScreenState extends State<DispositivoFormScreen> {
                     final numSerie = value.trim();
 
                     if (numSerie.length > 50) {
-                      return 'Precisa ser menor que 50 caracteres';
+                      return 'Precisa ter no máximo 50 caracteres';
                     }
 
                     if (numSerie.length < 3) {
-                      return 'Precisa ser maior que 3 caracteres';
+                      return 'Precisa ter no mínimo 3 caracteres';
                     }
                     return null;
                   },
@@ -132,7 +132,7 @@ class _DispositivoFormScreenState extends State<DispositivoFormScreen> {
                     final numPatrimonio = value.trim();
 
                     if (numPatrimonio.length > 30) {
-                      return 'Precisa ser menor que 30 caracteres';
+                      return 'Precisa ter no máximo 30 caracteres';
                     }
 
                     return null;

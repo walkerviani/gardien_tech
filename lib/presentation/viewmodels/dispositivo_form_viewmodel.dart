@@ -19,17 +19,17 @@ class DispositivoFormViewmodel extends ChangeNotifier {
     errorMessage = null;
 
     if (numSerie.length > 50) {
-      errorMessage = 'Precisa ser menor que 50 caracteres';
+      errorMessage = 'Precisa ter no máximo 50 caracteres';
       return false;
     }
 
     if (numSerie.length < 3) {
-      errorMessage = 'Precisa ser maior que 3 caracteres';
+      errorMessage = 'Precisa ter no mínimo 3 caracteres';
       return false;
     }
 
     if (numPatrimonio.length > 30) {
-      errorMessage = 'Precisa ser menor que 30 caracteres';
+      errorMessage = 'Precisa ter no máximo 30 caracteres';
       return false;
     }
 
