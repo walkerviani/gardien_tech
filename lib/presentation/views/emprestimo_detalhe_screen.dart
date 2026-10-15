@@ -130,14 +130,22 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
             onPressed: () => Navigator.pop(context, false),
             child: const Text(
               'Cancelar',
-              style: TextStyle(color: CoresGardien.preto),
+              style: TextStyle(
+                color: CoresGardien.preto,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
             child: const Text(
               'Excluir',
-              style: TextStyle(color: CoresGardien.vermelhoClaro),
+              style: TextStyle(
+                color: CoresGardien.vermelhoClaro,
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],
@@ -175,12 +183,12 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
     BuildContext context,
     EmprestimoDetalheViewmodel viewmodel,
   ) async {
+    final messenger = ScaffoldMessenger.of(context);
     final sucesso = await viewmodel.finalizarEmprestimo(widget.idEmprestimo);
+    messenger.clearSnackBars();
     if (!context.mounted) return;
 
     if (!sucesso) {
-      final messenger = ScaffoldMessenger.of(context);
-      messenger.clearSnackBars();
       messenger.showSnackBar(
         SnackBar(
           content: Text(
@@ -218,14 +226,22 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
             onPressed: () => Navigator.pop(context, false),
             child: const Text(
               'Cancelar',
-              style: TextStyle(color: CoresGardien.preto),
+              style: TextStyle(
+                color: CoresGardien.preto,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
             child: const Text(
               'Definir',
-              style: TextStyle(color: CoresGardien.vermelhoClaro),
+              style: TextStyle(
+                color: CoresGardien.vermelhoClaro,
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],
@@ -594,6 +610,14 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
               viewmodel.empFinalizado;
           final bool isEmObservacao =
               widget.idStatus == EmprestimoStatus.emObservacao.id;
+          final agora = DateTime.now();
+          final bool isSeteDiasAtrasado =
+              agora.difference(widget.dataHoraEfetuado) >
+              const Duration(days: 7);
+
+          final bool isSemCorrespondencia =
+              isEmObservacao && isSeteDiasAtrasado;
+
           if (isFinalizado) {
             return SizedBox.shrink();
           }
@@ -623,7 +647,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                       ),
                     ),
                   ),
-                  if (isEmObservacao) ...[
+                  if (isSemCorrespondencia) ...[
                     SizedBox(height: 10),
                     SizedBox(
                       width: double.infinity,
@@ -636,7 +660,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                                 viewmodel,
                               ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: CoresGardien.amarelo,
+                          backgroundColor: CoresGardien.laranja,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
