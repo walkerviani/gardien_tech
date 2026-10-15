@@ -14,7 +14,7 @@ class CoresGardien {
   static const cinzaClaro = Colors.blueGrey;
   static const preto = Color(0xFF000000);
   static const laranja = Color(0xFFe76f06);
-  static const amarelo = Color(0xFFEDB80C);
+  static const amarelo = Color(0xFFE1AD01);
   // Status Empréstimo
   static const statusAtivo = Colors.green;
   static const statusEmObservacao = Colors.deepOrangeAccent;
