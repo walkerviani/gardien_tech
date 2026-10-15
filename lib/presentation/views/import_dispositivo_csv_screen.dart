@@ -390,7 +390,11 @@ class _ImportDispositivoCsvScreenState
             onPressed: () => Navigator.pop(context),
             child: const Text(
               'Entendi',
-              style: TextStyle(color: CoresGardien.preto),
+              style: TextStyle(
+                color: CoresGardien.preto,
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],
