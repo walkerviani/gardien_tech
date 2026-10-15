@@ -276,7 +276,7 @@ class _EmprestimoListScreenState extends State<EmprestimoListScreen> {
       decoration: BoxDecoration(
         border: Border.all(color: CoresGardien.branco, width: 2),
         borderRadius: BorderRadius.circular(5),
-        color: CoresGardien.azulClaro,
+        color: CoresGardien.azulEscuro,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
