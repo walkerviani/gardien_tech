@@ -180,20 +180,10 @@ class _ProblemaListScreenState extends State<ProblemaListScreen> {
   }
 
   Widget _cardProblema(DispositivoComProblemaDTO problema, int index) {
-    return Tooltip(
-      preferBelow: false,
-      message: problema.descricao,
-      textStyle: TextStyle(fontSize: 18),
-      textAlign: TextAlign.center,
-      verticalOffset: 100,
-      margin: EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        color: CoresGardien.cinzaClaro,
-        borderRadius: BorderRadius.circular(5),
-      ),
-      showDuration: const Duration(milliseconds: 3),
-      child: Card(
-        key: ValueKey(problema.idProblema),
+    return Card(
+      key: ValueKey(problema.idProblema),
+      child: InkWell(
+        onTap: () => _detalhesCard(problema),
         child: Padding(
           padding: EdgeInsets.all(12),
           child: Column(
@@ -209,13 +199,36 @@ class _ProblemaListScreenState extends State<ProblemaListScreen> {
               const SizedBox(height: 5),
               Center(
                 child: Text(
-                  'Clique e segure para ler a descrição',
+                  'Clique para mais detalhes',
                   style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
                 ),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _detalhesCard(DispositivoComProblemaDTO problema) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text('Descrição', style: TextStyle(fontWeight: FontWeight.bold)),
+        content: Text(problema.descricao),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              'Entendi',
+              style: TextStyle(
+                color: CoresGardien.preto,
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
