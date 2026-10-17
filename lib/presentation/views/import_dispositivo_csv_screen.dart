@@ -281,16 +281,16 @@ class _ImportDispositivoCsvScreenState
         ),
         const SizedBox(height: 12),
         _textoDescricao(
-          '1° Adicione os dados do dispositivo na ordem apresentada abaixo:',
+          '1° Adicione os dados do dispositivo na ordem apresentada abaixo (clique nos ícones de interrogação para saber mais informações):',
         ),
         _infoCampo(
           'Número de Patrimônio',
-          'Código de registro único colocado em um bem físico.\n\n(Empresas e órgãos públicos implementam esse número para controlar e localizar seus bens).',
+          'Código de registro único colocado em um bem físico.\n\nNão pode ser vazio e deve ter no máximo 30 caracteres\n\n(Empresas e órgãos públicos implementam esse número para controlar e localizar seus bens).',
           CoresGardien.laranja,
         ),
         _infoCampo(
           'Número de Série',
-          'Código único formado por letras e números.\n\n(Ele é definido pelo fabricante durante a produção)',
+          'Código único formado por letras e números.\n\nDeve ter no mínimo 3 até o máximo de 50 caracteres\n\n(Ele é definido pelo fabricante durante a produção)',
           CoresGardien.azulClaro,
         ),
         _infoCampo(
@@ -300,7 +300,7 @@ class _ImportDispositivoCsvScreenState
           CoresGardien.verdeClaro,
         ),
         _textoDescricao(
-          'TIPO DE DISPOSITIVO: Você também pode adicionar os tipos pelo nome ou pelo número identificador, ambos precisam estar iguais apresentados no botão abaixo.',
+          'TIPO DE DISPOSITIVO: Você também pode adicionar os tipos pelo nome ou pelo número identificador, ambos precisam estar idênticos apresentados no botão abaixo.',
         ),
         _infoTipoDisp(),
         const SizedBox(height: 12),
