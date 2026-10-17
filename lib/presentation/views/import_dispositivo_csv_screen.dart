@@ -233,7 +233,7 @@ class _ImportDispositivoCsvScreenState
                     Icon(Icons.table_chart, size: 30),
                     SizedBox(width: 20),
                     Text(
-                      'Adicionar arquivo csv',
+                      'Adicionar arquivo CSV',
                       style: TextStyle(fontSize: 18),
                     ),
                   ],
@@ -251,6 +251,30 @@ class _ImportDispositivoCsvScreenState
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Wrap(
+          children: [
+            Text(
+              'ATENÇÃO',
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.justify,
+            ),
+            Text(
+              'O modelo existe para facilitar a importação, mas seu uso é opcional. '
+              'Você pode preencher os dados no Excel ou em qualquer outro programa de planilhas compatível com arquivos XLSX.'
+              ' Nesse caso, é necessário converter o arquivo para CSV, recurso disponível em diversos softwares, como o Excel,'
+              ' e também em aplicativos e sites de terceiros.'
+              '\nA conversão por aplicativos e sites de terceiros é de inteira responsabilidade do usuário.',
+              style: TextStyle(fontSize: 20),
+              textAlign: TextAlign.justify,
+            ),
+            Text(
+              'Recomendamos cautela ao enviar dados sensíveis a serviços externos e a conferência do arquivo CSV gerado antes da importação.',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.justify,
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
         Text(
           'Instruções',
           style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
@@ -285,11 +309,7 @@ class _ImportDispositivoCsvScreenState
         ),
         const SizedBox(height: 12),
         _textoDescricao(
-          '3° Verifique se os dados estão corretos e insira o arquivo CSV pelo botão verde abaixo.',
-        ),
-        const SizedBox(height: 12),
-        _textoDescricao(
-          'ATENÇÃO: O modelo existe para facilitar a importação, mas seu uso é opcional. Você pode preencher os dados no Excel, ou outro programa de planilhas, e depois salvar o arquivo como CSV, ou criar um arquivo CSV diretamente. Em ambos os casos, mantenha a mesma ordem de colunas do modelo.',
+          '3° Verifique se os dados estão corretos e insira o arquivo CSV através do botão em verde abaixo.',
         ),
       ],
     );
