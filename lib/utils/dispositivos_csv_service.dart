@@ -20,8 +20,9 @@ class DispositivosCsvService {
 
     final dispositivos = <Dispositivo>[];
     final erros = <String>[];
+    final inicio = _ehCabecalho(linhas.first) ? 1 : 0;
 
-    for (int i = 1; i < linhas.length; i++) {
+    for (int i = inicio; i < linhas.length; i++) {
       final linha = linhas[i];
       final numeroLinha = i + 1; // linha real no arquivo (cabeçalho = 1)
 
@@ -72,7 +73,8 @@ class DispositivosCsvService {
       return porNome;
     }
     // Tenta pelo índice
-    final indice = int.tryParse(valor);
+    final valorConvertido = int.tryParse(valor);
+    final int? indice = valorConvertido == null ? null : valorConvertido - 1;
 
     if (indice != null &&
         indice >= 0 &&
@@ -80,5 +82,19 @@ class DispositivosCsvService {
       return TipoDispositivo.values[indice];
     }
     return null;
+  }
+
+  bool _ehCabecalho(List<dynamic> linha) {
+    const palavras = {
+      'patrimonio',
+      'patrimônio',
+      'serie',
+      'série',
+      'serial',
+      'tipo',
+    };
+    return linha.any(
+      (c) => palavras.contains(c.toString().trim().toLowerCase()),
+    );
   }
 }
