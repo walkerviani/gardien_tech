@@ -44,13 +44,19 @@ class ImportDispositivoCsvViewmodel extends ChangeNotifier {
           }
           if (dispositivo.numSerie.trim().length >= 50) {
             erros.add(
-              'Patrimônio: ${dispositivo.numPatrimonio} / Série: ${dispositivo.numSerie} possui um número de série maior que 50 caracteres',
+              'Patrimônio: ${dispositivo.numPatrimonio} / Série: ${dispositivo.numSerie} possui um número de série que excede o limite de 50 caracteres',
+            );
+            continue;
+          }
+          if (dispositivo.numSerie.trim().length < 3) {
+            erros.add(
+              'Patrimônio: ${dispositivo.numPatrimonio} / Série: ${dispositivo.numSerie} possui um número de série abaixo do mínimo de 3 caracteres',
             );
             continue;
           }
           if (dispositivo.numPatrimonio.trim().length >= 30) {
             erros.add(
-              'Patrimônio: ${dispositivo.numPatrimonio} / Série: ${dispositivo.numSerie} possui um número de patrimônio maior que 30 caracteres',
+              'Patrimônio: ${dispositivo.numPatrimonio} / Série: ${dispositivo.numSerie} possui um número de patrimônio que excede o limite de 30 caracteres',
             );
             continue;
           }
