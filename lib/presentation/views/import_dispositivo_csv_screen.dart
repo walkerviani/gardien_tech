@@ -63,7 +63,13 @@ class _ImportDispositivoCsvScreenState
   Future<void> _adicionarCsv() async {
     const tipoCsv = XTypeGroup(label: 'CSV', extensions: ['csv']);
 
+    final messenger = ScaffoldMessenger.of(context);
+
     final arquivo = await openFile(acceptedTypeGroups: [tipoCsv]);
+
+    messenger.clearSnackBars();
+    messenger.showSnackBar(SnackBar(content: Text('Carregando...')));
+
     if (arquivo == null) {
       return;
     }
@@ -73,12 +79,11 @@ class _ImportDispositivoCsvScreenState
     bool sucesso = await viewmodel.importarDispositivosCsv(arquivo);
 
     if (!mounted) return;
-    final messenger = ScaffoldMessenger.of(context);
 
     // Falha total (arquivo inválido, nenhum dispositivo salvo etc.)
     if (!sucesso) {
       messenger.clearSnackBars();
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         SnackBar(
           content: Text(
             viewmodel.errorMessage ?? 'Nenhum dispositivo foi importado',
