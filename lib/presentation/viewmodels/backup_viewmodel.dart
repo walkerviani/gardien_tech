@@ -15,10 +15,22 @@ class BackupViewmodel extends ChangeNotifier {
 
   Future<void> exportarBackup() async {
     isLoading = true;
+    errorMessage = null;
+    successMessage = null;
     notifyListeners();
 
     try {
       final json = await _backupService.exportarJson();
+      final dadosBackup = jsonDecode(json) as Map<String, dynamic>;
+      final possuiDados = dadosBackup.values.any(
+        (tabela) => tabela is List && tabela.isNotEmpty,
+      );
+
+      if (!possuiDados) {
+        errorMessage = 'Não há dados a serem exportados';
+        notifyListeners();
+        return;
+      }
 
       // Gerar nome do arquivo
       final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-').split('.')[0];
@@ -39,10 +51,10 @@ class BackupViewmodel extends ChangeNotifier {
       final file = File(filePath);
       await file.writeAsString(json, encoding: utf8);
 
-      successMessage = 'Backup exportado com sucesso!\nCaminho: $filePath';
+      successMessage = 'Backup exportado com sucesso.\nCaminho: $filePath';
       notifyListeners();
     } catch (e) {
-      errorMessage = 'Erro ao exportar: $e';
+      errorMessage = 'Houve um erro ao criar backup. Verifique a integridade dos dados';
       notifyListeners();
     } finally {
       isLoading = false;
@@ -77,10 +89,10 @@ class BackupViewmodel extends ChangeNotifier {
 
       await _backupService.importarJson(jsonContent);
       
-      successMessage = 'Backup restaurado com sucesso.';
+      successMessage = 'Backup restaurado com sucesso';
       notifyListeners();
     } catch (e) {
-      errorMessage = 'Erro ao restaurar. Verifique o arquivo de backup e tente novamente.';
+      errorMessage = 'Erro ao restaurar. Verifique o arquivo de backup e tente novamente';
       notifyListeners();
     } finally {
       isLoading = false;

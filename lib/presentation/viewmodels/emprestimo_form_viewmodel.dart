@@ -155,9 +155,11 @@ class EmprestimoFormViewModel extends ChangeNotifier {
 
       for (int i = 0; i < itensQuantidade.length; i++) {
         final item = itensQuantidade[i];
-        if (item.quantidade.text.trim().isEmpty ||
-            item.quantidade.text == '0') {
+        if (item.quantidade.text.trim().isEmpty) {
           erros.add('Item ${i + 1}: informe a quantidade');
+        }
+        if (item.quantidade.text == '0') {
+          erros.add('Item ${i + 1}: informe uma quantidade válida');
         }
         if (item.tipoDisp == null || item.tipoDisp!.isEmpty) {
           erros.add('Item ${i + 1}: selecione o tipo de dispositivo');
