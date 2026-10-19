@@ -502,7 +502,6 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                                                 builder: (_) =>
                                                     SelecionarDispositivoScreen(
                                                       null,
-                                                      widget.idEmprestimo,
                                                       idsParaIgnorar:
                                                           idsParaIgnorar,
                                                     ),
@@ -739,7 +738,6 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                             MaterialPageRoute(
                               builder: (_) => SelecionarDispositivoScreen(
                                 emprestimoItem.idTipoDispositivo,
-                                widget.idEmprestimo,
                                 idsParaIgnorar: idsParaIgnorar,
                               ),
                             ),
@@ -771,7 +769,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                             MaterialPageRoute(
                               builder: (_) => SelecionarDispositivoScreen(
                                 emprestimoItem.idTipoDispositivo,
-                                widget.idEmprestimo,
+
                                 idsParaIgnorar: idsParaIgnorar,
                               ),
                             ),
