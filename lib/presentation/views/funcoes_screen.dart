@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gardien_tech/presentation/views/ajuda_list_screen.dart';
+import 'package:gardien_tech/presentation/views/dashboard_screen.dart';
 import 'package:gardien_tech/presentation/views/import_dispositivo_csv_screen.dart';
 import 'package:gardien_tech/utils/cores_gardien.dart';
 import 'package:provider/provider.dart';
@@ -195,6 +196,15 @@ class FuncoesScreen extends StatelessWidget {
             Icons.browser_updated,
 
             'Importar dispositivos por CSV',
+          ),
+          const SizedBox(height: 10),
+          _botaoFuncao(
+            () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => DashboardScreen()),
+            ),
+            Icons.data_saver_off,
+            'Indicadores',
           ),
           const SizedBox(height: 10),
           _botaoFuncao(
