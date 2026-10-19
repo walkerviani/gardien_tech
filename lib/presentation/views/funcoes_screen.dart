@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gardien_tech/presentation/views/ajuda_list_screen.dart';
 import 'package:gardien_tech/presentation/views/dashboard_screen.dart';
+import 'package:gardien_tech/presentation/views/historico_dispositivo_screen.dart';
 import 'package:gardien_tech/presentation/views/import_dispositivo_csv_screen.dart';
+import 'package:gardien_tech/presentation/views/selecionar_dispositivo_screen.dart';
 import 'package:gardien_tech/utils/cores_gardien.dart';
 import 'package:provider/provider.dart';
 import 'package:gardien_tech/presentation/views/dispositivo_list_screen.dart';
@@ -132,6 +134,39 @@ class FuncoesScreen extends StatelessWidget {
     );
   }
 
+  Future<Map<String, dynamic>?> _buscarDispositivo(BuildContext context) async {
+    return Navigator.push<Map<String, dynamic>>(
+      context,
+      MaterialPageRoute(builder: (_) => SelecionarDispositivoScreen(null)),
+    );
+  }
+
+  Future<void> _carregarHistoricoDispositivo(BuildContext context) async {
+    final resultado = await _buscarDispositivo(context);
+
+    if (!context.mounted) return;
+
+    if (resultado == null) {
+      final messenger = ScaffoldMessenger.of(context);
+      messenger.clearSnackBars();
+      messenger.showSnackBar(
+        SnackBar(
+          content: const Text('Nenhum dispositivo selecionado'),
+          backgroundColor: CoresGardien.vermelhoClaro,
+        ),
+      );
+      return;
+    }
+    final int idDispositivo = resultado['idDispositivo'];
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => HistoricoDispositivoScreen(idDispositivo),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -205,6 +240,12 @@ class FuncoesScreen extends StatelessWidget {
             ),
             Icons.data_saver_off,
             'Indicadores',
+          ),
+          const SizedBox(height: 10),
+          _botaoFuncao(
+            () => _carregarHistoricoDispositivo(context),
+            Icons.track_changes_rounded,
+            'Histórico do dispositivo',
           ),
           const SizedBox(height: 10),
           _botaoFuncao(
