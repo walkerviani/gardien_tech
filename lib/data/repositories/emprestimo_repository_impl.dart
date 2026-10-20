@@ -87,6 +87,15 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
   }
 
   @override
+  Future<List<Emprestimo>> buscarTodosPorUsuario(int idUsuario) async {
+    final emprestimos = await (_database.select(_database.emprestimos)..where(
+      (emprestimo) => emprestimo.idResponsavel.equals(idUsuario),
+    )).get();
+
+    return emprestimos.map((emprestimo) => emprestimo.toEntity()).toList();
+  }
+
+  @override
   Future<Emprestimo?> buscarPorId(int id) async {
     final emprestimo = await (_database.select(
       _database.emprestimos,

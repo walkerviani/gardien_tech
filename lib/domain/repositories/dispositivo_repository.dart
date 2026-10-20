@@ -3,6 +3,9 @@ import 'package:gardien_tech/domain/entities/dispositivo.dart';
 abstract class DispositivoRepository {
   Future<Dispositivo?> buscarPorId(int id);
   Future<List<Dispositivo>> buscarTodos();
+  Future<List<Dispositivo>> buscarTodosDisponiveis();
+  Future<List<Dispositivo>> buscarTodosIndisponiveis();
+  Future<List<Dispositivo>> buscarTodosEmUso();
   Future<List<Dispositivo>> buscarPorTipo(int idTipoDispositivo);
   Future<List<Dispositivo>> buscarDescricao(String filtro);
   Future<Dispositivo?> buscarPorPatrimonio(String numPatrimonio);

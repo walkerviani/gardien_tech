@@ -1,10 +1,49 @@
+import 'package:drift/drift.dart';
+import 'package:gardien_tech/data/database.dart';
+import 'package:gardien_tech/data/datasources/emprestimo_datasource.dart';
+import 'package:gardien_tech/domain/entities/emprestimo.dart';
+import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_repository.dart';
 import 'package:gardien_tech/domain/services/dashboard_service.dart';
 
 class DashboardServiceImpl implements DashboardService {
-  final EmprestimoRepository _emprestimoRepository;
+  final AppDatabase _database;
 
-  DashboardServiceImpl(this._emprestimoRepository);
+  final EmprestimoRepository _emprestimoRepository;
+  final DispositivoRepository _dispositivoRepository;
+
+  DashboardServiceImpl(
+    this._database,
+    this._emprestimoRepository, 
+    this._dispositivoRepository
+  );
+
+  @override
+  Future<List<Emprestimo>> historicoDispositivoEmprestado(int idDispositivo) async {
+    final rows = await (_database.select(_database.emprestimos).join([
+      innerJoin(
+        _database.emprestimoItens,
+        _database.emprestimoItens.idEmprestimo.equalsExp(
+          _database.emprestimos.id,
+        ),
+      ),
+      innerJoin(
+        _database.emprestimoDispositivos,
+        _database.emprestimoDispositivos.idEmprestimoItem.equalsExp(
+          _database.emprestimoItens.id,
+        ),
+      ),
+    ])..where(_database.emprestimoDispositivos.idDispositivo.equals(idDispositivo),
+    )).get();
+
+    final emprestimosPorId = <int, EmprestimoData>{};
+    for (final row in rows) {
+      final emprestimo = row.readTable(_database.emprestimos);
+      emprestimosPorId[emprestimo.id] = emprestimo;
+    }
+
+    return emprestimosPorId.values.map((emprestimo) => emprestimo.toEntity()).toList();
+  }
 
   @override
   Future<int> totalEmprestimos() async {
@@ -34,5 +73,35 @@ class DashboardServiceImpl implements DashboardService {
   Future<int> totalEmprestimosConcluidos() async {
     final emprestimos = await _emprestimoRepository.buscarTodosConcluidos();
     return emprestimos.length;
+  }
+
+  @override
+  Future<int> totalEmprestimosPorUsuario(int idUsuario) async {
+    final emprestimos = await _emprestimoRepository.buscarTodosPorUsuario(idUsuario);
+    return emprestimos.length;
+  }
+
+  @override
+  Future<int> totalDispositivos() async {
+    final dispositivos = await _dispositivoRepository.buscarTodos();
+    return dispositivos.length;
+  }
+
+  @override
+  Future<int> totalDispositivosDisponiveis() async {
+    final dispositivos = await _dispositivoRepository.buscarTodosDisponiveis();
+    return dispositivos.length;
+  }
+
+  @override
+  Future<int> totalDispositivosIndisponiveis() async {
+    final dispositivos = await _dispositivoRepository.buscarTodosIndisponiveis();
+    return dispositivos.length;
+  }
+
+  @override
+  Future<int> totalDispositivosEmUso() async {
+    final dispositivos = await _dispositivoRepository.buscarTodosEmUso();
+    return dispositivos.length;
   }
 }

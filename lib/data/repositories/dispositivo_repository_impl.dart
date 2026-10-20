@@ -27,6 +27,39 @@ class DispositivoRepositoryImpl implements DispositivoRepository {
   }
 
   @override
+  Future<List<Dispositivo>> buscarTodosDisponiveis() async {
+    final dispositivos = await (_database.select(_database.dispositivos)..where(
+      (dispositivo) => dispositivo.idStatus.equals(
+        DispositivoStatus.disponivel.id,
+      ),
+    )).get();
+
+    return dispositivos.map((emprestimo) => emprestimo.toEntity()).toList();
+  }
+
+  @override
+  Future<List<Dispositivo>> buscarTodosEmUso() async {
+    final dispositivos = await (_database.select(_database.dispositivos)..where(
+      (dispositivo) => dispositivo.idStatus.equals(
+        DispositivoStatus.emUso.id,
+      ),
+    )).get();
+
+    return dispositivos.map((emprestimo) => emprestimo.toEntity()).toList();
+  }
+
+  @override
+  Future<List<Dispositivo>> buscarTodosIndisponiveis() async {
+    final dispositivos = await (_database.select(_database.dispositivos)..where(
+      (dispositivo) => dispositivo.idStatus.equals(
+        DispositivoStatus.indisponivel.id,
+      ),
+    )).get();
+
+    return dispositivos.map((emprestimo) => emprestimo.toEntity()).toList();
+  }
+
+  @override
   Future<List<Dispositivo>> buscarPorTipo(int idTipoDispositivo) async {
     final dispositivos = await (_database.select(_database.dispositivos)
       ..where((d) => d.idTipoDispositivo.equals(idTipoDispositivo))).get();
