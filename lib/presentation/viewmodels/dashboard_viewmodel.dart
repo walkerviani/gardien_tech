@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:gardien_tech/domain/enum/tipo_dispositivo.dart';
 import 'package:gardien_tech/domain/services/dashboard_service.dart';
 
 class DashboardViewmodel extends ChangeNotifier {
@@ -6,8 +7,8 @@ class DashboardViewmodel extends ChangeNotifier {
 
   DashboardViewmodel(this._dashboardService);
 
-  bool isLoading = false;
-  String? errorMessage;
+  bool isLoadingEmp = false;
+  String? errorMessageEmp;
   int? qntTotalEmprestimo;
   int? qntEmpAtivo;
   int? qntEmpEB; // Em observacao
@@ -15,93 +16,97 @@ class DashboardViewmodel extends ChangeNotifier {
   int? qntEmpConcluido;
   Map<String, int> dadosEmp = {};
 
+  bool isLoadingDisp = false;
+  String? errorMessageDisp;
+  Map<TipoDispositivo, int> dadosDisp = {};
+
   Future<bool> buscarTotalEmprestimos() async {
-    errorMessage = null;
+    errorMessageEmp = null;
     qntTotalEmprestimo = null;
     try {
       qntTotalEmprestimo = await _dashboardService.totalEmprestimos();
       if (qntTotalEmprestimo == null) {
-        errorMessage = 'O total de empréstimos é nulo';
+        errorMessageEmp = 'O total de empréstimos é nulo';
         return false;
       }
       return true;
     } catch (e) {
-      errorMessage = 'Houve um problema ao buscar o total de empréstimos';
+      errorMessageEmp = 'Houve um problema ao buscar o total de empréstimos';
       return false;
     }
   }
 
   Future<bool> buscarTotalEmpAtivo() async {
-    errorMessage = null;
+    errorMessageEmp = null;
     qntEmpAtivo = null;
     try {
       qntEmpAtivo = await _dashboardService.totalEmprestimosAtivos();
       if (qntEmpAtivo == null) {
-        errorMessage = 'O total de empréstimos ativos é nulo';
+        errorMessageEmp = 'O total de empréstimos ativos é nulo';
         return false;
       }
       return true;
     } catch (e) {
-      errorMessage =
+      errorMessageEmp =
           'Houve um problema ao buscar o total de empréstimos ativos';
       return false;
     }
   }
 
   Future<bool> buscarTotalEmpEmObservacao() async {
-    errorMessage = null;
+    errorMessageEmp = null;
     qntEmpEB = null;
     try {
       qntEmpEB = await _dashboardService.totalEmprestimosEmObservacao();
       if (qntEmpEB == null) {
-        errorMessage = 'O total de empréstimos em observação é nulo';
+        errorMessageEmp = 'O total de empréstimos em observação é nulo';
         return false;
       }
       return true;
     } catch (e) {
-      errorMessage =
+      errorMessageEmp =
           'Houve um problema ao buscar o total de empréstimos em observação';
       return false;
     }
   }
 
   Future<bool> buscarTotalEmpSemCorrespondencia() async {
-    errorMessage = null;
+    errorMessageEmp = null;
     qntEmpSC = null;
     try {
       qntEmpSC = await _dashboardService.totalEmprestimosSemCorrespondencia();
       if (qntEmpSC == null) {
-        errorMessage = 'O total de empréstimos sem correspondência é nulo';
+        errorMessageEmp = 'O total de empréstimos sem correspondência é nulo';
         return false;
       }
       return true;
     } catch (e) {
-      errorMessage =
+      errorMessageEmp =
           'Houve um problema ao buscar o total de empréstimos sem correspondência';
       return false;
     }
   }
 
   Future<bool> buscarTotalEmpConcluido() async {
-    errorMessage = null;
+    errorMessageEmp = null;
     qntEmpConcluido = null;
     try {
       qntEmpConcluido = await _dashboardService.totalEmprestimosConcluidos();
       if (qntEmpConcluido == null) {
-        errorMessage = 'O total de empréstimos concluídos é nulo';
+        errorMessageEmp = 'O total de empréstimos concluídos é nulo';
         return false;
       }
       return true;
     } catch (e) {
-      errorMessage =
+      errorMessageEmp =
           'Houve um problema ao buscar o total de empréstimos concluídos';
       return false;
     }
   }
 
-  Future<bool> buscarDadosGrafico() async {
-    isLoading = true;
-    errorMessage = null;
+  Future<bool> buscarDadosGraficoEmp() async {
+    isLoadingEmp = true;
+    errorMessageEmp = null;
     notifyListeners();
     try {
       final resultados = await Future.wait([
@@ -122,10 +127,32 @@ class DashboardViewmodel extends ChangeNotifier {
       };
       return true;
     } catch (e) {
-      errorMessage = 'Houve um problema ao buscar os dados do gráfico';
+      errorMessageEmp = 'Houve um problema ao buscar os dados dos empréstimos';
       return false;
     } finally {
-      isLoading = false;
+      isLoadingEmp = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> buscarDadosGraficoDisp() async {
+    isLoadingDisp = true;
+    errorMessageDisp = null;
+    notifyListeners();
+    try {
+      final resultado = await _dashboardService.totalDispositivosPorTipo();
+
+      // Garante todos os tipos, na ordem do enum, mesmo com zero dispositivos
+      dadosDisp = {
+        for (final tipo in TipoDispositivo.values) tipo: resultado[tipo] ?? 0,
+      };
+      return true;
+    } catch (e) {
+      errorMessageDisp =
+          'Houve um problema ao buscar os dados dos dispositivos';
+      return false;
+    } finally {
+      isLoadingDisp = false;
       notifyListeners();
     }
   }
