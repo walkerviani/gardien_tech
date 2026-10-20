@@ -32,12 +32,36 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
   @override
   Future<List<Emprestimo>> buscarTodosConcluidos() async {
     final emprestimos = await (_database.select(_database.emprestimos)..where(
-      (emprestimo) => emprestimo.idStatus.equals(
+      (emprestimo) => emprestimo.idStatus.isIn([
+        EmprestimoStatus.emObservacao.id,
         EmprestimoStatus.concluido.id,
-      ),
+      ]),
     )).get();
+    
+    // Constar empréstimos que estão concluídos e aqueles não contar aqueles finalizados em pelo menos um dia depois da data de criação
+    return emprestimos.map((emprestimo) => emprestimo.toEntity()).where((emprestimo) {
+      if (emprestimo.idStatus == EmprestimoStatus.emObservacao.id) {
+        return true;
+      }
 
-    return emprestimos.map((emprestimo) => emprestimo.toEntity()).toList();
+      final dataConclusao = emprestimo.dataHoraConcluido;
+      if (dataConclusao == null) return false;
+
+      final dataCriacaoUtc = DateTime.utc(
+        emprestimo.dataHoraEfetuado.year,
+        emprestimo.dataHoraEfetuado.month,
+        emprestimo.dataHoraEfetuado.day,
+      );
+      final dataConclusaoUtc = DateTime.utc(
+        dataConclusao.year,
+        dataConclusao.month,
+        dataConclusao.day,
+      );
+      final diasAteConclusao = dataConclusaoUtc.difference(dataCriacaoUtc).inDays;
+
+      return diasAteConclusao < 1;
+    })
+    .toList();
   }
 
   @override
