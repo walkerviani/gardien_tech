@@ -128,8 +128,11 @@ void main() async {
           ),
         ),
         Provider<DashboardService>(
-          create: (context) =>
-              DashboardServiceImpl(context.read<EmprestimoRepository>()),
+          create: (context) => DashboardServiceImpl(
+            context.read<AppDatabase>(),
+            context.read<EmprestimoRepository>(),
+            context.read<DispositivoRepository>(),
+          ),
         ),
         // ==========================
         // VIEWMODELS
