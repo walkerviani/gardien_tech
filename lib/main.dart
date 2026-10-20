@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:gardien_tech/data/services/dashboard_service_impl.dart';
+import 'package:gardien_tech/domain/services/dashboard_service.dart';
+import 'package:gardien_tech/presentation/viewmodels/dashboard_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/import_dispositivo_csv_viewmodel.dart';
 import 'package:gardien_tech/presentation/viewmodels/selecionar_usuario_viewmodel.dart';
 import 'package:gardien_tech/utils/cores_gardien.dart';
@@ -124,7 +127,10 @@ void main() async {
             context.read<EmprestimoDispositivoRepository>(),
           ),
         ),
-
+        Provider<DashboardService>(
+          create: (context) =>
+              DashboardServiceImpl(context.read<EmprestimoRepository>()),
+        ),
         // ==========================
         // VIEWMODELS
         // ==========================
@@ -198,6 +204,10 @@ void main() async {
             DispositivosCsvService(),
             context.read<DispositivoRepository>(),
           ),
+        ),
+        ChangeNotifierProvider<DashboardViewmodel>(
+          create: (context) =>
+              DashboardViewmodel(context.read<DashboardService>()),
         ),
       ],
       child: const MyApp(),
