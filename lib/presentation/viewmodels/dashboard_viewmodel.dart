@@ -105,6 +105,7 @@ class DashboardViewmodel extends ChangeNotifier {
     notifyListeners();
     try {
       final resultados = await Future.wait([
+        buscarTotalEmprestimos(),
         buscarTotalEmpAtivo(),
         buscarTotalEmpConcluido(),
         buscarTotalEmpSemCorrespondencia(),

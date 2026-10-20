@@ -60,7 +60,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _carregarGraficoEmprestimo(DashboardViewmodel viewmodel) {
-    final total = viewmodel.dadosEmp.values.fold(0, (a, b) => a + b);
+    final totalGeral = viewmodel.qntTotalEmprestimo ?? 0;
+    final somaFatias = viewmodel.dadosEmp.values.fold(0, (a, b) => a + b);
     final entradas = viewmodel.dadosEmp.entries.toList();
     return Column(
       children: [
@@ -69,7 +70,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 10),
-        Text('Total: $total empréstimos', style: const TextStyle(fontSize: 18)),
+        Text(
+          'Total: $totalGeral empréstimos',
+          style: const TextStyle(fontSize: 18),
+        ),
         AspectRatio(
           aspectRatio: 1,
           child: PieChart(
@@ -89,7 +93,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
               sections: List.generate(entradas.length, (i) {
                 final valor = entradas[i].value;
                 final estaTocado = i == _indexTocado;
-                final porcentagem = total == 0 ? 0 : valor / total * 100;
+                final porcentagem = somaFatias == 0
+                    ? 0
+                    : valor / somaFatias * 100;
 
                 return PieChartSectionData(
                   value: valor.toDouble(),
