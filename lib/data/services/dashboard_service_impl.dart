@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:gardien_tech/data/database.dart';
 import 'package:gardien_tech/data/datasources/emprestimo_datasource.dart';
 import 'package:gardien_tech/domain/entities/emprestimo.dart';
+import 'package:gardien_tech/domain/enum/tipo_dispositivo.dart';
 import 'package:gardien_tech/domain/repositories/dispositivo_repository.dart';
 import 'package:gardien_tech/domain/repositories/emprestimo_repository.dart';
 import 'package:gardien_tech/domain/services/dashboard_service.dart';
@@ -103,5 +104,17 @@ class DashboardServiceImpl implements DashboardService {
   Future<int> totalDispositivosEmUso() async {
     final dispositivos = await _dispositivoRepository.buscarTodosEmUso();
     return dispositivos.length;
+  }
+
+  @override
+  Future<Map<TipoDispositivo, int>> totalDispositivosPorTipo() async {
+    final dispositivos = await _dispositivoRepository.buscarTodos();
+    final quantidades = {for (final tipo in TipoDispositivo.values) tipo: 0}; // Cria um mapa com uma entrada para cada valor de TipoDispositivo, iniciando todas as quantidades em 0
+
+    for (final dispositivo in dispositivos) {
+      quantidades[dispositivo.tipo] = quantidades[dispositivo.tipo]! + 1;
+    }
+
+    return quantidades;
   }
 }
