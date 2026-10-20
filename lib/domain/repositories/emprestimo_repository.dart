@@ -4,6 +4,9 @@ import 'package:gardien_tech/domain/entities/emprestimo.dart';
 abstract class EmprestimoRepository {
   Future<List<Emprestimo>> buscarTodos();
   Future<List<Emprestimo>> buscarTodosAtivos();
+  Future<List<Emprestimo>> buscarTodosConcluidos();
+  Future<List<Emprestimo>> buscarTodosEmObservacao();
+  Future<List<Emprestimo>> buscarTodosSemCorrespondencia();
   Future<List<EmprestimoComDetalhesDTO>> buscarPorDiaComDetalhes(DateTime data);
   Future<List<EmprestimoComDetalhesDTO>> buscarporDiaTelaInicial(DateTime data);
   Future<Emprestimo?> buscarPorId(int id);

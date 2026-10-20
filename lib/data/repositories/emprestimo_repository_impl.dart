@@ -20,9 +20,68 @@ class EmprestimoRepositoryImpl implements EmprestimoRepository {
 
   @override
   Future<List<Emprestimo>> buscarTodosAtivos() async {
-    final emprestimos = await (_database.select(
-      _database.emprestimos,
-    )..where((emprestimo) => emprestimo.idStatus.equals(1))).get();
+    final emprestimos = await (_database.select(_database.emprestimos)..where(
+      (emprestimo) => emprestimo.idStatus.equals(
+        EmprestimoStatus.ativo.id,
+      ),
+    )).get();
+
+    return emprestimos.map((emprestimo) => emprestimo.toEntity()).toList();
+  }
+
+  @override
+  Future<List<Emprestimo>> buscarTodosConcluidos() async {
+    final emprestimos = await (_database.select(_database.emprestimos)..where(
+      (emprestimo) => emprestimo.idStatus.equals(
+        EmprestimoStatus.concluido.id,
+      ),
+    )).get();
+
+    return emprestimos.map((emprestimo) => emprestimo.toEntity()).toList();
+  }
+
+  @override
+  Future<List<Emprestimo>> buscarTodosEmObservacao() async {
+    final emprestimos = await (_database.select(_database.emprestimos)..where(
+      (emprestimo) => emprestimo.idStatus.isIn([
+        EmprestimoStatus.emObservacao.id,
+        EmprestimoStatus.concluido.id,
+      ]),
+    )).get();
+    
+    // Constar empréstimos que estão atualmente em observação e aqueles finalizados em pelo menos um dia depois da data de criação
+    return emprestimos.map((emprestimo) => emprestimo.toEntity()).where((emprestimo) {
+      if (emprestimo.idStatus == EmprestimoStatus.emObservacao.id) {
+        return true;
+      }
+
+      final dataConclusao = emprestimo.dataHoraConcluido;
+      if (dataConclusao == null) return false;
+
+      final dataCriacaoUtc = DateTime.utc(
+        emprestimo.dataHoraEfetuado.year,
+        emprestimo.dataHoraEfetuado.month,
+        emprestimo.dataHoraEfetuado.day,
+      );
+      final dataConclusaoUtc = DateTime.utc(
+        dataConclusao.year,
+        dataConclusao.month,
+        dataConclusao.day,
+      );
+      final diasAteConclusao = dataConclusaoUtc.difference(dataCriacaoUtc).inDays;
+
+      return diasAteConclusao >= 1;
+    })
+    .toList();
+  }
+
+  @override
+  Future<List<Emprestimo>> buscarTodosSemCorrespondencia() async {
+    final emprestimos = await (_database.select(_database.emprestimos)..where(
+      (emprestimo) => emprestimo.idStatus.equals(
+        EmprestimoStatus.semCorrespondencia.id,
+      ),
+    )).get();
 
     return emprestimos.map((emprestimo) => emprestimo.toEntity()).toList();
   }
