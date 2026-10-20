@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:gardien_tech/domain/enum/tipo_analise.dart';
 import 'package:gardien_tech/presentation/viewmodels/dashboard_viewmodel.dart';
 import 'package:gardien_tech/utils/cores_gardien.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +14,7 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   int _indexTocado = -1;
+  TipoAnalise _analiseAtual = TipoAnalise.emprestimos;
 
   static const _coresItensEmp = [
     CoresGardien.statusAtivo,
@@ -39,24 +41,71 @@ class _DashboardScreenState extends State<DashboardScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(12),
-          child: Consumer<DashboardViewmodel>(
-            builder: (context, viewmodel, _) {
-              if (viewmodel.isLoading) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              if (viewmodel.errorMessage != null) {
-                return Center(child: Text(viewmodel.errorMessage!));
-              }
-              if (viewmodel.dadosEmp.isEmpty) {
-                return const Center(child: Text('Sem dados'));
-              }
+          child: Column(
+            children: [
+              SegmentedButton<TipoAnalise>(
+                style: SegmentedButton.styleFrom(
+                  foregroundColor: CoresGardien.azulClaro,
+                  selectedForegroundColor: CoresGardien.branco,
+                  selectedBackgroundColor: CoresGardien.azulClaro,
+                ),
+                segments: TipoAnalise.values
+                    .map(
+                      (tipo) => ButtonSegment(
+                        value: tipo,
+                        label: Text(tipo.rotulo),
+                        icon: Icon(tipo.icone),
+                      ),
+                    )
+                    .toList(),
+                selected: {_analiseAtual},
+                onSelectionChanged: (selecao) {
+                  setState(() {
+                    _analiseAtual = selecao.first;
+                    _indexTocado = -1;
+                  });
+                },
+              ),
+              const SizedBox(height: 15),
+              Consumer<DashboardViewmodel>(
+                builder: (context, viewmodel, _) {
+                  if (viewmodel.isLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (viewmodel.errorMessage != null) {
+                    return Center(child: Text(viewmodel.errorMessage!));
+                  }
+                  if (viewmodel.dadosEmp.isEmpty) {
+                    return const Center(child: Text('Sem dados'));
+                  }
 
-              return _carregarGraficoEmprestimo(viewmodel);
-            },
+                  return _counteudoSelecionado(viewmodel);
+                },
+              ),
+            ],
           ),
         ),
       ),
     );
+  }
+
+  Widget _counteudoSelecionado(DashboardViewmodel viewmodel) {
+    switch (_analiseAtual) {
+      case TipoAnalise.dispositivos:
+        return _carregarGraficoDispositivo(viewmodel);
+      case TipoAnalise.emprestimos:
+        return _carregarGraficoEmprestimo(viewmodel);
+      case TipoAnalise.usuarios:
+        return _carregarGraficoUsuario(viewmodel);
+    }
+  }
+
+  Widget _carregarGraficoDispositivo(DashboardViewmodel viewmodel) {
+    return Container();
+  }
+
+  Widget _carregarGraficoUsuario(DashboardViewmodel viewmodel) {
+    return Container();
   }
 
   Widget _carregarGraficoEmprestimo(DashboardViewmodel viewmodel) {
