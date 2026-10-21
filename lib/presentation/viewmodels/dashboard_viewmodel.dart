@@ -7,7 +7,7 @@ class DashboardViewmodel extends ChangeNotifier {
 
   DashboardViewmodel(this._dashboardService);
 
-  bool isLoadingEmp = false;
+  bool isLoadingEmp = true;
   String? errorMessageEmp;
   int? qntTotalEmprestimo;
   int? qntEmpAtivo;
@@ -16,9 +16,30 @@ class DashboardViewmodel extends ChangeNotifier {
   int? qntEmpConcluido;
   Map<String, int> dadosEmp = {};
 
-  bool isLoadingDisp = false;
+  bool isLoadingDisp = true;
   String? errorMessageDisp;
   Map<TipoDispositivo, int> dadosDisp = {};
+
+  bool isLoadingUsu = true;
+  String? errorMessageUsu;
+  Map<String, int> dadosUsu = {};
+  static const rotuloOutros = 'OUTROS';
+
+  Map<String, int> get dadosUsuTop {
+    final ordernados = dadosUsu.entries.where((e) => e.value > 0).toList()
+      ..sort((a, b) => b.value.compareTo(a.value)); // Ordena pelo valor
+
+    final top = ordernados.take(5); // Pega os 5 primeiros
+
+    final somaOutros = ordernados
+        .skip(5)
+        .fold(0, (soma, e) => soma + e.value); // Soma todos após os 5 primeiros
+
+    return {
+      for (final usuario in top) usuario.key: usuario.value,
+      if (somaOutros > 0) rotuloOutros: somaOutros,
+    };
+  }
 
   Future<bool> buscarTotalEmprestimos() async {
     errorMessageEmp = null;
@@ -121,7 +142,7 @@ class DashboardViewmodel extends ChangeNotifier {
 
       dadosEmp = {
         'Ativos': qntEmpAtivo!,
-        'Concluidos': qntEmpConcluido!,
+        'Concluídos': qntEmpConcluido!,
         'Sem Correspondência': qntEmpSC!,
         'Em Observação': qntEmpEB!,
       };
@@ -153,6 +174,22 @@ class DashboardViewmodel extends ChangeNotifier {
       return false;
     } finally {
       isLoadingDisp = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> buscarDadosGraficoUsu() async {
+    isLoadingUsu = true;
+    errorMessageUsu = null;
+    notifyListeners();
+    try {
+      dadosUsu = await _dashboardService.totalEmprestimosUsuarios();
+      return true;
+    } catch (e) {
+      errorMessageUsu = 'Houve um problema ao buscar os dados dos usuários';
+      return false;
+    } finally {
+      isLoadingUsu = false;
       notifyListeners();
     }
   }
