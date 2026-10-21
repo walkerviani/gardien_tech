@@ -30,12 +30,19 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
     this._empDispositivoRepository,
   );
 
-  bool isLoading = true; // true por padrão para permitir a renderização do Shimmer
+  bool isLoading =
+      true; // true por padrão para permitir a renderização do Shimmer
   String? errorMessage;
-  List<EmprestimoItemComDispositivoDTO> dispositivosDoEmprestimo = []; // Lista dos dispositivos presente no emprestimo
-  List<EmprestimoItem> empItens = []; // Lista usada para verificar a devolução dos dispositivos de cada emprestimo_item
-  bool empFinalizado =  false; // Usado para controlar a visualização da lista na tela (entre edição e leitura)
+  List<EmprestimoItemComDispositivoDTO> dispositivosDoEmprestimo =
+      []; // Lista dos dispositivos presente no emprestimo
+  List<EmprestimoItem> empItens =
+      []; // Lista usada para verificar a devolução dos dispositivos de cada emprestimo_item
+  bool empFinalizado =
+      false; // Usado para controlar a visualização da lista na tela (entre edição e leitura)
   bool empSemCorrespondencia = false;
+
+  int? idStatus;
+  DateTime? dataHoraConcluido;
 
   // Restaura na memória local o estado das marcações de devolução (checkboxes) dos dispositivos de um empréstimo
   Future<void> carregarCacheDevolvidos(int idEmprestimo) async {
@@ -105,13 +112,12 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
     Emprestimo? emprestimo = await _emprestimoRepository.buscarPorId(
       idEmprestimo,
     );
-    if (emprestimo != null &&
-        (emprestimo.idStatus == 3 || emprestimo.idStatus == 4)) {
-      // Status finalizado
-      empFinalizado = true;
-    } else {
-      empFinalizado = false;
-    }
+    idStatus = emprestimo?.idStatus;
+    dataHoraConcluido = emprestimo?.dataHoraConcluido;
+    empFinalizado =
+        emprestimo != null &&
+        (emprestimo.idStatus == EmprestimoStatus.concluido.id ||
+            emprestimo.idStatus == EmprestimoStatus.semCorrespondencia.id);
     return empFinalizado;
   }
 
@@ -414,6 +420,8 @@ class EmprestimoDetalheViewmodel extends ChangeNotifier {
     isLoading = true;
     errorMessage = null;
     empFinalizado = false;
+    idStatus = null;
+    dataHoraConcluido = null;
     dispositivosDoEmprestimo.clear();
     empItens.clear();
     notifyListeners();

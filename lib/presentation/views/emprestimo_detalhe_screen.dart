@@ -45,6 +45,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
       if (!mounted) return;
 
       final viewmodel = context.read<EmprestimoDetalheViewmodel>();
+      viewmodel.resetState();
       await viewmodel.carregarDispositivosDoEmprestimo(widget.idEmprestimo);
     });
   }
@@ -53,20 +54,27 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
     final viewmodel = context.read<EmprestimoDetalheViewmodel>();
     final messenger = ScaffoldMessenger.of(context);
 
-    viewmodel
-        .resetState(); // Reseta o estado na memória e garante isLoading = true do viewmodel
-    // Inicia a busca dos dados após o frame do Shimmer ser desenhado
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        viewmodel.carregarDispositivosDoEmprestimo(widget.idEmprestimo);
-      }
-    });
+    viewmodel.resetState();
+    // Reseta o estado na memória e garante isLoading = true do viewmodel
 
     final resultado = await viewmodel.removerDispositivo(
       idEmprestimoDispositivo,
     );
 
-    if (!mounted || !resultado) return;
+    if (!mounted) return;
+
+    if (!resultado) {
+      await viewmodel.carregarDispositivosDoEmprestimo(widget.idEmprestimo);
+      if (!mounted) return;
+      messenger.clearSnackBars();
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(viewmodel.errorMessage ?? 'Erro ao remover o item'),
+          backgroundColor: CoresGardien.vermelhoClaro,
+        ),
+      );
+      return;
+    }
 
     await viewmodel.carregarDispositivosDoEmprestimo(widget.idEmprestimo);
 
@@ -78,7 +86,7 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
       (total, dto) => total + dto.dispositivos.length,
     );
 
-    if (totalRestante == 0 || viewmodel.dispositivosDoEmprestimo.isEmpty) {
+    if (totalRestante == 0 && viewmodel.errorMessage == null) {
       // Exclui o empréstimo e volta para a tela principal
       final excluido = await viewmodel.excluirEmprestimo(widget.idEmprestimo);
 
@@ -278,15 +286,6 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final statusStr =
-        EmprestimoStatus.values
-            .where((status) => status.id == widget.idStatus)
-            .firstOrNull
-            ?.nomeStatus ??
-        'Status não encontrado';
-    String nomeCortado = widget.nomeResponsavel.length > 20
-        ? '${widget.nomeResponsavel.substring(0, 20)}...'
-        : widget.nomeResponsavel;
     return Scaffold(
       appBar: AppBar(
         title: Text('Detalhes do empréstimo'),
@@ -303,47 +302,12 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
                 borderRadius: BorderRadius.circular(5),
               ),
               padding: EdgeInsets.all(4),
-              child:
-                  /*
-                  Informações adicionais do empréstimo selecionado
-                  */
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text.rich(
-                        TextSpan(
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: 'Empréstimo atual\n',
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            TextSpan(
-                              text: 'Responsável: $nomeCortado\n',
-                              style: TextStyle(fontSize: 13),
-                            ),
-                            TextSpan(
-                              text:
-                                  'Hora efetuada: ${_horaFormatada(widget.dataHoraEfetuado)}\n',
-                              style: TextStyle(fontSize: 13),
-                            ),
-                            if (widget.dataHoraConcluido != null)
-                              TextSpan(
-                                text:
-                                    'Hora concluído: ${_horaFormatada(widget.dataHoraConcluido)}\n',
-                                style: TextStyle(fontSize: 13),
-                              ),
-                            TextSpan(
-                              text: 'Status atual: $statusStr',
-                              style: TextStyle(fontSize: 13),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+              child: Consumer<EmprestimoDetalheViewmodel>(
+                builder: (context, viewmodel, _) => _cabecalhoEmprestimo(
+                  viewmodel.idStatus ?? widget.idStatus,
+                  viewmodel.dataHoraConcluido ?? widget.dataHoraConcluido,
+                ),
+              ),
             ),
             const SizedBox(height: 12),
             Expanded(
@@ -603,12 +567,15 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
       */
       bottomNavigationBar: Consumer<EmprestimoDetalheViewmodel>(
         builder: (context, viewmodel, _) {
-          // Verifica se está finalizado
+          final int statusAtual = viewmodel.idStatus ?? widget.idStatus;
+
           final bool isFinalizado =
-              widget.idStatus == EmprestimoStatus.concluido.id ||
+              statusAtual == EmprestimoStatus.concluido.id ||
               viewmodel.empFinalizado;
+
           final bool isEmObservacao =
-              widget.idStatus == EmprestimoStatus.emObservacao.id;
+              statusAtual == EmprestimoStatus.emObservacao.id;
+
           final agora = DateTime.now();
           final bool isSeteDiasAtrasado =
               agora.difference(widget.dataHoraEfetuado) >
@@ -697,6 +664,52 @@ class __EmprestimoDetalheScreenState extends State<EmprestimoDetalheScreen> {
           );
         },
       ),
+    );
+  }
+
+  Widget _cabecalhoEmprestimo(int idStatus, DateTime? dataHoraConcluido) {
+    final statusStr =
+        EmprestimoStatus.values
+            .where((status) => status.id == idStatus)
+            .firstOrNull
+            ?.nomeStatus ??
+        'Status não encontrado';
+    String nomeCortado = widget.nomeResponsavel.length > 20
+        ? '${widget.nomeResponsavel.substring(0, 20)}...'
+        : widget.nomeResponsavel;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Text.rich(
+          TextSpan(
+            children: <TextSpan>[
+              TextSpan(
+                text: 'Empréstimo atual\n',
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: 'Responsável: $nomeCortado\n',
+                style: TextStyle(fontSize: 13),
+              ),
+              TextSpan(
+                text:
+                    'Hora efetuada: ${_horaFormatada(widget.dataHoraEfetuado)}\n',
+                style: TextStyle(fontSize: 13),
+              ),
+              if (dataHoraConcluido != null)
+                TextSpan(
+                  text:
+                      'Hora concluído: ${_horaFormatada(dataHoraConcluido)}\n',
+                  style: TextStyle(fontSize: 13),
+                ),
+              TextSpan(
+                text: 'Status atual: $statusStr',
+                style: TextStyle(fontSize: 13),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
