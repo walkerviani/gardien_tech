@@ -6,12 +6,14 @@ import 'package:provider/provider.dart';
 
 class SelecionarDispositivoScreen extends StatefulWidget {
   final int? idTipoDispositivo;
+  final bool filtrarPesquisa;
   final List<int>
   idsParaIgnorar; // Lista de IDs para serem ignorados ao adicionar um novo dispositivo
 
   const SelecionarDispositivoScreen(
     this.idTipoDispositivo, {
     super.key,
+    this.filtrarPesquisa = true,
     this.idsParaIgnorar = const [],
   });
 
@@ -30,6 +32,7 @@ class _SelecionarDispositivoScreenState
       context.read<SelecionarDispositivoViewmodel>().carregarDispositivos(
         idTipoDispositivo: widget.idTipoDispositivo,
         idsParaIgnorar: widget.idsParaIgnorar,
+        filtrarPesquisa: widget.filtrarPesquisa,
       );
     });
   }
@@ -182,6 +185,7 @@ class _SelecionarDispositivoScreenState
                                 Navigator.pop(context, {
                                   'idDispositivo': dispositivo.id,
                                   'numPatrimonio': dispositivo.numPatrimonio,
+                                  'numSerie': dispositivo.numSerie,
                                   'tipo': dispositivo.idTipoDispositivo,
                                 });
                               },

@@ -4,6 +4,9 @@ import 'package:gardien_tech/presentation/views/dashboard_screen.dart';
 import 'package:gardien_tech/presentation/views/historico_dispositivo_screen.dart';
 import 'package:gardien_tech/presentation/views/import_dispositivo_csv_screen.dart';
 import 'package:gardien_tech/presentation/views/selecionar_dispositivo_screen.dart';
+import 'package:gardien_tech/domain/services/dashboard_service.dart';
+import 'package:gardien_tech/domain/repositories/usuario_repository.dart';
+import 'package:gardien_tech/presentation/viewmodels/historico_dispositivo_viewmodel.dart';
 import 'package:gardien_tech/utils/cores_gardien.dart';
 import 'package:provider/provider.dart';
 import 'package:gardien_tech/presentation/views/dispositivo_list_screen.dart';
@@ -137,7 +140,10 @@ class FuncoesScreen extends StatelessWidget {
   Future<Map<String, dynamic>?> _buscarDispositivo(BuildContext context) async {
     return Navigator.push<Map<String, dynamic>>(
       context,
-      MaterialPageRoute(builder: (_) => SelecionarDispositivoScreen(null)),
+      MaterialPageRoute(
+        builder: (_) =>
+            SelecionarDispositivoScreen(null, filtrarPesquisa: false),
+      ),
     );
   }
 
@@ -158,11 +164,23 @@ class FuncoesScreen extends StatelessWidget {
       return;
     }
     final int idDispositivo = resultado['idDispositivo'];
+    final String? numSerie = resultado['numSerie'] as String?;
+    final String? numPatrimonio = resultado['numPatrimonio'] as String?;
 
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => HistoricoDispositivoScreen(idDispositivo),
+        builder: (context) => ChangeNotifierProvider(
+          create: (context) => HistoricoDispositivoViewmodel(
+            context.read<DashboardService>(),
+            context.read<UsuarioRepository>(),
+          ),
+          child: HistoricoDispositivoScreen(
+            idDispositivo,
+            numSerie: numSerie,
+            numPatrimonio: numPatrimonio,
+          ),
+        ),
       ),
     );
   }
