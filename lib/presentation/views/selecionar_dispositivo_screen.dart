@@ -177,7 +177,7 @@ class _SelecionarDispositivoScreenState
                             subtitle: Text(
                               '$tipoDispositivoStr\nN° Serial: ${dispositivo.numSerie}',
                             ),
-                            trailing: IconButton(
+                            trailing: TextButton(
                               onPressed: () {
                                 Navigator.pop(context, {
                                   'idDispositivo': dispositivo.id,
@@ -185,15 +185,16 @@ class _SelecionarDispositivoScreenState
                                   'tipo': dispositivo.idTipoDispositivo,
                                 });
                               },
-                              style: IconButton.styleFrom(
+                              style: TextButton.styleFrom(
                                 backgroundColor: CoresGardien.verdeClaro,
+                                foregroundColor: CoresGardien.branco,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadiusGeometry.circular(
                                     5,
                                   ),
                                 ),
                               ),
-                              icon: Icon(Icons.add, color: CoresGardien.branco),
+                              child: const Text('Selecionar'),
                             ),
                           ),
                         ),
