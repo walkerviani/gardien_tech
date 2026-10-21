@@ -36,8 +36,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
     Colors.indigoAccent,
     Colors.deepOrange,
   ];
+
+  static const _coresUsu = [
+    Colors.green,
+    Colors.blue,
+    Colors.orange,
+    Colors.red,
+    Colors.purple,
+  ];
+
+  // Adiciona a cor para cada tipo
   Color _corDisp(TipoDispositivo tipo) =>
       _coresDisp[tipo.index % _coresDisp.length];
+
+  // Adiciona uma cor para cada um do top 5 e cinza se for 'Outros'
+  Color _corUsu(String nome, int i) => nome == DashboardViewmodel.rotuloOutros
+      ? Colors.grey
+      : _coresUsu[i % _coresUsu.length];
 
   @override
   void initState() {
@@ -46,6 +61,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       final viewmodel = context.read<DashboardViewmodel>();
       viewmodel.buscarDadosGraficoEmp();
       viewmodel.buscarDadosGraficoDisp();
+      viewmodel.buscarDadosGraficoUsu();
     });
   }
 
@@ -68,13 +84,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   selectedForegroundColor: CoresGardien.branco,
                   selectedBackgroundColor: CoresGardien.azulClaro,
                 ),
+                showSelectedIcon: false,
                 segments: TipoAnalise.values
                     .map(
-                      (tipo) => ButtonSegment(
-                        value: tipo,
-                        label: Text(tipo.rotulo),
-                        icon: Icon(tipo.icone),
-                      ),
+                      (tipo) =>
+                          ButtonSegment(value: tipo, label: Text(tipo.rotulo)),
                     )
                     .toList(),
                 selected: {_analiseAtual},
@@ -206,7 +220,101 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _carregarGraficoUsuario(DashboardViewmodel viewmodel) {
-    return Container();
+    if (viewmodel.isLoadingUsu) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (viewmodel.errorMessageUsu != null) {
+      return Center(child: Text(viewmodel.errorMessageUsu!));
+    }
+    if (viewmodel.dadosUsu.values.every((v) => v == 0)) {
+      return const Center(child: Text('Nenhum empréstimo registrado'));
+    }
+
+    final entradas = viewmodel.dadosUsuTop.entries.toList();
+    final total = entradas.fold(0, (soma, e) => soma + e.value);
+    return Column(
+      children: [
+        Text(
+          'Análise dos Usuários',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          'Top 5 usuários com mais empréstimos',
+          style: const TextStyle(fontSize: 18),
+        ),
+        _graficoUsuario(entradas, total),
+        const SizedBox(height: 10),
+        _dicaGrafico(),
+        const SizedBox(height: 15),
+        _legendaGraficoUsuario(entradas),
+      ],
+    );
+  }
+
+  Widget _graficoUsuario(List<MapEntry<String, int>> entradas, int total) {
+    return AspectRatio(
+      aspectRatio: 1,
+      child: PieChart(
+        PieChartData(
+          sectionsSpace: 2,
+          centerSpaceRadius: 40,
+          pieTouchData: PieTouchData(
+            touchCallback: (event, response) {
+              final secao = response?.touchedSection;
+              if (event is FlTapUpEvent && secao != null) {
+                setState(() {
+                  _indexTocado = secao.touchedSectionIndex;
+                });
+              }
+            },
+          ),
+          sections: List.generate(entradas.length, (i) {
+            final valor = entradas[i].value;
+            final estaTocado = i == _indexTocado;
+            final porcentagem = total == 0 ? 0 : valor / total * 100;
+
+            return PieChartSectionData(
+              value: valor.toDouble(),
+              color: _corUsu(entradas[i].key, i),
+              radius: estaTocado ? 70 : 60,
+              title: estaTocado
+                  ? valor.toString()
+                  : '${porcentagem.toStringAsFixed(1)}%',
+              titleStyle: TextStyle(
+                fontSize: estaTocado ? 18 : 14,
+                fontWeight: FontWeight.bold,
+                color: CoresGardien.branco,
+              ),
+            );
+          }),
+        ),
+      ),
+    );
+  }
+
+  Widget _legendaGraficoUsuario(List<MapEntry<String, int>> entradas) {
+    return Wrap(
+      spacing: 16,
+      runSpacing: 8,
+      children: List.generate(entradas.length, (i) {
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 12,
+              height: 12,
+              color: _corUsu(entradas[i].key, i),
+            ),
+            const SizedBox(width: 6),
+            const SizedBox(width: 6),
+            Flexible(
+              child: Text(entradas[i].key, overflow: TextOverflow.ellipsis),
+            ),
+          ],
+        );
+      }),
+    );
   }
 
   Widget _carregarGraficoEmprestimo(DashboardViewmodel viewmodel) {
@@ -219,7 +327,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     if (viewmodel.dadosEmp.isEmpty) {
       return const Center(child: Text('Sem dados'));
     }
-
+    if (viewmodel.dadosEmp.values.every((v) => v == 0)) {
+      return const Center(child: Text('Nenhum empréstimo registrado'));
+    }
     final totalGeral = viewmodel.qntTotalEmprestimo ?? 0;
     final somaFatias = viewmodel.dadosEmp.values.fold(0, (a, b) => a + b);
     final entradas = viewmodel.dadosEmp.entries.toList();
