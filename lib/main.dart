@@ -132,6 +132,7 @@ void main() async {
             context.read<AppDatabase>(),
             context.read<EmprestimoRepository>(),
             context.read<DispositivoRepository>(),
+            context.read<UsuarioRepository>(),
           ),
         ),
         // ==========================
