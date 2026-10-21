@@ -229,40 +229,42 @@ class RelatoriosScreen extends StatelessWidget {
         backgroundColor: CoresGardien.azulClaro,
         foregroundColor: CoresGardien.branco,
       ),
-      body: Container(
-        padding: EdgeInsets.all(12),
-        child: Column(
-          children: [
-            _botaoFuncao(
-              () => _carregarRelatorioData(viewmodel, context),
-              Icons.calendar_month_outlined,
-              'Empréstimos por data',
-            ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(12),
+          child: Column(
+            children: [
+              _botaoFuncao(
+                () => _carregarRelatorioData(viewmodel, context),
+                Icons.calendar_month_outlined,
+                'Empréstimos por data',
+              ),
 
-            const SizedBox(height: 10),
+              const SizedBox(height: 10),
 
-            _botaoFuncao(
-              () => _carregarRelatorioUsuario(viewmodel, context),
-              Icons.content_paste_search_outlined,
-              'Empréstimos por usuário',
-            ),
+              _botaoFuncao(
+                () => _carregarRelatorioUsuario(viewmodel, context),
+                Icons.content_paste_search_outlined,
+                'Empréstimos por usuário',
+              ),
 
-            const SizedBox(height: 10),
+              const SizedBox(height: 10),
 
-            _botaoFuncao(
-              () => _carregarRelatorioProblemas(viewmodel, context),
-              Icons.report_problem_outlined,
-              'Problemas relatados',
-            ),
+              _botaoFuncao(
+                () => _carregarRelatorioProblemas(viewmodel, context),
+                Icons.report_problem_outlined,
+                'Problemas relatados',
+              ),
 
-            const SizedBox(height: 10),
+              const SizedBox(height: 10),
 
-            _botaoFuncao(
-              () => _carregarRelatorioDispositivos(viewmodel, context),
-              Icons.devices_rounded,
-              'Dispositivos cadastrados',
-            ),
-          ],
+              _botaoFuncao(
+                () => _carregarRelatorioDispositivos(viewmodel, context),
+                Icons.devices_rounded,
+                'Dispositivos cadastrados',
+              ),
+            ],
+          ),
         ),
       ),
     );
